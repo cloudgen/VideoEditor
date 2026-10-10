@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "VideoTools"
+version = "1.1.0"
+description = "VideoTools joins two local videos and cuts, speeds, or boomerangs an MP4, using FFmpeg."
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "Wilgat Wong", email = "wilgat.wong@gmail.com"}
+]
+keywords = ["Video Editing", "Video", "Multimedia"]
+
+dependencies = [
+    "opencv-python-headless>=5.0.0.93",
+    "ChronicleLogger>=1.3.1",
+]
+
+# Official project links (this is what shows on PyPI!)
+[project.urls]
+Homepage = "https://github.com/cloudgen/VideoTools"
+Repository = "https://github.com/cloudgen/VideoTools"
+Issues = "https://github.com/cloudgen/VideoTools/issues"
+
+# video-tools is the combined console script. video-join and video-speed
+# call the same entry so both inherited verbs stay reachable.
+[project.scripts]
+video-tools = "VideoTools.cli:main"
+video-join = "VideoTools.cli:main"
+video-speed = "VideoTools.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
