@@ -71,7 +71,7 @@ class Cli:
     AUTHOR_NAME = "Wilgat Wong"
     AUTHOR_EMAIL = "wilgat.wong@gmail.com"
     HOMEPAGE = "https://github.com/cloudgen/VideoTools"
-    LAST_UPDATE = "2026-10-10"
+    LAST_UPDATE = "2026-10-11"
     DOWNLOAD_URL = ""
     BASIC_USAGE = "video-tools join"
     RATIO_MIN = 20.0

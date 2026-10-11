@@ -2,17 +2,17 @@
 
 Authoritative specialized product law for **VideoTools** lives here.
 
-**Current state (2026-10-10):** Specialized **software-development** product. Left genesis. Registry is populated — see `index.md`. One Active domain file. Product version is **1.1.0**.
+**Current state (2026-10-11):** Specialized **software-development** product. Left genesis. Registry is populated — see `index.md`. One Active domain file. Product version is **2.0.0**.
 
 ## Product identity (summary)
 
 | Field | Value |
 |-------|--------|
 | Product / package | `VideoTools` |
-| Version SSOT | **`1.1.0`** (`pyproject.toml` + `src/VideoTools/__init__.py`) |
-| Product README SSOT | Root `README.md` (app-name, short description, target version **1.1.0**). Sections and pictures: `requirement-python-readme` |
+| Version SSOT | **`2.0.0`** (`pyproject.toml` + `src/VideoTools/__init__.py`) |
+| Product README SSOT | Root `README.md` (app-name, short description, target version **2.0.0**). Sections and pictures: `requirement-python-readme` |
 | Ship surface | Python package; console scripts **`video-tools`**, **`video-join`**, **`video-speed`**; module `python -m VideoTools` |
-| Install mode | **pip / local package** (`pip install VideoTools`; this tree **1.1.0**; checkout `pip install -e .`) — not shell Type O |
+| Install mode | **pip / local package** (`pip install VideoTools`; this tree **2.0.0**; checkout `pip install -e .`) — not shell Type O |
 | Domain surface | `requirement-domain-videotools` — four pillars (join, edit, help, about). `requirement-domain-videojoin` is Superseded |
 | Text menu | `requirement-python-tui` — front rows join, edit, system-log, language, self-management, Exit. Default path word is `Path` |
 | Menu language | `requirement-python-cli-language` — row 4, thirteen codes, leaf `~/.local/VideoTools/language`. Window controls use the same codes. `language` is not an argv verb |

@@ -355,7 +355,10 @@ class TestMissingCurses(unittest.TestCase):
         self.assertIn("HELP_CODE 0", proc.stdout)
         self.assertIn("Window libraries:", proc.stdout)
         self.assertIn("Hello from VideoTools", proc.stdout)
-        self.assertIn("VideoTools 1.1.0", proc.stdout)
+        from VideoTools import __version__
+
+        self.assertEqual(__version__, "2.0.0")
+        self.assertIn("VideoTools {0}".format(__version__), proc.stdout)
         self.assertIn("MENU_ACTION missing", proc.stdout)
         self.assertIn(
             "The text menu needs the curses module. This Python does not provide it.",

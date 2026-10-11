@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-python-cli-interface.md
-**Status**: Active (Version 1.1.3)
+**Status**: Active (Version 1.1.4)
 **Area**: python
 **Key**: `requirement-python-cli-interface`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -155,7 +155,7 @@ There is no folder question. Esc on the text screen returns to the front board a
 | **Parser** | After ChronicleLogger and the debug block |
 | **Quiet / JSON** | A text screen or `--json` sets the logger quiet. `--verbose` does not undo that |
 | **Privilege** | user-level only |
-| **Product version** | `1.1.0` |
+| **Product version** | `2.0.0` |
 | **User docs** | Root `README.md` Usage must match this contract when the behavior ships. This pass does not edit that README |
 
 ### 2.9 Why This Requirement Exists (CIAO)
@@ -236,6 +236,16 @@ On Termux, Git Bash, Windows cmd, or the same class, the person runs `video-join
 **Matrix:** `docs/reviews/requirement-test-matrix.md`
 **Map:** `docs/reviews/test-plan.md`
 
+## Terminologies
+
+### Proper project version bump
+
+**Definition:** A proper project version bump is a user-ordered semver increase of the product ship version that is strictly newer than the previous local ship version, applied in the same change on every in-scope surface. When `pyproject.toml` exists, `[project].name` is the app and package name and `[project].version` equals the import-package `__version__`, the ship-unit version, the README Version badge, and the current CHANGELOG heading. A bump is not a side effect of editing a requirement, a skill, or a glossary file. Agents must not invent a second version literal beside the one the user ordered.
+
+**Human daily-life explanation:** A proper project version bump is printing one newer edition number on every copy of the book in the same sitting, because someone asked for a new edition. Editing a workshop note does not print a new edition by itself. When the catalog card exists, the name on the card is the product name and the number on the card is the same number as the title page.
+
+**Daily-life example:** The kitchen card says name `pancake-timer` and edition `1.2.0`. The title page, the cover sticker, and the change list all say `1.2.0`. The next ordered edition is `1.2.1` on all of those surfaces together. A note in the workshop drawer does not become `1.2.1` on its own.
+
 ## 7. Status history
 
 | Date | Status | Note |
@@ -245,9 +255,10 @@ On Termux, Git Bash, Windows cmd, or the same class, the person runs `video-join
 | 2026-10-04 | Active 1.1.1 | `language` is not an argv verb. Menu row 4 owns it |
 | 2026-10-04 | Active 1.1.2 | Verb `about` is `requirement-python-about`. Rule 33 no longer claims a live ffmpeg probe. Product version **1.0.5** |
 | 2026-10-10 | Active 1.1.3 | Verb `setup` is typed. It does not open the text menu or the window. The second mention is `requirement-runtime-prerequisites`. `TP-SETUP-02` is have |
+| 2026-10-11 | Active 1.1.4 | Product version is **2.0.0**. Terminologies copies the ship-version term |
 
 ---
 
-**Last Updated**: 2026-10-10
+**Last Updated**: 2026-10-11
 **Owner**: project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

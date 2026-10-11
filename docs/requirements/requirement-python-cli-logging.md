@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-python-cli-logging.md
-**Status**: Active (Version 1.0.3)
+**Status**: Active (Version 1.0.4)
 **Area**: python
 **Key**: `requirement-python-cli-logging`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -67,7 +67,7 @@ The running `src/VideoTools/cli.py` writes `ChronicleLogger(...)` in `def main`.
 10. `isDebug()` remembers the first answer. `DEBUG` or `debug` **MUST** already be `1`, `true`, or `show` (any letter case) **before** `ChronicleLogger(...)`.
 11. The startup identity lines **MUST** run only inside `if logger.isDebug():`, and `main` **MUST** run that block before the argument parser. The block is four `log_message` calls, each with `component="main"`: the resolved app name, the package version, and this file’s path; `Using` plus `ChronicleLogger.class_version()`; the `baseDir()` value; a line whose message is `debug mode`. **MUST NOT** type the library version by hand. When `isDebug()` is false, those lines **MUST NOT** be displayed.
 11a. **Console mirror.** When this run will open the text screen, and that fact is known before construct, `main` **MUST** pass `is_quiet=True` into `ChronicleLogger(...)`. The runs that open the text screen are: empty argv on a terminal; `join`, `list-videos`, `about`, `list-mp4`, or `edit` without a complete `--file` `--start` `--end`, on a terminal. `--json` is also quiet. `--verbose` does not turn the mirror back on for a screen or for `--json`. A small argv peek may decide `is_quiet` before the constructor. `ArgumentParser.parse_args` runs after the constructor and after the debug block. The library stores that flag before it resolves the name and the folders and before it creates the log directory. That constructor can print `Created directory:`. A call to `quiet(True)` after the constructor returns **MUST NOT** be the only quiet for those runs. A run that does not open the text screen and is not `--json` **MUST** leave `is_quiet` false, so the operator sees `debug mode` on the console. `--json` **MUST** pass `is_quiet=True`. The text screen **MUST** keep that mirror off the console. The same lines still go to the daily file. `logger.quiet(True)` remains the setter when a screen opens later and was not known at construct. `--json` keeps the mirror off.
-11b. **Version string.** The identity line and the `version` verb read the same package version: the single string `__version__` in `src/VideoTools/__init__.py`, which matches `pyproject.toml` (`requirement-python-packaging`). The current string is `1.1.0`. **MUST NOT** add `MAJOR` / `MINOR` / `PATCH` integers. **MUST NOT** keep a second version literal for display. A suite assertion may compare the displayed string with `__version__` and with `pyproject.toml`. `main` **MUST NOT** raise because those strings differ.
+11b. **Version string.** The identity line and the `version` verb read the same package version: the single string `__version__` in `src/VideoTools/__init__.py`, which matches `pyproject.toml` (`requirement-python-packaging`). The current string is `2.0.0`. **MUST NOT** add `MAJOR` / `MINOR` / `PATCH` integers. **MUST NOT** keep a second version literal for display. A suite assertion may compare the displayed string with `__version__` and with `pyproject.toml`. `main` **MUST NOT** raise because those strings differ.
 11c. **Environment checks.** `CheckSystem.in_venv`, `in_pyenv`, and `in_conda` **MUST** call `inVenv()`, `inPyenv()`, and `inConda()` on the one logger. When the logger is absent, each method **MUST** return false. Those three results **MUST NOT** be printed on the about page and **MUST NOT** choose `python2 location`, `python3 location`, `conda location`, or `pyenv location`. The path reads stay on `requirement-python-about`. The proof is `TP-ABOUT-16`.
 
 ### 2.3 `log_message` level and component
@@ -288,6 +288,16 @@ On Termux, Git Bash, Windows cmd, or the same class, status files stay in the fo
 **Matrix:** `docs/reviews/requirement-test-matrix.md`
 **Map:** `docs/reviews/test-plan.md`
 
+## Terminologies
+
+### Proper project version bump
+
+**Definition:** A proper project version bump is a user-ordered semver increase of the product ship version that is strictly newer than the previous local ship version, applied in the same change on every in-scope surface. When `pyproject.toml` exists, `[project].name` is the app and package name and `[project].version` equals the import-package `__version__`, the ship-unit version, the README Version badge, and the current CHANGELOG heading. A bump is not a side effect of editing a requirement, a skill, or a glossary file. Agents must not invent a second version literal beside the one the user ordered.
+
+**Human daily-life explanation:** A proper project version bump is printing one newer edition number on every copy of the book in the same sitting, because someone asked for a new edition. Editing a workshop note does not print a new edition by itself. When the catalog card exists, the name on the card is the product name and the number on the card is the same number as the title page.
+
+**Daily-life example:** The kitchen card says name `pancake-timer` and edition `1.2.0`. The title page, the cover sticker, and the change list all say `1.2.0`. The next ordered edition is `1.2.1` on all of those surfaces together. A note in the workshop drawer does not become `1.2.1` on its own.
+
 ## 7. Status history
 
 | Date | Status | Note |
@@ -296,9 +306,10 @@ On Termux, Git Bash, Windows cmd, or the same class, status files stay in the fo
 | 2026-10-04 | Active 1.0.1 | Product version **1.0.4**. Manifest floor is `ChronicleLogger>=1.3.1`. `cli.py` reads `__version__` only |
 | 2026-10-04 | Active 1.0.2 | Rule 11c: environment checks read the one logger. Current version string is **1.0.5**. `TP-LOG-*` stay todo. `TP-ABOUT-16` is have. Primary owner is `requirement-python-about` |
 | 2026-10-10 | Active 1.0.3 | Before the ChronicleLogger import, `main` calls `HostSetup.ensure_geteuid()`. A missing `os.geteuid` returns `1`. The library stays unedited. `TP-SETUP-01` is have |
+| 2026-10-11 | Active 1.0.4 | Current version string is **2.0.0**. Terminologies copies the ship-version term |
 
 ---
 
-**Last Updated**: 2026-10-10
+**Last Updated**: 2026-10-11
 **Owner**: project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

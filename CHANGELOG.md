@@ -3,6 +3,21 @@
 All notable changes to **VideoTools** are documented here.
 Version SSOT: `pyproject.toml` `[project].version` and `src/VideoTools/__init__.py` `__version__`.
 
+## [2.0.0] - 2026-10-11
+
+### Added
+
+- The X11 window shows a project-root line under the header. The label follows the menu language. The directory is the current working directory and is not translated.
+- Edit groups the source as Input Video, the transport and cut as Edit Controls, and the tail as Looping Options. Join keeps Video 1 above Video 2. Both groups put Output & Result and Resulting Video on the right.
+- Looping Options uses one switch each for None, Boomerang, and Repeat. Exactly one is on. The window starts on None. Turning the last switch off returns to None. `--repeat` and `--boomerang` together still fail closed.
+- A process bar sits on the bottom of the window. Idle and a finish without a file read Process 0%. While a run is busy the bar shows `please wait for time consuming process`. A finish with the output file on disk reads Process 100%.
+- English Go on the window is Go To. The other twelve languages keep their existing go-to words.
+
+### Changed
+
+- Product version is **2.0.0**. `pyproject.toml`, `__version__`, the README Version badge, this section, and the current SECURITY row use that string.
+- The four pictures in `screenshots/` are captures of this window. The header on those captures is Traditional Chinese. Run has not been pressed, so the process bar reads 處理 0%.
+
 ## [1.1.0] - 2026-10-10
 
 ### Added

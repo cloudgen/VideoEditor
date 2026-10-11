@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "VideoTools"
-version = "1.1.0"
+version = "2.0.0"
 description = "VideoTools joins two local videos and cuts, speeds, or boomerangs an MP4, using FFmpeg."
 readme = "README.md"
 requires-python = ">=3.11"

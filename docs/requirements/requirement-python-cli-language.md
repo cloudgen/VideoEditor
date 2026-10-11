@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-python-cli-language.md
-**Status**: Active (Version 1.1.0)
+**Status**: Active (Version 1.2.0)
 **Area**: python
 **Key**: `requirement-python-cli-language`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -48,8 +48,8 @@ Class `MenuLanguage` in `src/VideoTools/menu_language.py` holds the codes, the s
 5. **Front row 4.** On every host, including Termux, Git Bash, and Windows cmd, the front board **MUST** print row **4** `language`. That row **MUST** open the language board. It **MUST NOT** run a command and **MUST NOT** leave the program. Row **2** is `edit`. Rows **1**, **3**, **8**, and **9** stay join, system-log, self-management, and Exit. System-log children stay **31**, **32**, and **33**. Its children are **31** view-log, **32** clear-log, and **33** log-folder. Those numbers are the picture on `requirement-python-tui`.
 6. **Language block.** The language board uses the twenty numbers **40** through **59**. Assigned rows are **41** through **53**, in the order below. **40** and **54** through **59** are reserved. They **MUST NOT** be printed. Typing a reserved number **MUST** show the unknown-choice line and **MUST NOT** write the leaf. **0**, an empty Enter on Back, and Esc **MUST** return to the front board and **MUST NOT** write the leaf.
 7. **Names on the language board.** Each assigned row **MUST** show that language’s endonym as the short, in every UI language. The explain **MUST** be that UI language’s sentence with the endonym in the name slot. The English sentence is `use {name} for this menu`.
-8. **What follows the code.** On the front board, the language board, the system-log board, and the self-management board, these follow the selected code: the path label, the board title, category shorts, category longs, leaf longs, Back, Exit, the unknown-choice line, the saved-language line, and the failed-write line. The same code supplies the window control labels and the short sentences the window itself writes: Select file, Start, Pause, Stop, Play, Go, Mark start, Mark end, Percent, Tail, None, Boomerang, Repeat, Run, Output, Output name, Generated, Video 1, Video 2, View, Clear, Yes, and No. A pick redraws those labels on the open window. Leaf shorts stay the English tokens `join`, `view-log`, `clear-log`, `log-folder`, `version`, `about`, `version-check`, `self-update`, `self-uninstall`, and `self-install`. The format token MP4 stays `MP4`.
-9. **What stays English.** Join question prompts, the list-videos page, command output, pip lifecycle output, the argv `version` line, FFmpeg and join fail-closed sentences, the help body, and the about page stay English in this version. The key hint `Up/Down  •  Enter` stays English. The folder path and the clock `HH:MM:SS` are not translated. The product name and the version stay on the status line. The window wait sentence stays `please wait for time consuming process`.
+8. **What follows the code.** On the front board, the language board, the system-log board, and the self-management board, these follow the selected code: the path label, the board title, category shorts, category longs, leaf longs, Back, Exit, the unknown-choice line, the saved-language line, and the failed-write line. The same code supplies the window control labels and the short sentences the window itself writes: Select file, Start, Pause, Stop, Play, Go To, Mark start, Mark end, Percent, Tail, None, Boomerang, Repeat, Run, Output, Output name, Generated, Video 1, Video 2, Project Root, Input Video, Edit Controls, Looping Options, Output & Result, Resulting Video, Process, View, Clear, Yes, and No. English Go To is the current English word. The other codes keep their existing go-to words. A pick redraws those labels on the open window. Leaf shorts stay the English tokens `join`, `view-log`, `clear-log`, `log-folder`, `version`, `about`, `version-check`, `self-update`, `self-uninstall`, and `self-install`. The format token MP4 stays `MP4`. The text-menu path word stays Path. The window label Project Root is a different string and follows the code. The directory beside it does not.
+9. **What stays English.** Join question prompts, the list-videos page, command output, pip lifecycle output, the argv `version` line, FFmpeg and join fail-closed sentences, the help body, and the about page stay English in this version. The key hint `Up/Down  •  Enter` stays English. The folder path and the clock `HH:MM:SS` are not translated. The directory on the window’s project-root line is not translated. The product name and the version stay on the status line. The window wait sentence stays `please wait for time consuming process`.
 10. **After a successful pick.** The session **MUST** show the saved-language line and **MUST** redraw the front board in the new language. That line sits above the box. It is not the error line. It stays until the next key. A failed write uses the same place, in the language that was current before the failure.
 11. **Unknown choice.** A number or a word that is not on the current board **MUST** stay on that board and show the unknown-choice line in the selected language. It **MUST NOT** exit the process and **MUST NOT** write the leaf. The English line is `That choice is not on this list. Pick a listed number.`
 12. **Clock.** The language board is a clock board. The one-second wait from `requirement-python-tui` rule 13 includes it. A language pick does not open a result page.
@@ -176,6 +176,16 @@ On Termux, Git Bash, Windows cmd, or the same class, the person runs `video-join
 **Matrix:** `docs/reviews/requirement-test-matrix.md`
 **Map:** `docs/reviews/test-plan.md`
 
+## Terminologies
+
+### Python GUI window
+
+**Definition:** Python GUI window is a claimed picture window on a Python CLI. The window imports a host toolkit in this interpreter. The operator page reports that import. A failed import is the text `not available`. On Windows, a miss names the text-screen verb the specialized requirement already claims and states that the page does not install the toolkit. The page does not print `pacman`, `msys2`, `mingw-w64`, or `UCRT64`, and it does not run a package manager or an installer. The specialized requirement names the toolkit and the open rule. This term does not mint a GUI law mold and does not attach every CLI verb to the window.
+
+**Human daily-life explanation:** A python-gui-window is the shop’s picture counter. The card on the wall says whether today’s tools are in this drawer. When the drawer is empty, the card points you back to the written counter you already know. The card does not send you to a second shop to run a foreign package command.
+
+**Daily-life example:** You ask what the picture counter needs. The card says the tools are missing and tells you to use the written counter. It does not hand you a command for a different shop’s package shelf.
+
 ## 7. Status history
 
 | Date | Status | Note |
@@ -183,9 +193,10 @@ On Termux, Git Bash, Windows cmd, or the same class, the person runs `video-join
 | 2026-10-04 | Active 1.0.0 | Menu language for VideoJoin. Front row 4. Thirteen codes. Leaf under this login’s home. `TP-LANG-01` has |
 | 2026-10-04 | Active 1.0.1 | English about explain is `version, FFmpeg, and this computer`. The about page stays English |
 | 2026-10-10 | Active 1.1.0 | Window control labels follow the same thirteen codes. The clock, the folder path, and About stay as they are |
+| 2026-10-11 | Active 1.2.0 | Window labels add Project Root, Input Video, Edit Controls, Looping Options, Output & Result, Resulting Video, and Process. English Go is Go To. The text-menu path word stays Path. The directory on the project-root line stays untranslated |
 
 ---
 
-**Last Updated**: 2026-10-10
+**Last Updated**: 2026-10-11
 **Owner**: project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

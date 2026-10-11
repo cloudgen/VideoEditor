@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-python-project-structure.md
-**Status**: Active (Version 1.1.2)
+**Status**: Active (Version 1.1.3)
 **Area**: python
 **Key**: `requirement-python-project-structure`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -70,7 +70,7 @@ Define the repository layout and the package structure for VideoJoin: where sour
 | Path | Role |
 |------|------|
 | `src/VideoTools/` | Installable package |
-| `src/VideoTools/__init__.py` | `__version__` (`1.1.0`) |
+| `src/VideoTools/__init__.py` | `__version__` (`2.0.0`) |
 | `src/VideoTools/__main__.py` | Module entry. Imports `main` from `cli` |
 | `src/VideoTools/cli.py` | Class `Cli` and `def main` |
 | `src/VideoTools/join.py` | Class `Join` |
@@ -151,6 +151,16 @@ On Termux, Git Bash, Windows cmd, or the same class, the package is the normal u
 **Matrix:** `docs/reviews/requirement-test-matrix.md`
 **Map:** `docs/reviews/test-plan.md`
 
+## Terminologies
+
+### Proper project version bump
+
+**Definition:** A proper project version bump is a user-ordered semver increase of the product ship version that is strictly newer than the previous local ship version, applied in the same change on every in-scope surface. When `pyproject.toml` exists, `[project].name` is the app and package name and `[project].version` equals the import-package `__version__`, the ship-unit version, the README Version badge, and the current CHANGELOG heading. A bump is not a side effect of editing a requirement, a skill, or a glossary file. Agents must not invent a second version literal beside the one the user ordered.
+
+**Human daily-life explanation:** A proper project version bump is printing one newer edition number on every copy of the book in the same sitting, because someone asked for a new edition. Editing a workshop note does not print a new edition by itself. When the catalog card exists, the name on the card is the product name and the number on the card is the same number as the title page.
+
+**Daily-life example:** The kitchen card says name `pancake-timer` and edition `1.2.0`. The title page, the cover sticker, and the change list all say `1.2.0`. The next ordered edition is `1.2.1` on all of those surfaces together. A note in the workshop drawer does not become `1.2.1` on its own.
+
 ## 7. Status history
 
 | Date | Status | Note |
@@ -159,9 +169,10 @@ On Termux, Git Bash, Windows cmd, or the same class, the package is the normal u
 | 2026-10-04 | Active 1.1.0 | Running tree is three modules. Target modules are the OOP map. Deleted design-note paths are not listed as present. Changelog is root `CHANGELOG.md` |
 | 2026-10-04 | Active 1.1.1 | Sections, badges, and pictures in root `README.md` are `requirement-python-readme` |
 | 2026-10-04 | Active 1.1.2 | Allowed end state names `check_system.py`. `__version__` is **1.0.5** |
+| 2026-10-11 | Active 1.1.3 | The live `__version__` cell is **2.0.0**. The 1.1.2 note stays as history |
 
 ---
 
-**Last Updated**: 2026-10-04
+**Last Updated**: 2026-10-11
 **Owner**: project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

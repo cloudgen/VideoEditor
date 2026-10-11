@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-python-packaging.md
-**Status**: Active (Version 1.2.5)
+**Status**: Active (Version 1.2.6)
 **Area**: python
 **Key**: `requirement-python-packaging`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -12,7 +12,7 @@ This file owns the ChronicleLogger floor together with `requirement-runtime-prer
 
 ### 1.1 Human-facing
 
-**In one sentence:** VideoTools is a pip package named VideoTools, version 1.1.0, and ChronicleLogger and OpenCV are required dependencies.
+**In one sentence:** VideoTools is a pip package named VideoTools, version 2.0.0, and ChronicleLogger and OpenCV are required dependencies.
 
 | Box | Meaning | Example |
 |-----|---------|---------|
@@ -22,7 +22,7 @@ This file owns the ChronicleLogger floor together with `requirement-runtime-prer
 
 | Includes | Excludes |
 |----------|----------|
-| Package name VideoTools, version 1.1.0, console scripts `video-tools`, `video-join`, and `video-speed`, required `ChronicleLogger>=1.3.1` and `opencv-python-headless>=5.0.0.93` | Re-exporting ChronicleLogger from the VideoTools package |
+| Package name VideoTools, version 2.0.0, console scripts `video-tools`, `video-join`, and `video-speed`, required `ChronicleLogger>=1.3.1` and `opencv-python-headless>=5.0.0.93` | Re-exporting ChronicleLogger from the VideoTools package |
 | Manifest floor `ChronicleLogger>=1.3.1`, same as this law | Calling the logger optional, or leaving the manifest at `>=1.2.3` |
 | MIT license, homepage, Python range as declared | A claim that pip installs FFmpeg |
 
@@ -51,7 +51,7 @@ This file owns the ChronicleLogger floor together with `requirement-runtime-prer
 
 5. The package version in `pyproject.toml` and `src/VideoTools/__init__.py` (`__version__`) **MUST** match when a release is claimed.
 6. Bumping either **MUST** update both in the same change.
-7. **MUST NOT** invent a third version constant. Display code **MUST NOT** keep a second literal, including a fallback `"1.1.0"` (`requirement-python-oop`). The current release string is `1.1.0`. A version bump is a user order, not a side effect of editing this file.
+7. **MUST NOT** invent a third version constant. Display code **MUST NOT** keep a second literal, including a fallback of an older release (`requirement-python-oop`). The current release string is `2.0.0`. A version bump is a user order, not a side effect of editing this file.
 
 ### 2.3 Dependencies
 
@@ -78,7 +78,7 @@ This file owns the ChronicleLogger floor together with `requirement-runtime-prer
 |------|--------|
 | **Manifest** | `pyproject.toml` |
 | **Project name** | `VideoTools` |
-| **Version** | `1.1.0` |
+| **Version** | `2.0.0` |
 | **requires-python** | `>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*` (as declared — re-verify support claims before marketing) |
 | **Dependencies (law)** | `opencv-python-headless>=5.0.0.93` and `ChronicleLogger>=1.3.1`, both required. `_curses` is not a pip dependency. `windows-curses` is not a `pyproject.toml` entry. The import uses `try`. Verb `setup` may install `windows-curses` on Windows when the import fails |
 | **Dependencies (live manifest)** | Same two floors. `requires-python` is `>=3.11` |
@@ -89,7 +89,7 @@ This file owns the ChronicleLogger floor together with `requirement-runtime-prer
 | **License** | MIT |
 | **Public package exports** | `__version__`, `main` only. **MUST NOT** re-export `ChronicleLogger` |
 | **User docs** | Root `README.md` Quick Installation documents pip and **MUST NOT** claim pip installs FFmpeg. This pass does not edit that README |
-| **README version badge** | Must match packaging version (`1.1.0`) |
+| **README version badge** | Must match packaging version (`2.0.0`) |
 
 ### 2.7 Why This Requirement Exists (CIAO)
 
@@ -130,7 +130,7 @@ On Termux, Git Bash, Windows cmd, or the same class, install and upgrade use pip
 | AC-1 | `pyproject.toml` names VideoTools |
 | AC-2 | Console script `video-join` is declared |
 | AC-3 | Law and the live manifest both require `ChronicleLogger>=1.3.1` |
-| AC-4 | Version matches `__init__.py` when a release is claimed (`1.1.0`) |
+| AC-4 | Version matches `__init__.py` when a release is claimed (`2.0.0`) |
 | AC-5 | FFmpeg is external, not a pip dependency |
 | AC-6 | Public exports are `__version__` and `main` only |
 | AC-7 | `_curses` is not a pip dependency. `windows-curses` is absent from `pyproject.toml`. A missing module is avoided with `try` / `except ImportError`. Verb `setup` may install `windows-curses` on Windows when the import fails |
@@ -159,6 +159,16 @@ On Termux, Git Bash, Windows cmd, or the same class, install and upgrade use pip
 **Matrix:** `docs/reviews/requirement-test-matrix.md`
 **Map:** `docs/reviews/test-plan.md`
 
+## Terminologies
+
+### Proper project version bump
+
+**Definition:** A proper project version bump is a user-ordered semver increase of the product ship version that is strictly newer than the previous local ship version, applied in the same change on every in-scope surface. When `pyproject.toml` exists, `[project].name` is the app and package name and `[project].version` equals the import-package `__version__`, the ship-unit version, the README Version badge, and the current CHANGELOG heading. A bump is not a side effect of editing a requirement, a skill, or a glossary file. Agents must not invent a second version literal beside the one the user ordered.
+
+**Human daily-life explanation:** A proper project version bump is printing one newer edition number on every copy of the book in the same sitting, because someone asked for a new edition. Editing a workshop note does not print a new edition by itself. When the catalog card exists, the name on the card is the product name and the number on the card is the same number as the title page.
+
+**Daily-life example:** The kitchen card says name `pancake-timer` and edition `1.2.0`. The title page, the cover sticker, and the change list all say `1.2.0`. The next ordered edition is `1.2.1` on all of those surfaces together. A note in the workshop drawer does not become `1.2.1` on its own.
+
 ## 7. Status history
 
 | Date | Status | Note |
@@ -171,9 +181,10 @@ On Termux, Git Bash, Windows cmd, or the same class, install and upgrade use pip
 | 2026-10-10 | Active 1.2.3 | `_curses` is not a pip dependency. A missing module is avoided with `try` / `except ImportError` |
 | 2026-10-10 | Active 1.2.4 | `windows-curses` stays out of `pyproject.toml`. Verb `setup` on Windows may install it when `import curses` fails. That step is `requirement-runtime-prerequisites` |
 | 2026-10-10 | Active 1.2.5 | Homepage, repository, and issues are `https://github.com/cloudgen/VideoTools` |
+| 2026-10-11 | Active 1.2.6 | Current release string is **2.0.0**. Terminologies copies the ship-version term |
 
 ---
 
-**Last Updated**: 2026-10-10
+**Last Updated**: 2026-10-11
 **Owner**: project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

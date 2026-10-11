@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-python-about.md
-**Status**: Active (Version 1.1.1)
+**Status**: Active (Version 1.1.2)
 **Area**: python
 **Key**: `requirement-python-about`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -114,7 +114,7 @@ Pyenv and conda path reads for this page stay in this file. This product does no
 Values in angle brackets are the live read. They are not a frozen login or home path.
 
 ```text
-VideoTools 1.1.0
+VideoTools 2.0.0
 Domain: Concatenate two local videos, and cut, speed, or boomerang an MP4
 Runtime tools: FFmpeg (copy, re-encode, cut, speed); OpenCV (duration); GTK 4 and GStreamer (window)
 Entry points: video-tools, video-join, video-speed, python -m VideoTools
@@ -122,7 +122,7 @@ Window libraries:
     GTK 4: 4.14.5
     GStreamer: 1.24.2
 
-2026-10-10 11:16:23.700590 VideoTools(v1.1.0)  [CHECK SYSTEM]:
+2026-10-10 11:16:23.700590 VideoTools(v2.0.0)  [CHECK SYSTEM]:
   Now checking your operation system!
     Python: 3.12.3
     C Library: GCC 13.3.0
@@ -149,7 +149,7 @@ Window libraries:
 
 ***************************************************
 *                                                 *
-* VideoTools (1.1.0) by Wilgat Wong on 2026-10-10  *
+* VideoTools (2.0.0) by Wilgat Wong on 2026-10-11  *
 *                                                 *
 * You are using an UNINSTALLED version, location: *
 *     <program path>                              *
@@ -183,7 +183,7 @@ Invocation: `video-join` on a terminal, then `8`, then `83`. The same page is `v
 | **Console script** | `video-join` |
 | **Author** | `Wilgat Wong` |
 | **Homepage** | `https://github.com/cloudgen/VideoTools` |
-| **About date** | `2026-10-04` (`Cli.LAST_UPDATE`). This is the box date, not the host-check stamp |
+| **About date** | `2026-10-11` (`Cli.LAST_UPDATE`). This is the box date, not the host-check stamp |
 | **Usage line** | `video-join join` (`Cli.BASIC_USAGE`) |
 | **Download URL** | empty (`Cli.DOWNLOAD_URL`) |
 | **Docker marker** | `/.dockerenv` only |
@@ -193,7 +193,7 @@ Invocation: `video-join` on a terminal, then `8`, then `83`. The same page is `v
 | **TTY / Interactive** | `yes` or `no` from `sys.stdout.isatty()` |
 | **JSON** | Not claimed. No `--json` stream |
 | **Privilege** | normal user privilege |
-| **Product version** | `1.1.0` |
+| **Product version** | `2.0.0` |
 
 ### 2.3 Why This Requirement Exists (Direct CIAO Alignment)
 
@@ -286,6 +286,24 @@ TP-ABOUT-01 asserts the identity line, every host-check label, the star-box titl
 | `src/VideoTools/check_system.py` | Class `CheckSystem` |
 | `pyproject.toml` | Homepage URL and the version string |
 
+## Terminologies
+
+### Python GUI window
+
+**Definition:** Python GUI window is a claimed picture window on a Python CLI. The window imports a host toolkit in this interpreter. The operator page reports that import. A failed import is the text `not available`. On Windows, a miss names the text-screen verb the specialized requirement already claims and states that the page does not install the toolkit. The page does not print `pacman`, `msys2`, `mingw-w64`, or `UCRT64`, and it does not run a package manager or an installer. The specialized requirement names the toolkit and the open rule. This term does not mint a GUI law mold and does not attach every CLI verb to the window.
+
+**Human daily-life explanation:** A python-gui-window is the shop’s picture counter. The card on the wall says whether today’s tools are in this drawer. When the drawer is empty, the card points you back to the written counter you already know. The card does not send you to a second shop to run a foreign package command.
+
+**Daily-life example:** You ask what the picture counter needs. The card says the tools are missing and tells you to use the written counter. It does not hand you a command for a different shop’s package shelf.
+
+### Proper project version bump
+
+**Definition:** A proper project version bump is a user-ordered semver increase of the product ship version that is strictly newer than the previous local ship version, applied in the same change on every in-scope surface. When `pyproject.toml` exists, `[project].name` is the app and package name and `[project].version` equals the import-package `__version__`, the ship-unit version, the README Version badge, and the current CHANGELOG heading. A bump is not a side effect of editing a requirement, a skill, or a glossary file. Agents must not invent a second version literal beside the one the user ordered.
+
+**Human daily-life explanation:** A proper project version bump is printing one newer edition number on every copy of the book in the same sitting, because someone asked for a new edition. Editing a workshop note does not print a new edition by itself. When the catalog card exists, the name on the card is the product name and the number on the card is the same number as the title page.
+
+**Daily-life example:** The kitchen card says name `pancake-timer` and edition `1.2.0`. The title page, the cover sticker, and the change list all say `1.2.0`. The next ordered edition is `1.2.1` on all of those surfaces together. A note in the workshop drawer does not become `1.2.1` on its own.
+
 ## 7. Status history
 
 | Date | Status | Note |
@@ -293,7 +311,8 @@ TP-ABOUT-01 asserts the identity line, every host-check label, the star-box titl
 | 2026-10-04 | Active 1.0.0 | About page: identity, host check, star box. Pyenv and conda reads stay here. No `--json`. Product version **1.0.5**. `./tests/run.sh` — 23 tests, OK. `TP-ABOUT-01` through `TP-ABOUT-14` and `TP-ABOUT-16` are have. There is no `TP-ABOUT-15` |
 | 2026-10-10 | Active 1.1.0 | Identity names GTK 4 and GStreamer and checks whether this Python can import them. On Windows a miss names `video-tools tui`. The page does not install packages and does not print a package-manager command. `TP-ABOUT-17` is have |
 | 2026-10-10 | Active 1.1.1 | Homepage is `https://github.com/cloudgen/VideoTools` |
+| 2026-10-11 | Active 1.1.2 | Sample identity, log line, and star box name package **2.0.0**. The box date is `2026-10-11`, the same string as `Cli.LAST_UPDATE`. The host-check stamp in the sample stays a clock example |
 
-**Last Updated**: 2026-10-10
+**Last Updated**: 2026-10-11
 **Owner**: project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

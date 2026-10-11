@@ -16,10 +16,12 @@ from pathlib import Path
 class Gui:
     """The X11 window. Edit and Join share one area. One group is visible.
 
-    Each group splits left and right. The left side is the source or sources
-    and the settings. The right side is the output. Edit plays the source
-    MP4 and the generated file. Join plays both sources and the generated
-    file. Typed verbs and the text menu stay on Cli and Tui.
+    A project-root line sits under the header. join and edit are tabs on the
+    left of the group. Each group splits left and right. Edit puts Input
+    Video, Edit Controls, and Looping Options on the left, and Output &
+    Result on the right. Join puts the two sources on the left and the same
+    output column on the right. A process bar sits on the bottom of the
+    window. Typed verbs and the text menu stay on Cli and Tui.
     """
 
     FRONT = (
@@ -65,6 +67,9 @@ class Gui:
         self._menu_buttons = []
         self._group_tabs = {}
         self._tab_guard = False
+        self._tail_guard = False
+        self._percent_guard = False
+        self._process_mode = "idle"
         self._window_copy = {}
         self._said = []
         self._log_state = None
@@ -168,7 +173,7 @@ class Gui:
         gtk = self._gtk
         title = "{0} {1}".format(self.app.app_name, self.app.version)
         self._window = gtk.Window(title=title)
-        self._window.set_default_size(1280, 800)
+        self._window.set_default_size(1360, 900)
         self._window.connect("close-request", self._on_close)
         header = gtk.HeaderBar()
         self._window.set_titlebar(header)
@@ -192,9 +197,20 @@ class Gui:
         root.set_margin_bottom(8)
         root.set_margin_start(12)
         root.set_margin_end(12)
+        path_row = gtk.Box(orientation=gtk.Orientation.HORIZONTAL, spacing=6)
+        path_row.set_margin_top(4)
+        path_row.set_margin_bottom(4)
+        path_row.set_margin_start(8)
+        path_row.set_margin_end(8)
+        path_row.append(gtk.Image.new_from_icon_name("folder-symbolic"))
         self.path_label = gtk.Label(xalign=0)
+        self.path_label.set_hexpand(True)
+        self.path_label.set_selectable(True)
+        path_row.append(self.path_label)
+        path_frame = gtk.Frame()
+        path_frame.set_child(path_row)
         self._refresh_path()
-        root.append(self.path_label)
+        root.append(path_frame)
         self._stack = gtk.Stack()
         self._stack.set_hexpand(True)
         self._stack.set_vexpand(True)
@@ -214,6 +230,11 @@ class Gui:
         face.append(self._group_tab_box)
         face.append(self._group_frame)
         root.append(face)
+        self.process = gtk.ProgressBar()
+        self.process.set_show_text(True)
+        self.process.set_hexpand(True)
+        self._paint_process()
+        root.append(self.process)
         self._window.set_child(root)
         self._show("edit")
         self._prepare_media()
@@ -227,7 +248,13 @@ class Gui:
             button.add_css_class("group-tab")
             button.connect("toggled", self._on_group_tab, page)
             return button
-        button = gtk.Button(label=label)
+        icon = {
+            "log": "text-x-generic-symbolic",
+            "lang": "preferences-desktop-locale-symbolic",
+            "self": "avatar-default-symbolic",
+            "": "application-exit-symbolic",
+        }.get(page, "")
+        button = self._icon_button(label, icon)
         if page:
             button.connect("clicked", self._on_page, page)
         else:
@@ -249,6 +276,9 @@ class Gui:
             "}"
             "box.video-group.group-open {"
             " border-top: 3px solid @theme_selected_bg_color;"
+            "}"
+            "progressbar {"
+            " min-height: 22px;"
             "}"
         )
         display = self._window.get_display()
@@ -322,8 +352,31 @@ class Gui:
             label = gtk.Label(label=self._w(key), xalign=xalign)
         return self._track(key, label)
 
-    def _btn(self, key: str):
-        button = self._gtk.Button(label=self._w(key))
+    def _icon_button(self, text: str, icon: str = "", toggle: bool = False):
+        """A button whose words stay readable when an icon sits beside them."""
+        gtk = self._gtk
+        button = gtk.ToggleButton() if toggle else gtk.Button()
+        if not icon:
+            button.set_label(text)
+            return button
+        row = gtk.Box(orientation=gtk.Orientation.HORIZONTAL, spacing=6)
+        row.append(gtk.Image.new_from_icon_name(icon))
+        label = gtk.Label(label=text)
+        row.append(label)
+        button.set_child(row)
+        button._vt_text = label
+        button.get_label = label.get_text
+        return button
+
+    def _set_button_words(self, button, text: str) -> None:
+        label = getattr(button, "_vt_text", None)
+        if label is not None:
+            label.set_text(text)
+            return
+        button.set_label(text)
+
+    def _btn(self, key: str, icon: str = ""):
+        button = self._icon_button(self._w(key), icon)
         return self._track(key, button)
 
     def _check(self, key: str):
@@ -333,7 +386,7 @@ class Gui:
     def _put(self, widget, text: str) -> None:
         name = widget.__class__.__name__
         if name in ("Button", "ToggleButton", "CheckButton"):
-            widget.set_label(text)
+            self._set_button_words(widget, text)
             return
         if hasattr(widget, "set_text"):
             widget.set_text(text)
@@ -367,6 +420,8 @@ class Gui:
                 widget.set_text(self._fill(key, *parts))
         self._sync_edit()
         self._sync_join()
+        self._paint_mp4()
+        self._paint_process()
         self._refresh_path()
         self._paint_log_folder()
         self._paint_log_body()
@@ -379,6 +434,8 @@ class Gui:
 
     def _on_close(self, _window) -> bool:
         if self._busy:
+            self._process_mode = "wait"
+            self._paint_process()
             self._set_visible_result("please wait for time consuming process")
             return True
         self._pause_all_players()
@@ -400,10 +457,95 @@ class Gui:
         self._refresh_path()
 
     def _refresh_path(self) -> None:
-        word = "Path"
-        if self.language is not None:
-            word = self.language.path_label()
-        self.path_label.set_text("{0}: {1}".format(word, os.path.abspath(os.getcwd())))
+        """Project root line. The directory is the current folder and stays untranslated."""
+        self.path_label.set_text(
+            "{0}: {1}".format(self._w("win_project_root"), os.path.abspath(os.getcwd()))
+        )
+
+    def _paint_mp4(self) -> None:
+        caption = getattr(self, "mp4_caption", None)
+        if caption is not None:
+            caption.set_text(self._w("win_mp4") + ":")
+
+    def _paint_process(self) -> None:
+        """Bottom bar. The wait sentence stays English. Process N% follows the language."""
+        bar = getattr(self, "process", None)
+        if bar is None:
+            return
+        if self._process_mode == "wait":
+            bar.set_fraction(0)
+            bar.set_text("please wait for time consuming process")
+            return
+        percent = 100 if self._process_mode == "done" else 0
+        bar.set_fraction(percent / 100.0)
+        bar.set_text(self._fill("win_process", percent))
+
+    def _card(self, key: str):
+        """A titled frame. The title follows the window language."""
+        gtk = self._gtk
+        frame = gtk.Frame()
+        frame.set_label_widget(self._cap(key, xalign=0))
+        inner = gtk.Box(orientation=gtk.Orientation.VERTICAL, spacing=6)
+        inner.set_margin_top(6)
+        inner.set_margin_bottom(6)
+        inner.set_margin_start(8)
+        inner.set_margin_end(8)
+        frame.set_child(inner)
+        return frame, inner
+
+    def _tail_row(self, key: str):
+        """One looping switch. The label is on the left and the switch is on the right."""
+        gtk = self._gtk
+        row = gtk.Box(orientation=gtk.Orientation.HORIZONTAL, spacing=12)
+        label = self._cap(key, xalign=0)
+        label.set_hexpand(True)
+        switch = gtk.Switch()
+        switch.set_valign(gtk.Align.CENTER)
+        switch.set_halign(gtk.Align.END)
+        row.append(label)
+        row.append(switch)
+        return row, label, switch
+
+    def _on_tail(self, switch, _pspec, which: str) -> None:
+        """Exactly one tail is on. Turning the active one off returns to None."""
+        if self._tail_guard:
+            return
+        switches = (
+            ("none", self.tail_none),
+            ("boomerang", self.tail_boomerang),
+            ("repeat", self.tail_repeat),
+        )
+        self._tail_guard = True
+        try:
+            if switch.get_active():
+                for name, other in switches:
+                    if name != which and other.get_active():
+                        other.set_active(False)
+            elif not any(other.get_active() for _name, other in switches):
+                self.tail_none.set_active(True)
+        finally:
+            self._tail_guard = False
+        self._sync_edit()
+
+    def _on_percent_scale(self, scale) -> None:
+        if self._percent_guard:
+            return
+        self._percent_guard = True
+        try:
+            self.percent.set_value(scale.get_value())
+        finally:
+            self._percent_guard = False
+        self._sync_edit()
+
+    def _on_percent_spin(self, spin) -> None:
+        if self._percent_guard:
+            return
+        self._percent_guard = True
+        try:
+            self.percent_scale.set_value(spin.get_value())
+        finally:
+            self._percent_guard = False
+        self._sync_edit()
 
     def _group(self):
         """One video group: sources on the left, output on the right."""
@@ -444,22 +586,26 @@ class Gui:
     def _edit_group(self):
         gtk = self._gtk
         group, left, right = self._group()
+        video_card, video_body = self._card("win_input_video")
         source = gtk.Box(orientation=gtk.Orientation.HORIZONTAL, spacing=6)
-        source.append(self._cap("win_mp4"))
+        self.mp4_caption = self._cap("win_mp4")
+        self._paint_mp4()
+        source.append(self.mp4_caption)
         self.edit_file = gtk.Entry()
         self.edit_file.set_editable(False)
         self.edit_file.set_hexpand(True)
         source.append(self.edit_file)
-        pick = self._btn("win_select_file")
+        pick = self._btn("win_select_file", "document-open-symbolic")
         pick.connect("clicked", self._pick_edit)
         source.append(pick)
-        left.append(source)
+        video_body.append(source)
         self.video_holder = gtk.Box(orientation=gtk.Orientation.VERTICAL)
         self.video_holder.set_hexpand(True)
         self.video_holder.set_vexpand(True)
+        self.video_holder.set_size_request(480, 220)
         self.video_note = gtk.Label(label="")
         self.video_holder.append(self.video_note)
-        left.append(self.video_holder)
+        video_body.append(self.video_holder)
         bar = gtk.Box(orientation=gtk.Orientation.HORIZONTAL, spacing=8)
         self.elapsed = gtk.Label(label="00:00.00")
         self.elapsed.set_width_chars(9)
@@ -472,32 +618,27 @@ class Gui:
         bar.append(self.elapsed)
         bar.append(self.scale)
         bar.append(self.total)
-        left.append(bar)
+        video_body.append(bar)
+        left.append(video_card)
+        controls_card, controls = self._card("win_edit_controls")
+        controls_card.set_hexpand(True)
         transport = gtk.Box(orientation=gtk.Orientation.HORIZONTAL, spacing=6)
-        for key, handler in (
-            ("win_start", self._play),
-            ("win_pause", self._pause),
-            ("win_stop", self._stop),
+        for key, handler, icon in (
+            ("win_start", self._play, "media-playback-start-symbolic"),
+            ("win_pause", self._pause, "media-playback-pause-symbolic"),
+            ("win_stop", self._stop, "media-playback-stop-symbolic"),
         ):
-            button = self._btn(key)
+            button = self._btn(key, icon)
             button.connect("clicked", handler)
             transport.append(button)
         self.jump_entry = gtk.Entry()
         self.jump_entry.set_placeholder_text("00:00.00")
         self.jump_entry.set_width_chars(10)
-        jump = self._btn("win_go")
+        jump = self._btn("win_go", "go-next-symbolic")
         jump.connect("clicked", self._jump)
         transport.append(self.jump_entry)
         transport.append(jump)
-        left.append(transport)
-        marks = gtk.Box(orientation=gtk.Orientation.HORIZONTAL, spacing=6)
-        mark_start = self._btn("win_mark_start")
-        mark_end = self._btn("win_mark_end")
-        mark_start.connect("clicked", self._mark, "start")
-        mark_end.connect("clicked", self._mark, "end")
-        marks.append(mark_start)
-        marks.append(mark_end)
-        left.append(marks)
+        controls.append(transport)
         bounds = gtk.Box(orientation=gtk.Orientation.HORIZONTAL, spacing=8)
         bounds.append(self._cap("win_from"))
         self.edit_start = gtk.Entry()
@@ -505,48 +646,95 @@ class Gui:
         self.edit_start.set_text("00:00.00")
         self.edit_start.connect("changed", self._sync_edit)
         bounds.append(self.edit_start)
+        mark_start = self._btn("win_mark_start")
+        mark_start.connect("clicked", self._mark, "start")
+        bounds.append(mark_start)
         bounds.append(self._cap("win_end"))
         self.edit_end = gtk.Entry()
         self.edit_end.set_width_chars(10)
         self.edit_end.set_text("00:00.00")
         self.edit_end.connect("changed", self._sync_edit)
         bounds.append(self.edit_end)
+        mark_end = self._btn("win_mark_end")
+        mark_end.connect("clicked", self._mark, "end")
+        bounds.append(mark_end)
+        controls.append(bounds)
         options = gtk.Box(orientation=gtk.Orientation.HORIZONTAL, spacing=8)
         options.append(self._cap("win_percent"))
+        self.percent_scale = gtk.Scale.new_with_range(gtk.Orientation.HORIZONTAL, 20, 200, 1)
+        self.percent_scale.set_draw_value(False)
+        self.percent_scale.set_hexpand(True)
+        self.percent_scale.set_value(100)
         self.percent = gtk.SpinButton.new_with_range(20, 200, 1)
         self.percent.set_value(100)
-        self.percent.connect("value-changed", self._sync_edit)
+        self.percent_scale.connect("value-changed", self._on_percent_scale)
+        self.percent.connect("value-changed", self._on_percent_spin)
+        options.append(self.percent_scale)
         options.append(self.percent)
-        tail = gtk.Box(orientation=gtk.Orientation.HORIZONTAL, spacing=8)
-        tail.append(self._cap("win_tail"))
-        self.tail_none = self._check("win_none")
-        self.tail_boomerang = self._check("win_boomerang")
-        self.tail_repeat = self._check("win_repeat")
-        self.tail_boomerang.set_group(self.tail_none)
-        self.tail_repeat.set_group(self.tail_none)
+        controls.append(options)
+        loop_card, loop = self._card("win_looping")
+        none_row, self.tail_none_label, self.tail_none = self._tail_row("win_none")
+        boom_row, self.tail_boomerang_label, self.tail_boomerang = self._tail_row("win_boomerang")
+        repeat_row, self.tail_repeat_label, self.tail_repeat = self._tail_row("win_repeat")
         self.tail_none.set_active(True)
-        for button in (self.tail_none, self.tail_boomerang, self.tail_repeat):
-            button.connect("toggled", self._sync_edit)
-            tail.append(button)
-        form = gtk.Box(orientation=gtk.Orientation.VERTICAL, spacing=6)
-        form.append(bounds)
-        form.append(options)
-        form.append(tail)
-        left.append(form)
-        self.edit_output = gtk.Label(xalign=0)
-        self.edit_output.set_wrap(True)
-        self.edit_output.set_hexpand(True)
-        right.append(self.edit_output)
-        self.edit_run = self._btn("win_run")
-        self.edit_run.connect("clicked", self._run_edit)
-        right.append(self.edit_run)
-        self.edit_result = gtk.Label(xalign=0)
-        self.edit_result.set_wrap(True)
-        self.edit_result.set_hexpand(True)
-        right.append(self.edit_result)
-        self._mount_player(right, self.EDIT_GENERATED_KEY, "win_generated")
+        self.tail_none.connect("notify::active", self._on_tail, "none")
+        self.tail_boomerang.connect("notify::active", self._on_tail, "boomerang")
+        self.tail_repeat.connect("notify::active", self._on_tail, "repeat")
+        loop.append(boom_row)
+        loop.append(repeat_row)
+        loop.append(none_row)
+        lower = gtk.Box(orientation=gtk.Orientation.HORIZONTAL, spacing=8)
+        lower.append(controls_card)
+        lower.append(loop_card)
+        left.append(lower)
+        self._fill_output_column(right, edit=True)
         self._sync_edit()
         return group
+
+    def _fill_output_column(self, right, edit: bool) -> None:
+        """Output & Result, then Generated, then the Resulting Video player."""
+        gtk = self._gtk
+        card, body = self._card("win_output_result")
+        card.set_vexpand(True)
+        if not edit:
+            name_row = gtk.Box(orientation=gtk.Orientation.HORIZONTAL, spacing=6)
+            name_row.append(self._cap("win_output_name"))
+            self.join_name = gtk.Entry()
+            self.join_name.set_hexpand(True)
+            self.join_name.connect("changed", self._on_join_name)
+            name_row.append(self.join_name)
+            body.append(name_row)
+        run = self._btn("win_run", "system-run-symbolic")
+        run.add_css_class("suggested-action")
+        run.set_hexpand(True)
+        if edit:
+            self.edit_run = run
+            run.connect("clicked", self._run_edit)
+        else:
+            self.join_run = run
+            run.connect("clicked", self._run_join)
+        body.append(run)
+        output = gtk.Label(xalign=0)
+        output.set_wrap(True)
+        output.set_hexpand(True)
+        result = gtk.Label(xalign=0)
+        result.set_wrap(True)
+        result.set_hexpand(True)
+        body.append(output)
+        body.append(result)
+        body.append(self._cap("win_generated", xalign=0))
+        resulting, resulting_body = self._card("win_resulting")
+        resulting.set_vexpand(True)
+        if edit:
+            self.edit_output = output
+            self.edit_result = result
+            self._mount_player(resulting_body, self.EDIT_GENERATED_KEY)
+        else:
+            self.join_output = output
+            self.join_result = result
+            self._mount_player(resulting_body, self.JOIN_PLAYER_KEYS[2])
+        body.append(resulting)
+        right.append(card)
 
     def _join_group(self):
         gtk = self._gtk
@@ -556,42 +744,23 @@ class Gui:
         sources.set_homogeneous(True)
         sources.set_vexpand(True)
         for index, title in ((0, "win_video_1"), (1, "win_video_2")):
-            column = gtk.Box(orientation=gtk.Orientation.VERTICAL, spacing=6)
+            card, column = self._card(title)
+            card.set_vexpand(True)
             column.set_vexpand(True)
-            column.set_hexpand(True)
             row = gtk.Box(orientation=gtk.Orientation.HORIZONTAL, spacing=6)
-            row.append(self._cap(title))
             entry = gtk.Entry()
             entry.set_editable(False)
             entry.set_hexpand(True)
             row.append(entry)
-            button = self._btn("win_select_file")
+            button = self._btn("win_select_file", "document-open-symbolic")
             button.connect("clicked", self._pick_join, index)
             row.append(button)
             column.append(row)
             self._mount_player(column, self.JOIN_PLAYER_KEYS[index])
-            sources.append(column)
+            sources.append(card)
             self.join_entries.append(entry)
         left.append(sources)
-        name_row = gtk.Box(orientation=gtk.Orientation.HORIZONTAL, spacing=6)
-        name_row.append(self._cap("win_output_name"))
-        self.join_name = gtk.Entry()
-        self.join_name.set_hexpand(True)
-        self.join_name.connect("changed", self._on_join_name)
-        name_row.append(self.join_name)
-        right.append(name_row)
-        self.join_output = gtk.Label(xalign=0)
-        self.join_output.set_wrap(True)
-        self.join_output.set_hexpand(True)
-        right.append(self.join_output)
-        self.join_run = self._btn("win_run")
-        self.join_run.connect("clicked", self._run_join)
-        right.append(self.join_run)
-        self.join_result = gtk.Label(xalign=0)
-        self.join_result.set_wrap(True)
-        self.join_result.set_hexpand(True)
-        right.append(self.join_result)
-        self._mount_player(right, self.JOIN_PLAYER_KEYS[2], "win_generated")
+        self._fill_output_column(right, edit=False)
         self._sync_join()
         return group
 
@@ -682,8 +851,8 @@ class Gui:
         bar.append(total)
         block.append(bar)
         transport = gtk.Box(orientation=gtk.Orientation.HORIZONTAL, spacing=6)
-        play = self._btn("win_play")
-        stop = self._btn("win_stop")
+        play = self._btn("win_play", "media-playback-start-symbolic")
+        stop = self._btn("win_stop", "media-playback-stop-symbolic")
         play.connect("clicked", self._on_slot_play, key)
         stop.connect("clicked", self._on_slot_stop, key)
         transport.append(play)
@@ -759,6 +928,8 @@ class Gui:
     def _reset_generated(self, key: str) -> None:
         """Clear one generated player and disable its controls before a run."""
         self._load_slot(key, "")
+        self._process_mode = "idle"
+        self._paint_process()
 
     @staticmethod
     def playback_path(ok, path) -> str:
@@ -1160,6 +1331,8 @@ class Gui:
         self._reset_generated(self.EDIT_GENERATED_KEY)
         path = self._edit_path
         self._busy = True
+        self._process_mode = "wait"
+        self._paint_process()
         self._sync_edit()
         self._sync_join()
         self._say_raw(self.edit_result, "please wait for time consuming process")
@@ -1183,6 +1356,8 @@ class Gui:
         else:
             self._say(self.edit_result, "win_edit_failed")
         self._load_slot(self.EDIT_GENERATED_KEY, ready)
+        self._process_mode = "done" if ready else "idle"
+        self._paint_process()
         self._sync_edit()
         self._sync_join()
         return False
@@ -1205,6 +1380,8 @@ class Gui:
         self._pause_all_players()
         self._reset_generated(self.JOIN_PLAYER_KEYS[2])
         self._busy = True
+        self._process_mode = "wait"
+        self._paint_process()
         self._sync_edit()
         self._sync_join()
         self._say_raw(self.join_result, "please wait for time consuming process")
@@ -1227,6 +1404,8 @@ class Gui:
         else:
             self._say(self.join_result, "win_join_failed")
         self._load_slot(self.JOIN_PLAYER_KEYS[2], ready)
+        self._process_mode = "done" if ready else "idle"
+        self._paint_process()
         self._sync_edit()
         self._sync_join()
         return False
@@ -1247,6 +1426,8 @@ class Gui:
             self._say_raw(self.edit_result, text)
             if media_path:
                 self._load_slot(self.EDIT_GENERATED_KEY, media_path)
+        self._process_mode = "done" if media_path else "idle"
+        self._paint_process()
         self._sync_edit()
         self._sync_join()
         return False
@@ -1348,7 +1529,7 @@ class Gui:
         self.lang_notice.set_text(notice)
         for button, row in zip(self._menu_buttons, self.FRONT):
             number, kind, english, _page = row
-            button.set_label(self._front_label(number, kind, english))
+            self._set_button_words(button, self._front_label(number, kind, english))
         self._apply_window_language()
 
     def _self_action(self, _button, kind: str) -> None:

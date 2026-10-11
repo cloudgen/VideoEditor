@@ -1,6 +1,6 @@
 # VideoTools - Join two local videos, and cut, speed, or boomerang an MP4
 
-![Version](https://img.shields.io/badge/Version-1.1.0-blue?style=flat-square)
+![Version](https://img.shields.io/badge/Version-2.0.0-blue?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 [![CIAO](https://img.shields.io/badge/Philosophy-CIAO%20(Caution%20%E2%80%A2%20Intentional%20%E2%80%A2%20Anti--fragile%20%E2%80%A2%20Over--engineered)-purple.svg)](https://github.com/cloudgen/ciao)
 [![Stars](https://img.shields.io/github/stars/cloudgen/VideoTools?style=flat-square)](https://github.com/cloudgen/VideoTools)
@@ -56,7 +56,7 @@ On a terminal with an X11 display (`DISPLAY` set, including `ssh -X`), starting 
 pip install VideoTools
 ```
 
-This installs the console entries **`video-tools`**, **`video-join`**, and **`video-speed`**, and the package **`VideoTools`**. Packaging name SSOT is `pyproject.toml` `[project].name` = `VideoTools`. This tree is **1.1.0**. The source home is `https://github.com/cloudgen/VideoTools`. The PyPI badge above shows the live index.
+This installs the console entries **`video-tools`**, **`video-join`**, and **`video-speed`**, and the package **`VideoTools`**. Packaging name SSOT is `pyproject.toml` `[project].name` = `VideoTools`. This tree is **2.0.0**. The source home is `https://github.com/cloudgen/VideoTools`. The PyPI badge above shows the live index.
 
 ### Local install (checkout)
 
@@ -94,7 +94,7 @@ Path: /tmp/clips                                                       12:06:45
 ╭─────────────────────────────────────────────────────────────────────────────╮
 │ >                                                                           │
 ╰─────────────────────────────────────────────────────────────────────────────╯
-  VideoTools 1.1.0  │  main menu  │  Up/Down  •  Enter
+  VideoTools 2.0.0  │  main menu  │  Up/Down  •  Enter
 ```
 
 **system-log** (3):
@@ -113,7 +113,7 @@ Path: /tmp/clips                                                       12:06:45
 ╭─────────────────────────────────────────────────────────────────────────────╮
 │ >                                                                           │
 ╰─────────────────────────────────────────────────────────────────────────────╯
-  VideoTools 1.1.0  │  system-log  │  Up/Down  •  Enter
+  VideoTools 2.0.0  │  system-log  │  Up/Down  •  Enter
 ```
 
 **language** (4). The short on each language row is that language’s own name. Numbers 40 and 54–59 are not printed. `0` goes back and does not save.
@@ -139,7 +139,7 @@ Path: /tmp/clips                                                       12:06:46
 ╭─────────────────────────────────────────────────────────────────────────────╮
 │ >                                                                           │
 ╰─────────────────────────────────────────────────────────────────────────────╯
-  VideoTools 1.1.0  │  language  │  Up/Down  •  Enter
+  VideoTools 2.0.0  │  language  │  Up/Down  •  Enter
 ```
 
 **self-management** (8):
@@ -158,7 +158,7 @@ Path: /tmp/clips                                                       14:05:09
 ╭─────────────────────────────────────────────────────────────────────────────╮
 │ >                                                                           │
 ╰─────────────────────────────────────────────────────────────────────────────╯
-  VideoTools 1.1.0  │  self-management  │  Up/Down  •  Enter
+  VideoTools 2.0.0  │  self-management  │  Up/Down  •  Enter
 ```
 
 Choose a number, or type the command name in the box. The block caret appears in that box while it is focused.
@@ -206,7 +206,7 @@ video-tools self-install
 video-tools self-uninstall --force
 ```
 
-`version` prints `VideoTools 1.1.0` and does not call pip. `about` shows one English page: the product identity, a host check of this computer, and a star box. It does not install FFmpeg and it does not call pip. `hello` prints a one-line greeting and does not draw the menu. `list-videos` lists eligible names and does not join. `help` prints usage.
+`version` prints `VideoTools 2.0.0` and does not call pip. `about` shows one English page: the product identity, a host check of this computer, and a star box. It does not install FFmpeg and it does not call pip. `hello` prints a one-line greeting and does not draw the menu. `list-videos` lists eligible names and does not join. `help` prints usage.
 
 `version-check` runs `python -m pip index versions VideoTools`. `self-update` runs `python -m pip install --upgrade VideoTools`. `self-install` runs `python -m pip install VideoTools`. `self-uninstall` runs `python -m pip uninstall -y VideoTools` and needs `--force` on the command line. Those pip verbs do not use sudo. Empty arguments do not install or update.
 
@@ -221,29 +221,29 @@ from VideoTools import main
 
 ## Screenshots
 
-Each heading is the file name. The paragraph is what that picture shows. These four pictures are the X11 window for package **1.1.0**. A bare `video-tools` on a terminal with `DISPLAY` set opens this window. The header follows the saved menu language. On these captures that language is Traditional Chinese, so the header reads 系統日誌, 語言, 自我管理, and 離開. English labels for those buttons are system-log, language, self-management, and Exit. The path line names the current directory and does not carry a clock. Each player clock reads `00:00.00`. The generated player stays empty, and its Play and Stop stay disabled, until a finished file is on disk. Play and Stop do not start or stop FFmpeg.
+Each heading is the file name. The paragraph is what that picture shows. These four pictures are the X11 window for package **2.0.0**. A bare `video-tools` on a terminal with `DISPLAY` set opens this window. The header follows the saved menu language. On these captures that language is Traditional Chinese, so the header reads 系統日誌, 語言, 自我管理, and 離開. English labels for those buttons are system-log, language, self-management, and Exit. The title is VideoTools 2.0.0. The project-root line names the current directory and does not carry a clock. Each player clock reads `00:00.00`. The generated player stays empty, and its Play and Stop stay disabled, until a finished file is on disk. Play and Stop do not start or stop FFmpeg. Run has not been pressed, so the bottom bar reads 處理 0%.
 
 ### `gui-edit.png`
 
-Edit is the group on screen. The edit tab is highlighted and shares the group's left edge. The source is one MP4. Its player shows `00:00.00` of `00:18.04`. The transport row is 開始 (Start), 暫停 (Pause), 停止 (Stop), a jump field, and 前往 (Go). 標記起點 (Mark start) and 標記終點 (Mark end) sit under that row. The cut runs from `00:00.00` to `00:18.04`. 百分比 (Percent) is 100. 收尾 (Tail) has 無 (None) selected, with 迴旋 (Boomerang) and 重複 (Repeat) unselected. The output name is `video-1_cut0.0-18.0s_100pct.mp4`. 執行 (Run) has not been pressed. The generated player on the right is black, shows `00:00.00` of `00:00.00`, and its 播放 (Play) and 停止 (Stop) are disabled.
+Edit is the group on screen. The window title is VideoTools 2.0.0. The edit tab is highlighted and shares the group's left edge. A framed line under the header shows 專案根目錄 (Project Root) and the current directory. 輸入影片 (Input Video) holds one MP4, 選擇檔案 (Select file), and a player at `00:00.00` of `00:18.04`. 剪輯控制 (Edit Controls) has 開始 (Start), 暫停 (Pause), 停止 (Stop), a jump field showing `00:00.00`, and 前往 (Go To). 起點 (Start) is `00:00.00` with 標記起點 (Mark start). 終點 (End) is `00:18.04` with 標記終點 (Mark end). 百分比 (Percent) is 100. 循環選項 (Looping Options) has 無 (None) on, and 迴旋 (Boomerang) and 重複 (Repeat) off. The output name is `video-1_cut0.0-18.0s_100pct.mp4`. 執行 (Run) has not been pressed. 輸出與結果 (Output & Result) shows that name. 已產生 (Generated) is empty. 結果影片 (Resulting Video) is black, shows `00:00.00` of `00:00.00`, and its 播放 (Play) and 停止 (Stop) are disabled. The bottom bar reads 處理 0% (Process 0%).
 
 ![Edit group, Traditional Chinese labels, generated player empty](https://raw.githubusercontent.com/cloudgen/VideoTools/main/screenshots/gui-edit.png)
 
 ### `gui-join.png`
 
-Join is the group on screen. The join tab is highlighted and shares the group's left edge. 影片 1 (Video 1) and 影片 2 (Video 2) are loaded. The first player shows `00:00.00` of `00:18.04`. The second shows `00:00.00` of `00:12.04`. Each source has 播放 (Play) and 停止 (Stop). The output name is `video-1 + video-2.mp4`. The write line names the current directory and that file. 執行 (Run) has not been pressed. 已產生 (Generated) is empty. Its player shows `00:00.00` of `00:00.00`, and its Play and Stop are disabled.
+Join is the group on screen. The join tab is highlighted and shares the group's left edge. The same header, project-root line, and 處理 0% bar are on screen. 影片 1 (Video 1) and 影片 2 (Video 2) are loaded. The first player shows `00:00.00` of `00:18.04`. The second shows `00:00.00` of `00:12.04`. Each source has 播放 (Play) and 停止 (Stop). 輸出名稱 (Output name) is `video-1 + video-2.mp4`. The write line names the current directory and that file. 執行 (Run) has not been pressed. 已產生 (Generated) is empty. 結果影片 (Resulting Video) is black, shows `00:00.00` of `00:00.00`, and its Play and Stop are disabled.
 
 ![Join group, two source players, generated player empty](https://raw.githubusercontent.com/cloudgen/VideoTools/main/screenshots/gui-join.png)
 
 ### `gui-language.png`
 
-The language page lists the thirteen menu languages. The header stays in the saved language. The rows are **41 English**, **42 简体中文**, **43 繁體中文**, **44 Español**, **45 العربية**, **46 Français**, **47 Português**, **48 Русский**, **49 Deutsch**, **50 日本語**, **51 한국어**, **52 Nederlands**, and **53 Ελληνικά**. join and edit stay above the list. Choosing a row saves that language for the next window and for the text menu.
+The language page lists the thirteen menu languages. The header stays in the saved language. join and edit stay above the list and neither is highlighted. The rows are 41 English, 42 简体中文, 43 繁體中文, 44 Español, 45 العربية, 46 Français, 47 Português, 48 Русский, 49 Deutsch, 50 日本語, 51 한국어, 52 Nederlands, and 53 Ελληνικά. The project-root line names the current directory. The bottom bar reads 處理 0% (Process 0%). Choosing a row saves that language for the next window and for the text menu.
 
 ![Language list, 41 English through 53 Greek](https://raw.githubusercontent.com/cloudgen/VideoTools/main/screenshots/gui-language.png)
 
 ### `gui-self-management.png`
 
-Self-management shows the numbered actions and no extra page under them. The buttons are **82 version**, **83 about**, **84 version-check**, **85 self-update**, **86 self-uninstall**, and **87 self-install**. The header stays in the saved language. The path line names the current directory. **83 about** opens the English about page. The pip rows call pip and do not use root. `self-uninstall` on the command line needs `--force`.
+Self-management shows the numbered actions and no extra page under them. The buttons are 82 version, 83 about, 84 version-check, 85 self-update, 86 self-uninstall, and 87 self-install. The header stays in the saved language. join and edit stay above the buttons and neither is highlighted. The project-root line names the current directory. The bottom bar reads 處理 0% (Process 0%). 83 about opens the English about page. The pip rows call pip and do not use root. `self-uninstall` on the command line needs `--force`.
 
 ![Self-management, rows 82 through 87](https://raw.githubusercontent.com/cloudgen/VideoTools/main/screenshots/gui-self-management.png)
 
@@ -258,7 +258,7 @@ video-tools
 video-tools version
 ```
 
-`version` prints `VideoTools 1.1.0` and does not call pip. A run that is not the text menu can also print ChronicleLogger status lines above that. The text menu keeps those lines off the screen.
+`version` prints `VideoTools 2.0.0` and does not call pip. A run that is not the text menu can also print ChronicleLogger status lines above that. The text menu keeps those lines off the screen.
 
 ```bash
 video-tools join
@@ -301,5 +301,7 @@ The text menu needs a terminal and the curses module. When this Python cannot im
 MIT — see [`LICENSE.md`](./LICENSE.md). Also declared in `pyproject.toml`.
 
 ## Last Update
+
+2026-10-11 — **2.0.0**: The X11 window adds a project-root line, Input Video, Edit Controls, Looping Options, Output & Result, and Resulting Video. Looping Options is three switches and starts on None. A process bar reads Process 0% until a finished file is on disk. The four pictures are captures of that window. Version badge matches `pyproject.toml` and `__version__`.
 
 2026-10-10 — **1.1.0**: Public home is [cloudgen/VideoTools](https://github.com/cloudgen/VideoTools). The pictures are the X11 window: edit, join, language, and self-management. A bare start on a terminal with `DISPLAY` set opens that window. Console scripts are `video-tools`, `video-join`, and `video-speed`. Version badge matches `pyproject.toml` and `__version__`. `ChronicleLogger>=1.3.1` and `opencv-python-headless>=5.0.0.93` are required.

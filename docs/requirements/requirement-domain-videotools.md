@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-domain-videotools.md
-**Status**: Active (Version 1.0.0)
+**Status**: Active (Version 1.0.1)
 **Area**: domain
 **Key**: `requirement-domain-videotools`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -167,7 +167,7 @@ The domain sentence on the about page is this pillar. The page, the host check, 
 | Field | Content |
 |-------|---------|
 | Product name | VideoTools |
-| Version | `__version__`, the same string as `pyproject.toml` (current `1.1.0`) |
+| Version | `__version__`, the same string as `pyproject.toml` (current `2.0.0`) |
 | Domain summary | Concatenate two local videos, and cut, speed, or boomerang an MP4 |
 | Runtime tools | FFmpeg (copy, re-encode, cut, speed); OpenCV (duration) |
 | Entry points | `video-tools`, `video-join`, `video-speed`, `python -m VideoTools` |
@@ -192,7 +192,7 @@ video-tools help
 | **Edit classes** | `EditWalk` in `src/VideoTools/edit_walk.py`, `Encoder` in `src/VideoTools/encoder.py`, `FileStage` in `src/VideoTools/file_stage.py`, `MediaInfo` in `src/VideoTools/media_info.py`, `RunOutput` in `src/VideoTools/run_output.py` |
 | **About composer** | `AboutPage` in `src/VideoTools/about_page.py` |
 | **Entry** | `src/VideoTools/cli.py` |
-| **VERSION** | `1.1.0` (`__init__.py` and `pyproject.toml`) |
+| **VERSION** | `2.0.0` (`__init__.py` and `pyproject.toml`) |
 | **Join input formats** | `.mp4`, `.mov`, `.mkv`, `.avi`, `.m4v` (suffix match, case-insensitive) |
 | **Join scan** | Current working directory only. Not recursive. No folder prompt |
 | **Join output default** | `{vid1.stem} + {vid2.stem}.mp4` |
@@ -279,15 +279,26 @@ On Termux, Git Bash, Windows cmd, or the same class, join, list-videos, edit, an
 **Matrix:** `docs/reviews/requirement-test-matrix.md`
 **Map:** `docs/reviews/test-plan.md`
 
+## Terminologies
+
+### Proper project version bump
+
+**Definition:** A proper project version bump is a user-ordered semver increase of the product ship version that is strictly newer than the previous local ship version, applied in the same change on every in-scope surface. When `pyproject.toml` exists, `[project].name` is the app and package name and `[project].version` equals the import-package `__version__`, the ship-unit version, the README Version badge, and the current CHANGELOG heading. A bump is not a side effect of editing a requirement, a skill, or a glossary file. Agents must not invent a second version literal beside the one the user ordered.
+
+**Human daily-life explanation:** A proper project version bump is printing one newer edition number on every copy of the book in the same sitting, because someone asked for a new edition. Editing a workshop note does not print a new edition by itself. When the catalog card exists, the name on the card is the product name and the number on the card is the same number as the title page.
+
+**Daily-life example:** The kitchen card says name `pancake-timer` and edition `1.2.0`. The title page, the cover sticker, and the change list all say `1.2.0`. The next ordered edition is `1.2.1` on all of those surfaces together. A note in the workshop drawer does not become `1.2.1` on its own.
+
 ## 7. Status history
 
 | Date | Status | Note |
 |------|--------|------|
 | 2026-08-09 | Superseded | Prior domain file on this tree was the VideoJoin two-file catalog |
 | 2026-10-10 | Active 1.0.0 | One domain SSOT for VideoTools. Join J-01..J-06 and edit E-01..E-08. Replaces Active `requirement-domain-videojoin` |
+| 2026-10-11 | Active 1.0.1 | Current version string is **2.0.0**. Terminologies copies the ship-version term |
 
 ---
 
-**Last Updated**: 2026-10-10
+**Last Updated**: 2026-10-11
 **Owner**: project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

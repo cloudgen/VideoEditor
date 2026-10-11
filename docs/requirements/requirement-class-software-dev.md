@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-class-software-dev.md
-**Status**: Active (Version 1.1.4 – VideoTools software-development class law + residual stack)
+**Status**: Active (Version 1.1.5 – VideoTools software-development class law + residual stack)
 **Area**: class
 **Key**: `requirement-class-software-dev`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -110,7 +110,7 @@ This file is class law plus the residual SSOT. It is not a second copy of domain
 | **Architectures supported** | any architecture with CPython and an FFmpeg binary |
 | **Git surface** | used — remote `https://github.com/cloudgen/VideoTools` (`git@github.com:cloudgen/VideoTools.git`) |
 | **Ship surface** | installable Python package `VideoJoin`; console script `video-join`; module form `python -m VideoTools` |
-| **Product version SSOT** | `src/VideoTools/__init__.py` → `__version__` and `pyproject.toml` `[project].version` stay equal when either is bumped (current: **1.1.0**) |
+| **Product version SSOT** | `src/VideoTools/__init__.py` → `__version__` and `pyproject.toml` `[project].version` stay equal when either is bumped (current: **2.0.0**) |
 | **Install mode** | pip / local package. Not a shell online-install product |
 | **Type 1 elevation** | intentionally absent. No root or sudo product surface |
 | **Actor / role / subject / approver** | **Considered — no dest approver.** The human operator of `video-join` is the only actor. No dest approval machine. **None** is valid. Do not add an actor requirement file |
@@ -219,6 +219,16 @@ This file is class law plus the residual SSOT. It is not a second copy of domain
 
 On Termux, Git Bash, Windows cmd, or the same class, VideoJoin runs as the normal user. **This requirement:** do not use administrator privilege, `sudo`, `apt`, or a dedicated system user. Do not pipe a downloaded script into a shell. Type 1 and Type 2 are unused on Termux, Git Bash, and Windows cmd. Git Bash and Windows cmd do not call Termux `pkg`. Pip lifecycle, when the operator asks for it, is `python -m pip` from the CLI and TUI requirements.
 
+## Terminologies
+
+### Proper project version bump
+
+**Definition:** A proper project version bump is a user-ordered semver increase of the product ship version that is strictly newer than the previous local ship version, applied in the same change on every in-scope surface. When `pyproject.toml` exists, `[project].name` is the app and package name and `[project].version` equals the import-package `__version__`, the ship-unit version, the README Version badge, and the current CHANGELOG heading. A bump is not a side effect of editing a requirement, a skill, or a glossary file. Agents must not invent a second version literal beside the one the user ordered.
+
+**Human daily-life explanation:** A proper project version bump is printing one newer edition number on every copy of the book in the same sitting, because someone asked for a new edition. Editing a workshop note does not print a new edition by itself. When the catalog card exists, the name on the card is the product name and the number on the card is the same number as the title page.
+
+**Daily-life example:** The kitchen card says name `pancake-timer` and edition `1.2.0`. The title page, the cover sticker, and the change list all say `1.2.0`. The next ordered edition is `1.2.1` on all of those surfaces together. A note in the workshop drawer does not become `1.2.1` on its own.
+
 ## 8. Status history
 
 | Date | Status | Note |
@@ -229,6 +239,7 @@ On Termux, Git Bash, Windows cmd, or the same class, VideoJoin runs as the norma
 | 2026-10-04 | Active 1.1.2 | Residual row for the about page. Product version **1.0.5** |
 | 2026-10-10 | Active 1.1.3 | Git surface is `cloudgen/VideoTools`. Product version current is **1.1.0** |
 | 2026-10-11 | Active 1.1.4 | Primary runtime / OS family points at `requirement-python-windows`. Product version stays **1.1.0** |
+| 2026-10-11 | Active 1.1.5 | Product version current is **2.0.0**. Terminologies copies the ship-version term |
 
 ---
 

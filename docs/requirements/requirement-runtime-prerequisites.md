@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-runtime-prerequisites.md
-**Status**: Active (Version 1.1.4)
+**Status**: Active (Version 1.1.5)
 **Area**: runtime
 **Key**: `requirement-runtime-prerequisites`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -96,7 +96,7 @@ video-tools setup
 | **Auto install command** | `setup` is the operator command. It does not use root. pip does not install FFmpeg. `setup` does not install GTK 4 or GStreamer |
 | **Platform notes** | Linux primary. macOS and Windows when FFmpeg and CPython are available. Windows CPython may ship `curses` without `_curses`. The import uses `try`. The picture window still needs `DISPLAY` and the host GTK 4 and GStreamer packages |
 | **Text-menu module** | `_curses` is not a `pyproject.toml` dependency. `import curses` in `tui.py`, `menu_painter.py`, and `menu_model.py` is inside `try` / `except ImportError`. `setup` on Windows may pip-install `windows-curses` when that import fails |
-| **Product version** | 1.1.0 |
+| **Product version** | 2.0.0 |
 | **Startup check** | FFmpeg is checked when `join` runs (`shutil.which` and `ffmpeg -version`). It is not a gate on the front board |
 | **User docs** | Root `README.md` names `video-tools setup` and states FFmpeg is a system prerequisite. The picture window still needs `DISPLAY` |
 
@@ -172,6 +172,24 @@ On Termux, Git Bash, Windows cmd, or the same class, the normal user installs th
 **Matrix:** `docs/reviews/requirement-test-matrix.md`
 **Map:** `docs/reviews/test-plan.md`
 
+## Terminologies
+
+### Python GUI window
+
+**Definition:** Python GUI window is a claimed picture window on a Python CLI. The window imports a host toolkit in this interpreter. The operator page reports that import. A failed import is the text `not available`. On Windows, a miss names the text-screen verb the specialized requirement already claims and states that the page does not install the toolkit. The page does not print `pacman`, `msys2`, `mingw-w64`, or `UCRT64`, and it does not run a package manager or an installer. The specialized requirement names the toolkit and the open rule. This term does not mint a GUI law mold and does not attach every CLI verb to the window.
+
+**Human daily-life explanation:** A python-gui-window is the shop’s picture counter. The card on the wall says whether today’s tools are in this drawer. When the drawer is empty, the card points you back to the written counter you already know. The card does not send you to a second shop to run a foreign package command.
+
+**Daily-life example:** You ask what the picture counter needs. The card says the tools are missing and tells you to use the written counter. It does not hand you a command for a different shop’s package shelf.
+
+### Proper project version bump
+
+**Definition:** A proper project version bump is a user-ordered semver increase of the product ship version that is strictly newer than the previous local ship version, applied in the same change on every in-scope surface. When `pyproject.toml` exists, `[project].name` is the app and package name and `[project].version` equals the import-package `__version__`, the ship-unit version, the README Version badge, and the current CHANGELOG heading. A bump is not a side effect of editing a requirement, a skill, or a glossary file. Agents must not invent a second version literal beside the one the user ordered.
+
+**Human daily-life explanation:** A proper project version bump is printing one newer edition number on every copy of the book in the same sitting, because someone asked for a new edition. Editing a workshop note does not print a new edition by itself. When the catalog card exists, the name on the card is the product name and the number on the card is the same number as the title page.
+
+**Daily-life example:** The kitchen card says name `pancake-timer` and edition `1.2.0`. The title page, the cover sticker, and the change list all say `1.2.0`. The next ordered edition is `1.2.1` on all of those surfaces together. A note in the workshop drawer does not become `1.2.1` on its own.
+
 ## 7. Status history
 
 | Date | Status | Note |
@@ -182,9 +200,10 @@ On Termux, Git Bash, Windows cmd, or the same class, the normal user installs th
 | 2026-10-04 | Active 1.1.2 | The about page names FFmpeg and does not probe PATH. Product version **1.0.5** |
 | 2026-10-10 | Active 1.1.3 | The text menu depends on `_curses`. The import uses `try` / `except ImportError`. A missing module does not leave package import. `_curses` is not a pip dependency |
 | 2026-10-10 | Active 1.1.4 | Verb `setup` installs the declared pip floors. On Windows it may install `windows-curses` when `import curses` fails, and it tries `winget install -e --id Gyan.FFmpeg`. `pyproject.toml` stays without `windows-curses`. `setup` does not install GTK 4 or GStreamer. The operator report is printed once. `TP-SETUP-02` is have |
+| 2026-10-11 | Active 1.1.5 | Live product version is **2.0.0**. `setup` still does not install GTK 4 or GStreamer |
 
 ---
 
-**Last Updated**: 2026-10-10
+**Last Updated**: 2026-10-11
 **Owner**: project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).
