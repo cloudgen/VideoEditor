@@ -238,7 +238,8 @@ class Cli:
 
         DISPLAY is set for a local X session, XWayland, or ssh -X.
         A verb, a job flag, --json, or a closed stdin stays off this path.
-        requirement-python-gui.
+        requirement-python-gui. On Windows the host contract is
+        requirement-python-windows. An empty DISPLAY does not remove this window.
         """
         if not os.environ.get("DISPLAY", "").strip():
             return False

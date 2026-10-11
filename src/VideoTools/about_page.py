@@ -211,7 +211,10 @@ class AboutPage:
         return "\n".join(lines)
 
     def _windows_host(self) -> bool:
-        """True on Windows, including Windows Python under Git Bash."""
+        """True on Windows, including Windows Python under Git Bash.
+
+        requirement-python-windows. The miss text stays on requirement-python-about.
+        """
         if os.name == "nt" or sys.platform.startswith("win"):
             return True
         return os.environ.get("OS", "").lower().startswith("windows")

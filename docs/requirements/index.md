@@ -3,11 +3,11 @@
 **Product:** VideoTools (Python CLI — text menu, X11 window when `DISPLAY` is set, join two local videos, and cut, speed, or boomerang an MP4)
 **Workspace state:** Specialized product law (left genesis); **software-development** class; **pip/local package** install (not shell online Type O). Bootstrapped from VideoJoin. Edit steps added from VideoSpeed. Neither sibling tree is this product.
 **Product version:** **1.1.0** (align `pyproject.toml`, `__init__.__version__`, root `README.md` Version badge)
-**Updated:** 2026-10-10
+**Updated:** 2026-10-11
 
 | ID / key | Title | Area | Status | Path | Updated |
 |----------|-------|------|--------|------|---------|
-| requirement-class-software-dev | Software-development class law + residual stack (Python, setuptools). Git surface `cloudgen/VideoTools` | class | Active | `requirement-class-software-dev.md` | 2026-10-10 |
+| requirement-class-software-dev | Software-development class law + residual stack (Python, setuptools). Git surface `cloudgen/VideoTools`. OS family points at `requirement-python-windows` | class | Active | `requirement-class-software-dev.md` | 2026-10-11 |
 | requirement-domain-videotools | Domain surface SSOT (join J-01..J-06 and edit E-01..E-08; help; about) | domain | Active | `requirement-domain-videotools.md` | 2026-10-10 |
 | requirement-domain-videojoin | Former join-only domain file | domain | Superseded | `requirement-domain-videojoin.md` | 2026-10-10 |
 | requirement-python-about | About page: identity, window libraries, host check, star box. Homepage `cloudgen/VideoTools` | python | Active | `requirement-python-about.md` | 2026-10-10 |
@@ -24,6 +24,7 @@
 | requirement-python-readme | Root user document: sections, badges, four X11 window captures, related projects. Home `cloudgen/VideoTools` | python | Active | `requirement-python-readme.md` | 2026-10-10 |
 | requirement-python-error-handling | Fail-closed errors; source-safe cleanup; console sentences stay | python | Active | `requirement-python-error-handling.md` | 2026-10-04 |
 | requirement-runtime-prerequisites | Host FFmpeg + required ChronicleLogger; verb `setup` installs the declared pip floors. On Windows it tries curses and FFmpeg. No root auto-install. Text menu `_curses` import uses `try` | runtime | Active | `requirement-runtime-prerequisites.md` | 2026-10-10 |
+| requirement-python-windows | Windows host contract: text menu and typed verbs; picture window stays the X11 window; missing window libraries name `video-tools tui`; `windows-curses` stays out of the manifest | python | Active | `requirement-python-windows.md` | 2026-10-11 |
 
 ## Intentionally absent (by design)
 
@@ -43,6 +44,7 @@
 | `requirement-python-interactive-vs-noninteractive` | **Absent** as its own file. Terminal versus script routing is `requirement-python-cli-interface` |
 | `requirement-python-pyenv`, `requirement-python-conda`, `requirement-python-oop-architecture` | **Absent**. Host-check path reads for pyenv and conda stay on `requirement-python-about`. Class homes are `requirement-python-oop`. `build.sh` is maintainer tooling on `requirement-python-project-structure` |
 | Actor-role requirement file | **Absent**. Class residual is no dest approver |
+| Native Windows picture window | **Absent**. Windows host contract is `requirement-python-windows`. The picture window stays the X11 window in `requirement-python-gui` |
 
 **Install mode:** **pip / local package**. Primary console script `video-tools`. Aliases `video-join` and `video-speed` call `VideoTools.cli:main`. Not a shell installer.
 

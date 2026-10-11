@@ -19,6 +19,7 @@ Version SSOT: `pyproject.toml` `[project].version` and `src/VideoTools/__init__.
 - X11 window for a bare `video-tools` when `DISPLAY` is set. Edit and Join are two groups. Each group puts the source or sources on the left and the output on the right. Edit has an MP4 player, an `MM:SS.CC` time bar, and Start, Pause, Stop, jump, Mark start, and Mark end. Join stacks Video 1 above Video 2 and has two file buttons.
 - Join shows three players: both source files and the generated file. Edit shows a player for the generated file. Each of those players has an `MM:SS.CC` elapsed time bar and Play and Stop. Play and Stop do not start or stop an encode.
 - Verb `tui` opens the existing text menu, including when `DISPLAY` is set.
+- Product law records the Windows host contract. The text menu and the typed verbs are the Windows door. The picture window stays the X11 window. `setup`, `about`, and the logger bind stay on their existing owners.
 
 ### Changed
 

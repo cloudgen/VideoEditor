@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-class-software-dev.md
-**Status**: Active (Version 1.1.3 – VideoTools software-development class law + residual stack)
+**Status**: Active (Version 1.1.4 – VideoTools software-development class law + residual stack)
 **Area**: class
 **Key**: `requirement-class-software-dev`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -106,7 +106,7 @@ This file is class law plus the residual SSOT. It is not a second copy of domain
 | **Lockfile policy** | not used as product law |
 | **Test runner** | none as project law today. Proof rows in `docs/reviews/test-plan.md` stay todo |
 | **Linter/formatter** | none as project law |
-| **Primary runtime / OS family** | multi-OS where Python and FFmpeg run (documented focus: Linux; macOS and Windows when the dependencies exist) |
+| **Primary runtime / OS family** | Multi-OS where Python and FFmpeg run. Linux is the tested picture-window path. The Windows host contract is `requirement-python-windows` |
 | **Architectures supported** | any architecture with CPython and an FFmpeg binary |
 | **Git surface** | used — remote `https://github.com/cloudgen/VideoTools` (`git@github.com:cloudgen/VideoTools.git`) |
 | **Ship surface** | installable Python package `VideoJoin`; console script `video-join`; module form `python -m VideoTools` |
@@ -136,6 +136,7 @@ This file is class law plus the residual SSOT. It is not a second copy of domain
 | Python coding style / temps / `shutil.move` | `requirement-python-coding-style` | Publish. StateLogic stays unordered |
 | Error / fail-closed user messaging | `requirement-python-error-handling` | Console sentences |
 | Host runtime deps | `requirement-runtime-prerequisites` | FFmpeg binary and the logger floor |
+| Windows host | `requirement-python-windows` | Detect, front door, and the rule that the picture window stays X11. Setup steps stay on `requirement-runtime-prerequisites` |
 | Shell online install / shell self-update / Type O | **intentionally absent** | Not a shell channel |
 | Pip lifecycle (`version-check`, `self-update`, `self-install`, `self-uninstall`) | `requirement-python-cli-interface` and `requirement-python-tui` | `python -m pip` only. Not a shell channel |
 | Type 1 sudoers / root elevation | **intentionally absent** | No elevation law |
@@ -202,6 +203,7 @@ This file is class law plus the residual SSOT. It is not a second copy of domain
 | `requirement-python-coding-style` | Temps and `shutil.move` |
 | `requirement-python-error-handling` | Console errors |
 | `requirement-runtime-prerequisites` | Host tools and the logger floor |
+| `requirement-python-windows` | Windows host contract. This residual points |
 | `docs/requirements/index.md` | Registry |
 
 ## Design-time verification
@@ -226,9 +228,10 @@ On Termux, Git Bash, Windows cmd, or the same class, VideoJoin runs as the norma
 | 2026-10-04 | Active 1.1.1 | Menu language points at `requirement-python-cli-language`. No new actor file |
 | 2026-10-04 | Active 1.1.2 | Residual row for the about page. Product version **1.0.5** |
 | 2026-10-10 | Active 1.1.3 | Git surface is `cloudgen/VideoTools`. Product version current is **1.1.0** |
+| 2026-10-11 | Active 1.1.4 | Primary runtime / OS family points at `requirement-python-windows`. Product version stays **1.1.0** |
 
 ---
 
-**Last Updated**: 2026-10-10
+**Last Updated**: 2026-10-11
 **Owner**: project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

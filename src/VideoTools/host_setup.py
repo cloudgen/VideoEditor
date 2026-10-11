@@ -7,6 +7,7 @@
 # requirement-python-cli-interface — verb setup stays off the text menu.
 # requirement-python-cli-logging — ensure_geteuid before ChronicleLogger.
 # requirement-python-oop — class HostSetup.
+# requirement-python-windows — Windows host contract. The X11 window stays.
 # =============================================================================
 from __future__ import annotations
 

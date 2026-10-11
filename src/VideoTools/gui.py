@@ -104,7 +104,10 @@ class Gui:
         return int(minute_text) * 60 + seconds + int(centi_text) / 100.0
 
     def open(self, app) -> int:
-        """General Purpose: Show the window. 0 on Exit. 1 when X11 refuses."""
+        """General Purpose: Show the window. 0 on Exit. 1 when X11 refuses.
+
+        requirement-python-windows — this stays the X11 window.
+        """
         self.app = app
         self.failure = ""
         display = os.environ.get("DISPLAY", "").strip()
