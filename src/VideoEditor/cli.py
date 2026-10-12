@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # =============================================================================
-# VideoTools CLI — text menu and typed verbs from the join and speed domains.
+# VideoEditor CLI — text menu and typed verbs from the join and speed domains.
 # Specialized from VideoJoin. Speed steps live beside the join steps.
 # Law keys: requirement-python-cli-interface, requirement-python-cli-logging,
 #           requirement-python-tui, requirement-python-gui, requirement-python-oop,
-#           requirement-python-about, requirement-domain-videotools,
+#           requirement-python-about, requirement-domain-videoeditor,
 #           requirement-python-error-handling, requirement-python-coding-style,
 #           requirement-runtime-prerequisites, requirement-video-ffmpeg-pipeline
 # CIAO-Lite: Caution • Intentional • Anti-fragile • Over-protect
@@ -41,8 +41,8 @@ class Cli:
 
     from . import __version__ as VERSION
 
-    APP_NAME = "VideoTools"
-    CONSOLE_NAME = "video-tools"
+    APP_NAME = "VideoEditor"
+    CONSOLE_NAME = "video-editor"
     PRODUCT_VERBS = (
         "help",
         "version",
@@ -70,10 +70,10 @@ class Cli:
     OUTPUT_SUFFIXES = (".mp4", ".mkv", ".mov")
     AUTHOR_NAME = "Wilgat Wong"
     AUTHOR_EMAIL = "wilgat.wong@gmail.com"
-    HOMEPAGE = "https://github.com/cloudgen/VideoTools"
-    LAST_UPDATE = "2026-10-11"
+    HOMEPAGE = "https://github.com/cloudgen/VideoEditor"
+    LAST_UPDATE = "2026-10-12"
     DOWNLOAD_URL = ""
-    BASIC_USAGE = "video-tools join"
+    BASIC_USAGE = "video-editor join"
     RATIO_MIN = 20.0
     RATIO_MAX = 200.0
 
@@ -673,7 +673,7 @@ def main(argv=None, basedir="", logdir=""):
     if argv is None:
         argv = sys.argv[1:]
     argv = list(argv)
-    from VideoTools import __version__
+    from VideoEditor import __version__
 
     HostSetup.ensure_geteuid()
     try:
@@ -687,7 +687,7 @@ def main(argv=None, basedir="", logdir=""):
     screen = Cli.opens_text_screen(argv) or Cli.opens_window(argv)
     quiet = screen or ("--json" in argv)
     logger = ChronicleLogger(
-        logname="VideoTools",
+        logname="VideoEditor",
         is_quiet=quiet,
         basedir=basedir,
         logdir=logdir,

@@ -1,18 +1,18 @@
 **file**: docs/requirements/requirement-python-cli-language.md
-**Status**: Active (Version 1.2.0)
+**Status**: Active (Version 1.2.1)
 **Area**: python
 **Key**: `requirement-python-cli-language`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
 
 ## 1. Purpose
 
-This file owns the menu language for VideoTools. The text menu can show its boards in one of thirteen languages. English is the default. The person picks a language on front row **4**. The pick is saved for the next run. The picture of the menu stays on `requirement-python-tui`. Typed verbs stay on `requirement-python-cli-interface`. `language` is not one of those verbs.
+This file owns the menu language for VideoEditor. The text menu can show its boards in one of thirteen languages. English is the default. The person picks a language on front row **4**. The pick is saved for the next run. The picture of the menu stays on `requirement-python-tui`. Typed verbs stay on `requirement-python-cli-interface`. `language` is not one of those verbs.
 
-Class `MenuLanguage` in `src/VideoTools/menu_language.py` holds the codes, the saved leaf, and the words. Class `MenuPainter` writes `MenuLanguage(...)` in its constructor and asks that object for the path word and the row text. A factory does not create it.
+Class `MenuLanguage` in `src/VideoEditor/menu_language.py` holds the codes, the saved leaf, and the words. Class `MenuPainter` writes `MenuLanguage(...)` in its constructor and asks that object for the path word and the row text. A factory does not create it.
 
 ### 1.1 Human-facing
 
-**In one sentence:** On the VideoTools menu, you type **4** to pick the language the menu uses, and the next time you open the menu it still uses that language.
+**In one sentence:** On the VideoEditor menu, you type **4** to pick the language the menu uses, and the next time you open the menu it still uses that language.
 
 | Box | Meaning | Example |
 |-----|---------|---------|
@@ -29,8 +29,8 @@ Class `MenuLanguage` in `src/VideoTools/menu_language.py` holds the codes, the s
 | Surface | What you open | What for |
 |---------|---------------|----------|
 | `video-join` on a terminal | Front board | Row **4** is language. Row **3** is system-log |
-| `~/.local/VideoTools/language` | One-line file in this login’s home | The code saved from the menu |
-| `VIDEOTOOLS_LANG` | Environment value for this process | Wins over the file and does not write it |
+| `~/.local/VideoEditor/language` | One-line file in this login’s home | The code saved from the menu |
+| `VIDEOEDITOR_LANG` | Environment value for this process | Wins over the file and does not write it |
 
 | You do… | What it means | What you type |
 |---------|---------------|---------------|
@@ -43,8 +43,8 @@ Class `MenuLanguage` in `src/VideoTools/menu_language.py` holds the codes, the s
 
 1. **One owner.** This file selects the menu language and owns the words the menu boards print. `requirement-python-tui` draws the path line and the rows. It does not detect a language. `language` **MUST NOT** be an argv verb. `requirement-python-cli-interface` states the same ban.
 2. **Default.** The code **MUST** be `en` when the leaf is missing, when the first line is empty, or when that line is not one of the thirteen codes. An invalid first line **MUST NOT** be rewritten. `LANG`, `LANGUAGE`, `LC_ALL`, and `LC_MESSAGES` **MUST NOT** select a code. This file does not use gettext.
-3. **Process override.** When `VIDEOTOOLS_LANG` is one of the thirteen codes, that code **MUST** win at process start. That start **MUST NOT** write the leaf. Any other value of `VIDEOTOOLS_LANG` is ignored and the leaf is read.
-4. **Leaf.** The leaf is `${HOME}/.local/VideoTools/language`. The program reads only the first line, ignores a trailing carriage return, and ignores later lines. A menu pick **MUST** write the code, one newline, and nothing else. The directory **MUST** be mode `0700`. The file **MUST** be mode `0600`. The program creates that directory only when a pick is saved. A missing home, or a write that fails, **MUST** keep the code this process already had and **MUST** show the failed-write line in that previous language. The front board **MUST** still return.
+3. **Process override.** When `VIDEOEDITOR_LANG` is one of the thirteen codes, that code **MUST** win at process start. That start **MUST NOT** write the leaf. Any other value of `VIDEOEDITOR_LANG` is ignored and the leaf is read.
+4. **Leaf.** The leaf is `${HOME}/.local/VideoEditor/language`. The program reads only the first line, ignores a trailing carriage return, and ignores later lines. A menu pick **MUST** write the code, one newline, and nothing else. The directory **MUST** be mode `0700`. The file **MUST** be mode `0600`. The program creates that directory only when a pick is saved. A missing home, or a write that fails, **MUST** keep the code this process already had and **MUST** show the failed-write line in that previous language. The front board **MUST** still return.
 5. **Front row 4.** On every host, including Termux, Git Bash, and Windows cmd, the front board **MUST** print row **4** `language`. That row **MUST** open the language board. It **MUST NOT** run a command and **MUST NOT** leave the program. Row **2** is `edit`. Rows **1**, **3**, **8**, and **9** stay join, system-log, self-management, and Exit. System-log children stay **31**, **32**, and **33**. Its children are **31** view-log, **32** clear-log, and **33** log-folder. Those numbers are the picture on `requirement-python-tui`.
 6. **Language block.** The language board uses the twenty numbers **40** through **59**. Assigned rows are **41** through **53**, in the order below. **40** and **54** through **59** are reserved. They **MUST NOT** be printed. Typing a reserved number **MUST** show the unknown-choice line and **MUST NOT** write the leaf. **0**, an empty Enter on Back, and Esc **MUST** return to the front board and **MUST NOT** write the leaf.
 7. **Names on the language board.** Each assigned row **MUST** show that language’s endonym as the short, in every UI language. The explain **MUST** be that UI language’s sentence with the endonym in the name slot. The English sentence is `use {name} for this menu`.
@@ -53,7 +53,7 @@ Class `MenuLanguage` in `src/VideoTools/menu_language.py` holds the codes, the s
 10. **After a successful pick.** The session **MUST** show the saved-language line and **MUST** redraw the front board in the new language. That line sits above the box. It is not the error line. It stays until the next key. A failed write uses the same place, in the language that was current before the failure.
 11. **Unknown choice.** A number or a word that is not on the current board **MUST** stay on that board and show the unknown-choice line in the selected language. It **MUST NOT** exit the process and **MUST NOT** write the leaf. The English line is `That choice is not on this list. Pick a listed number.`
 12. **Clock.** The language board is a clock board. The one-second wait from `requirement-python-tui` rule 13 includes it. A language pick does not open a result page.
-13. **Construct.** `MenuPainter.__init__` writes `MenuLanguage(...)`. The session and the model share that painter, so a save updates the rows the next paint reads. The site does not call a factory. `def main` stays in `src/VideoTools/cli.py`.
+13. **Construct.** `MenuPainter.__init__` writes `MenuLanguage(...)`. The session and the model share that painter, so a save updates the rows the next paint reads. The site does not call a factory. `def main` stays in `src/VideoEditor/cli.py`.
 14. Actor / role / subject / approver: **considered**. No dest machine. No approver. The table stays on `requirement-class-software-dev.md`. This file does **not** add an actor requirement.
 15. Dest fence conditions: **considered — none**. Do not invent one.
 
@@ -77,12 +77,12 @@ Class `MenuLanguage` in `src/VideoTools/menu_language.py` holds the codes, the s
 
 | Item | Value |
 |------|--------|
-| **Class** | `MenuLanguage` in `src/VideoTools/menu_language.py` |
+| **Class** | `MenuLanguage` in `src/VideoEditor/menu_language.py` |
 | **Painter site** | `MenuPainter.__init__` writes `MenuLanguage(logger=logger, home=home)` |
 | **Front row** | **4** language. Children **41**–**53**. Reserved and not printed: **40**, **54**–**59** |
 | **System-log** | Front **3**. Children **31** view-log, **32** clear-log, **33** log-folder |
-| **Leaf** | `${HOME}/.local/VideoTools/language`. Directory mode `0700`. File mode `0600`. Not the cache folder. Not `/var/VideoTools` |
-| **Override** | `VIDEOTOOLS_LANG` at process start. Does not write |
+| **Leaf** | `${HOME}/.local/VideoEditor/language`. Directory mode `0700`. File mode `0600`. Not the cache folder. Not `/var/VideoEditor` |
+| **Override** | `VIDEOEDITOR_LANG` at process start. Does not write |
 | **Back / Exit shorts** | en Back / Exit. zh-Hans 返回 / 离开. zh-Hant 返回 / 離開. es Atrás / Salir. ar رجوع / خروج. fr Retour / Quitter. pt Voltar / Sair. ru Назад / Выход. de Zurück / Beenden. ja 戻る / 終了. ko 뒤로 / 종료. nl Terug / Afsluiten. el Πίσω / Έξοδος |
 | **Category shorts** | language: language, 语言, 語言, idioma, لغة, langue, язык, Sprache, 言語, 언어, taal, γλώσσα. Spanish and Portuguese both use idioma. system-log and self-management shorts are the words in `MenuLanguage` for that code. The English tokens stay `system-log` and `self-management` |
 | **Language-board tokens** | 41 `english` / `en` / `English`. 42 `simplified-chinese` / `zh-hans` / `zh-Hans` / `简体中文`. 43 `traditional-chinese` / `zh-hant` / `zh-Hant` / `繁體中文`. 44 `spanish` / `es` / `Español` / `español`. 45 `arabic` / `ar` / `العربية` / `عربي`. 46 `french` / `fr` / `Français` / `français`. 47 `portuguese` / `pt` / `Português` / `português` / `portugues`. 48 `russian` / `ru` / `Русский` / `русский`. 49 `german` / `de` / `Deutsch` / `deutsch`. 50 `japanese` / `ja` / `日本語`. 51 `korean` / `ko` / `한국어`. 52 `dutch` / `nl` / `Nederlands` / `nederlands`. 53 `greek` / `el` / `Ελληνικά` / `ελληνικά` |
@@ -96,7 +96,7 @@ Worked leaf, this login, after choosing Traditional Chinese:
 zh-Hant
 ```
 
-The file is `~/.local/VideoTools/language`. The line ends with a newline. A test passes its own home directory into `MenuLanguage(...)` and does not read the developer’s leaf.
+The file is `~/.local/VideoEditor/language`. The line ends with a newline. A test passes its own home directory into `MenuLanguage(...)` and does not read the developer’s leaf.
 
 Invocation sample for the row this file owns. There is no `video-join language` command. On the open menu:
 
@@ -123,7 +123,7 @@ On Termux, Git Bash, Windows cmd, or the same class, the person runs `video-join
 
 - **Caution:** An invalid file stays English and is not rewritten. A failed write keeps the previous code.
 - **Intentional:** Thirteen codes, a block of twenty numbers, and one leaf.
-- **Anti-fragile:** `VIDEOTOOLS_LANG` can force a code for one process without touching the file.
+- **Anti-fragile:** `VIDEOEDITOR_LANG` can force a code for one process without touching the file.
 - **Over-protect:** Reserved numbers warn and do not write. Back does not write.
 
 ## 4. Protection Rule (Sacred)
@@ -136,7 +136,7 @@ On Termux, Git Bash, Windows cmd, or the same class, the person runs `video-join
 - Write the leaf on Back, on an empty Enter of Back, or on Esc.
 - Translate the folder path, the clock, the About page, or a leaf short such as `join`.
 - Leave the window control labels in English after a non-English code is selected.
-- Put the language file in the cache folder or under `/var/VideoTools`.
+- Put the language file in the cache folder or under `/var/VideoEditor`.
 - Renumber row 4, or move system-log back onto row 4, to make room.
 - Mark `TP-OOP-*` or `TP-TUI-01` through `TP-TUI-08` have from this file.
 
@@ -151,8 +151,8 @@ On Termux, Git Bash, Windows cmd, or the same class, the person runs `video-join
 | `docs/requirements/requirement-python-cli-interface.md` | `language` is not an argv verb |
 | `docs/requirements/requirement-python-oop.md` | Class home for `MenuLanguage` |
 | `docs/requirements/requirement-class-software-dev.md` | Residual pointer |
-| `src/VideoTools/menu_language.py` | Codes, leaf, and words |
-| `src/VideoTools/menu_painter.py` | Writes `MenuLanguage(...)` and paints the rows |
+| `src/VideoEditor/menu_language.py` | Codes, leaf, and words |
+| `src/VideoEditor/menu_painter.py` | Writes `MenuLanguage(...)` and paints the rows |
 
 ## 6. Acceptance criteria
 
@@ -160,9 +160,9 @@ On Termux, Git Bash, Windows cmd, or the same class, the person runs `video-join
 |----|-----------|
 | AC-1 | Front row 4 opens the language board. Rows 41–53 show the endonyms. 40 and 54–59 are not printed |
 | AC-2 | System-log is front row 3. Its children are 31, 32, and 33 |
-| AC-3 | A pick writes `${HOME}/.local/VideoTools/language` mode `0600` and switches this process |
+| AC-3 | A pick writes `${HOME}/.local/VideoEditor/language` mode `0600` and switches this process |
 | AC-4 | Back, Esc, and a reserved number do not write. A failed write keeps the previous code |
-| AC-5 | A missing or invalid leaf is English and is not rewritten. `LANG` does not select a code. `VIDEOTOOLS_LANG` wins and does not write |
+| AC-5 | A missing or invalid leaf is English and is not rewritten. `LANG` does not select a code. `VIDEOEDITOR_LANG` wins and does not write |
 | AC-6 | `language` is not an argv verb. Leaf shorts stay English |
 | AC-7 | Window controls follow the selected code. English labels stay the current English strings. The clock token `00:00.00` stays in the jump sentence |
 
@@ -170,7 +170,7 @@ On Termux, Git Bash, Windows cmd, or the same class, the person runs `video-join
 
 | TP family / ID | Suite | Status | Note |
 |----------------|-------|--------|------|
-| **TP-LANG-01** | `tests/test_language.py` | have | Row 4, rows 41–53, system-log at 3 / 31–33, save mode `0600`, Back and reserved numbers do not write, `zh-Hant` path word `路徑`, invalid leaf, `VIDEOTOOLS_LANG`, failed write, leaf shorts stay English |
+| **TP-LANG-01** | `tests/test_language.py` | have | Row 4, rows 41–53, system-log at 3 / 31–33, save mode `0600`, Back and reserved numbers do not write, `zh-Hant` path word `路徑`, invalid leaf, `VIDEOEDITOR_LANG`, failed write, leaf shorts stay English |
 | **TP-TUI-09** | `tests/test_tui.py` | have | With no language file, `LANG=zh_TW.UTF-8` keeps `Path`. Peer proof on `requirement-python-tui` |
 
 **Matrix:** `docs/reviews/requirement-test-matrix.md`
@@ -194,9 +194,10 @@ On Termux, Git Bash, Windows cmd, or the same class, the person runs `video-join
 | 2026-10-04 | Active 1.0.1 | English about explain is `version, FFmpeg, and this computer`. The about page stays English |
 | 2026-10-10 | Active 1.1.0 | Window control labels follow the same thirteen codes. The clock, the folder path, and About stay as they are |
 | 2026-10-11 | Active 1.2.0 | Window labels add Project Root, Input Video, Edit Controls, Looping Options, Output & Result, Resulting Video, and Process. English Go is Go To. The text-menu path word stays Path. The directory on the project-root line stays untranslated |
+| 2026-10-12 | Active 1.2.1 | Distribution name is VideoEditor. Console script is `video-editor`. Current release string is **1.0.0**. |
 
 ---
 
-**Last Updated**: 2026-10-11
+**Last Updated**: 2026-10-12
 **Owner**: project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

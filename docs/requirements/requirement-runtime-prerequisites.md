@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-runtime-prerequisites.md
-**Status**: Active (Version 1.1.5)
+**Status**: Active (Version 1.1.6)
 **Area**: runtime
 **Key**: `requirement-runtime-prerequisites`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -10,7 +10,7 @@ Declare the host and Python runtime prerequisites required to run VideoJoin. Thi
 
 ### 1.1 Human-facing
 
-**In one sentence:** You need Python, ChronicleLogger, OpenCV from pip, and FFmpeg on your PATH before a join or an edit encode can finish. The text menu also needs the interpreter module `_curses`, and a missing module is caught with `try`. `video-tools setup` installs the declared pip libraries. On Windows it also tries curses and FFmpeg.
+**In one sentence:** You need Python, ChronicleLogger, OpenCV from pip, and FFmpeg on your PATH before a join or an edit encode can finish. The text menu also needs the interpreter module `_curses`, and a missing module is caught with `try`. `video-editor setup` installs the declared pip libraries. On Windows it also tries curses and FFmpeg.
 
 | Box | Meaning | Example |
 |-----|---------|---------|
@@ -37,7 +37,7 @@ Declare the host and Python runtime prerequisites required to run VideoJoin. Thi
 | Install the Python package | You get VideoJoin and the status library. | `python -m pip install VideoJoin` |
 | Prepare a join | FFmpeg must already be on PATH. The menu may open before that check. | `ffmpeg -version` |
 | Start with the library missing | The console prints the pip next step and returns non-zero. | `video-join` |
-| Prepare this Python | `setup` installs the declared pip libraries. On Windows it also tries curses and FFmpeg. | `video-tools setup` |
+| Prepare this Python | `setup` installs the declared pip libraries. On Windows it also tries curses and FFmpeg. | `video-editor setup` |
 
 ## 2. Core Rules (Mandatory)
 
@@ -63,11 +63,11 @@ Declare the host and Python runtime prerequisites required to run VideoJoin. Thi
 6. **MUST** document that FFmpeg is not installed by `pip install VideoJoin`.
 7. **MUST** document the input formats as the domain format set.
 8. If `ChronicleLogger` cannot be imported, `def main` **MUST** print the pip next step and return non-zero (`requirement-python-cli-logging`). That line is console text. The library is required.
-9. The text menu depends on the interpreter module `curses`, whose extension is `_curses`. That module **MUST NOT** be declared in `pyproject.toml`. `windows-curses` **MUST NOT** be added to `pyproject.toml`. Every load-time `import curses` in `src/VideoTools/tui.py`, `src/VideoTools/menu_painter.py`, and `src/VideoTools/menu_model.py` **MUST** sit inside `try` / `except ImportError`. That `try` is how a missing `_curses` avoids the import error. The exception **MUST NOT** leave package import. `about`, `version`, `help`, and `hello` **MUST** still run. Opening the text menu **MUST** fail closed as `requirement-python-tui` states. The handler **MUST NOT** install a package.
+9. The text menu depends on the interpreter module `curses`, whose extension is `_curses`. That module **MUST NOT** be declared in `pyproject.toml`. `windows-curses` **MUST NOT** be added to `pyproject.toml`. Every load-time `import curses` in `src/VideoEditor/tui.py`, `src/VideoEditor/menu_painter.py`, and `src/VideoEditor/menu_model.py` **MUST** sit inside `try` / `except ImportError`. That `try` is how a missing `_curses` avoids the import error. The exception **MUST NOT** leave package import. `about`, `version`, `help`, and `hello` **MUST** still run. Opening the text menu **MUST** fail closed as `requirement-python-tui` states. The handler **MUST NOT** install a package.
 
 ### 2.3a Verb `setup`
 
-9a. `setup` is a typed verb (`requirement-python-cli-interface`). It **MUST NOT** open the text menu and **MUST NOT** open the window. It is not a numbered menu row. Class `HostSetup` in `src/VideoTools/host_setup.py` owns the argument lists and `run`. `cli.py` **MUST NOT** build those lists.
+9a. `setup` is a typed verb (`requirement-python-cli-interface`). It **MUST NOT** open the text menu and **MUST NOT** open the window. It is not a numbered menu row. Class `HostSetup` in `src/VideoEditor/host_setup.py` owns the argument lists and `run`. `cli.py` **MUST NOT** build those lists.
 9b. `setup` **MUST** run `sys.executable -m pip install` of `ChronicleLogger>=1.3.1` and `opencv-python-headless>=5.0.0.93` as the current user. The child’s stdin **MUST** be closed. The command **MUST NOT** use `sudo` and **MUST NOT** use `curl`.
 9c. On Windows (`os.name == "nt"`, or `sys.platform` starts with `win`, or the environment variable `OS` starts with `windows`), when `import curses` fails, `setup` **MUST** run `sys.executable -m pip install windows-curses` and then import `curses` again. On any other host, `setup` **MUST NOT** install `windows-curses`. `pyproject.toml` **MUST NOT** list `windows-curses`. The load-time handler in rule 9 **MUST NOT** install it.
 9d. On Windows, when `ffmpeg` is absent from `PATH` and `winget` is on `PATH`, `setup` **MUST** run `winget install -e --id Gyan.FFmpeg --accept-package-agreements --accept-source-agreements --disable-interactivity`. When that start raises `OSError`, including access denied on a WindowsApps alias, `setup` **MUST** retry once as `cmd.exe /d /c` plus those same arguments. When `winget` is absent, or both starts raise `OSError`, `setup` **MUST** print `On Windows, run:` and that winget command, and **MUST NOT** raise. On any other host, `setup` **MUST NOT** call `winget`. A missing `ffmpeg` there **MUST** print `Install FFmpeg and ensure ffmpeg is available.`
@@ -76,7 +76,7 @@ Declare the host and Python runtime prerequisites required to run VideoJoin. Thi
 9g. Invocation sample:
 
 ```text
-video-tools setup
+video-editor setup
 ```
 
 ### 2.4 Privilege
@@ -92,13 +92,13 @@ video-tools setup
 | **Declared pip dependency (law)** | `ChronicleLogger>=1.3.1` and `opencv-python-headless>=5.0.0.93`, both required |
 | **Live manifest** | `pyproject.toml` lists those two floors. It does not list `windows-curses` |
 | **System binary** | `ffmpeg` on PATH, required for `join` |
-| **Verb `setup`** | `video-tools setup`. Pip of the two floors as this user. On Windows, `windows-curses` only when `import curses` fails, then the winget command in rule 9d |
+| **Verb `setup`** | `video-editor setup`. Pip of the two floors as this user. On Windows, `windows-curses` only when `import curses` fails, then the winget command in rule 9d |
 | **Auto install command** | `setup` is the operator command. It does not use root. pip does not install FFmpeg. `setup` does not install GTK 4 or GStreamer |
 | **Platform notes** | Linux primary. macOS and Windows when FFmpeg and CPython are available. Windows CPython may ship `curses` without `_curses`. The import uses `try`. The picture window still needs `DISPLAY` and the host GTK 4 and GStreamer packages |
 | **Text-menu module** | `_curses` is not a `pyproject.toml` dependency. `import curses` in `tui.py`, `menu_painter.py`, and `menu_model.py` is inside `try` / `except ImportError`. `setup` on Windows may pip-install `windows-curses` when that import fails |
-| **Product version** | 2.0.0 |
+| **Product version** | 1.0.0 |
 | **Startup check** | FFmpeg is checked when `join` runs (`shutil.which` and `ffmpeg -version`). It is not a gate on the front board |
-| **User docs** | Root `README.md` names `video-tools setup` and states FFmpeg is a system prerequisite. The picture window still needs `DISPLAY` |
+| **User docs** | Root `README.md` names `video-editor setup` and states FFmpeg is a system prerequisite. The picture window still needs `DISPLAY` |
 
 ### 2.6 Why This Requirement Exists (CIAO)
 
@@ -143,7 +143,7 @@ On Termux, Git Bash, Windows cmd, or the same class, the normal user installs th
 | AC-4 | Missing FFmpeg on `join` produces an actionable message |
 | AC-5 | Missing ChronicleLogger produces the pip next step and a non-zero return |
 | AC-6 | Load-time `import curses` uses `try` / `except ImportError`. A missing `_curses` does not leave package import. `_curses` and `windows-curses` are absent from `pyproject.toml` |
-| AC-7 | `video-tools setup` installs the two declared floors with `sys.executable -m pip` and does not use sudo or curl. On Windows it may install `windows-curses` when the import fails, and it tries the FFmpeg winget command in rule 9d. It does not install GTK 4 or GStreamer. The report does not contain `pacman` |
+| AC-7 | `video-editor setup` installs the two declared floors with `sys.executable -m pip` and does not use sudo or curl. On Windows it may install `windows-curses` when the import fails, and it tries the FFmpeg winget command in rule 9d. It does not install GTK 4 or GStreamer. The report does not contain `pacman` |
 
 ## 6. Related requirements (peer keys only)
 
@@ -156,7 +156,7 @@ On Termux, Git Bash, Windows cmd, or the same class, the normal user installs th
 | `requirement-python-oop` | Class `HostSetup` |
 | `requirement-video-ffmpeg-pipeline` | Uses FFmpeg |
 | `requirement-python-error-handling` | Missing-tool messages |
-| `requirement-domain-videotools` | About reports FFmpeg |
+| `requirement-domain-videoeditor` | About reports FFmpeg |
 | `docs/requirements/index.md` | Registry |
 
 ## Design-time verification
@@ -201,9 +201,10 @@ On Termux, Git Bash, Windows cmd, or the same class, the normal user installs th
 | 2026-10-10 | Active 1.1.3 | The text menu depends on `_curses`. The import uses `try` / `except ImportError`. A missing module does not leave package import. `_curses` is not a pip dependency |
 | 2026-10-10 | Active 1.1.4 | Verb `setup` installs the declared pip floors. On Windows it may install `windows-curses` when `import curses` fails, and it tries `winget install -e --id Gyan.FFmpeg`. `pyproject.toml` stays without `windows-curses`. `setup` does not install GTK 4 or GStreamer. The operator report is printed once. `TP-SETUP-02` is have |
 | 2026-10-11 | Active 1.1.5 | Live product version is **2.0.0**. `setup` still does not install GTK 4 or GStreamer |
+| 2026-10-12 | Active 1.1.6 | Distribution name is VideoEditor. Console script is `video-editor`. Current release string is **1.0.0**. |
 
 ---
 
-**Last Updated**: 2026-10-11
+**Last Updated**: 2026-10-12
 **Owner**: project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

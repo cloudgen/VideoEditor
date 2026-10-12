@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 README = (ROOT / "README.md").read_text(encoding="utf-8")
-IMAGE_BASE = "https://raw.githubusercontent.com/cloudgen/VideoTools/main/screenshots/"
+IMAGE_BASE = "https://raw.githubusercontent.com/cloudgen/VideoEditor/main/screenshots/"
 GUI_SHOTS = (
     "gui-edit.png",
     "gui-join.png",
@@ -41,7 +41,7 @@ HEADINGS = (
 
 def _package_version():
     pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-    init_text = (ROOT / "src" / "VideoTools" / "__init__.py").read_text(encoding="utf-8")
+    init_text = (ROOT / "src" / "VideoEditor" / "__init__.py").read_text(encoding="utf-8")
     py_match = re.search(r'(?m)^version = "([^"]+)"', pyproject)
     init_match = re.search(r'__version__ = "([^"]+)"', init_text)
     return py_match.group(1), init_match.group(1)
@@ -58,7 +58,7 @@ class TestReadmeStructure(unittest.TestCase):
         self.assertIn("local clock", README)
         self.assertIn("HH:MM:SS", README)
         self.assertIn("00:00.00", README)
-        self.assertIn("github/stars/cloudgen/VideoTools", README)
+        self.assertIn("github/stars/cloudgen/VideoEditor", README)
         self.assertNotIn("setup.sh", README)
         self.assertNotIn("sudo pip", README)
         self.assertNotIn("curl | sh", README)

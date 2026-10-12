@@ -20,17 +20,17 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from VideoTools.cli import Cli  # noqa: E402
+from VideoEditor.cli import Cli  # noqa: E402
 
 
 class TestAbout(unittest.TestCase):
     def _cli(self):
-        from VideoTools import cli
+        from VideoEditor import cli
 
         return cli
 
     def _page(self):
-        from VideoTools.cli import Cli
+        from VideoEditor.cli import Cli
 
         return Cli().about
 
@@ -66,7 +66,7 @@ class TestAbout(unittest.TestCase):
             "TTY / Interactive:",
             "Basic Usage:",
             "Please visit our homepage:",
-            "VideoTools ({}) by {} on {}".format(
+            "VideoEditor ({}) by {} on {}".format(
                 cli.Cli.VERSION,
                 cli.Cli.AUTHOR_NAME,
                 cli.Cli.LAST_UPDATE,
@@ -81,8 +81,8 @@ class TestAbout(unittest.TestCase):
             "Runtime tools: FFmpeg (copy, re-encode, cut, speed); OpenCV (duration); GTK 4 and GStreamer (window)",
             text,
         )
-        self.assertIn("Entry points: video-tools, video-join, video-speed, python -m VideoTools", text)
-        self.assertIn("video-tools join", text)
+        self.assertIn("Entry points: video-editor, video-join, video-speed, python -m VideoEditor", text)
+        self.assertIn("video-editor join", text)
         self.assertLess(text.index("Window libraries:"), text.index("[CHECK SYSTEM]:"))
         self.assertIn("Window libraries:", text)
         self.assertIn("GTK 4:", text)
@@ -103,11 +103,11 @@ class TestAbout(unittest.TestCase):
 
     def test_check_system_stamp_and_field_order(self):
         """TP-ABOUT-02: stamp, CHECK SYSTEM header, and field order."""
-        from VideoTools.check_system import CheckSystem
+        from VideoEditor.check_system import CheckSystem
 
         when = datetime.datetime(2026, 10, 1, 11, 16, 23, 700590)
         rows = CheckSystem(app_name=Cli.APP_NAME, version=Cli.VERSION, console_name=Cli.CONSOLE_NAME).check_system_lines(now=when)
-        self.assertTrue(rows[0].startswith("2026-10-01 11:16:23.700590 VideoTools(v"))
+        self.assertTrue(rows[0].startswith("2026-10-01 11:16:23.700590 VideoEditor(v"))
         self.assertTrue(rows[0].endswith("  [CHECK SYSTEM]:"))
         self.assertEqual(rows[1], "  Now checking your operation system!")
         labels = [row.strip().split(":", 1)[0] for row in rows[2:]]
@@ -140,7 +140,7 @@ class TestAbout(unittest.TestCase):
         )
 
     def test_windows_about_checks_libraries_and_does_not_install(self):
-        """TP-ABOUT-17: On Windows a miss names video-tools tui and installs nothing."""
+        """TP-ABOUT-17: On Windows a miss names video-editor tui and installs nothing."""
         page = self._page()
         gtk_text, gst_text = page._probe_window_libraries()
         self.assertNotEqual(gtk_text, "")
@@ -155,7 +155,7 @@ class TestAbout(unittest.TestCase):
         self.assertIn("GStreamer: not available", text)
         self.assertIn("Windows: this Python cannot import GTK 4 and GStreamer.", text)
         self.assertIn("This page checks them and does not install them.", text)
-        self.assertIn("On Windows, run video-tools tui.", text)
+        self.assertIn("On Windows, run video-editor tui.", text)
         for banned in ("pacman", "msys2", "mingw-w64", "UCRT64", "winget", "sudo", "curl -fsSL", "python -m pip install"):
             self.assertNotIn(banned, text)
         ready = "\n".join(
@@ -168,7 +168,7 @@ class TestAbout(unittest.TestCase):
         self.assertIn("GTK 4: 4.14.5", ready)
         self.assertIn("GStreamer: 1.24.2", ready)
         self.assertIn("this Python can import GTK 4 and GStreamer.", ready)
-        self.assertNotIn("video-tools tui", ready)
+        self.assertNotIn("video-editor tui", ready)
         self.assertNotIn("pacman", ready)
         other = "\n".join(
             page.window_library_lines(
@@ -177,7 +177,7 @@ class TestAbout(unittest.TestCase):
                 on_windows=False,
             )
         )
-        self.assertNotIn("On Windows, run video-tools tui.", other)
+        self.assertNotIn("On Windows, run video-editor tui.", other)
         self.assertNotIn("pacman", other)
 
     def test_about_box_is_a_rectangle(self):
@@ -218,7 +218,7 @@ class TestAbout(unittest.TestCase):
 
     def test_compiler_arch_and_libc_labels(self):
         """TP-ABOUT-05: compiler token, arch map, and libc token."""
-        from VideoTools.check_system import CheckSystem
+        from VideoEditor.check_system import CheckSystem
 
         host = CheckSystem(app_name=Cli.APP_NAME, version=Cli.VERSION, console_name=Cli.CONSOLE_NAME)
         py, lib = host.parse_sys_version(
@@ -272,8 +272,8 @@ class TestAbout(unittest.TestCase):
 
     def test_docker_marker_and_missing_command(self):
         """TP-ABOUT-07: docker marker file; missing tool location stays blank."""
-        import VideoTools.check_system as check_mod
-        from VideoTools.check_system import CheckSystem
+        import VideoEditor.check_system as check_mod
+        from VideoEditor.check_system import CheckSystem
 
         host = CheckSystem(app_name=Cli.APP_NAME, version=Cli.VERSION, console_name=Cli.CONSOLE_NAME)
         self.assertFalse(host.inside_docker(marker="/tmp/videojoin-no-such-dockerenv"))
@@ -356,7 +356,7 @@ class TestAbout(unittest.TestCase):
 
     def test_pyenv_paths_stay_inside_the_root(self):
         """TP-ABOUT-09: under pyenv, bin/pyenv and interpreters inside the root."""
-        from VideoTools.check_system import CheckSystem
+        from VideoEditor.check_system import CheckSystem
 
         host = CheckSystem(app_name=Cli.APP_NAME, version=Cli.VERSION, console_name=Cli.CONSOLE_NAME)
         with tempfile.TemporaryDirectory() as tmp:
@@ -433,8 +433,8 @@ class TestAbout(unittest.TestCase):
 
     def test_named_root_without_launcher_is_not_under_pyenv(self):
         """TP-ABOUT-10: a PYENV_ROOT with no bin/pyenv stays on shutil.which."""
-        import VideoTools.check_system as check_mod
-        from VideoTools.check_system import CheckSystem
+        import VideoEditor.check_system as check_mod
+        from VideoEditor.check_system import CheckSystem
 
         host = CheckSystem(app_name=Cli.APP_NAME, version=Cli.VERSION, console_name=Cli.CONSOLE_NAME)
         found = {
@@ -519,7 +519,7 @@ class TestAbout(unittest.TestCase):
 
     def test_conda_paths_stay_inside_the_prefix(self):
         """TP-ABOUT-11: under conda, bin/conda and interpreters inside the prefix."""
-        from VideoTools.check_system import CheckSystem
+        from VideoEditor.check_system import CheckSystem
 
         host = CheckSystem(app_name=Cli.APP_NAME, version=Cli.VERSION, console_name=Cli.CONSOLE_NAME)
         with tempfile.TemporaryDirectory() as tmp:
@@ -595,8 +595,8 @@ class TestAbout(unittest.TestCase):
 
     def test_named_exe_without_launcher_is_not_under_conda(self):
         """TP-ABOUT-12: a CONDA_EXE outside bin or condabin stays on shutil.which."""
-        import VideoTools.check_system as check_mod
-        from VideoTools.check_system import CheckSystem
+        import VideoEditor.check_system as check_mod
+        from VideoEditor.check_system import CheckSystem
 
         host = CheckSystem(app_name=Cli.APP_NAME, version=Cli.VERSION, console_name=Cli.CONSOLE_NAME)
         found = {
@@ -663,7 +663,7 @@ class TestAbout(unittest.TestCase):
         """TP-ABOUT-16: in_venv, in_pyenv, and in_conda are the logger methods."""
         import inspect
 
-        from VideoTools.check_system import CheckSystem
+        from VideoEditor.check_system import CheckSystem
 
         class _Env:
             """Stand-in logger. The check calls these three methods."""
@@ -721,7 +721,7 @@ class TestAbout(unittest.TestCase):
             self.assertIn(call_name, body)
             self.assertNotIn(banned, body)
 
-        ship = (ROOT / "src" / "VideoTools" / "check_system.py").read_text(encoding="utf-8")
+        ship = (ROOT / "src" / "VideoEditor" / "check_system.py").read_text(encoding="utf-8")
         for banned_call in ("pyenvVenv", "pyenv_versions", "condaPath", "conda_env_list"):
             self.assertNotIn(banned_call, ship)
 
@@ -798,9 +798,9 @@ class TestAbout(unittest.TestCase):
         """About host check: CheckSystem owns the methods. cli.py does not."""
         import inspect
 
-        from VideoTools import cli
-        from VideoTools.about_page import AboutPage
-        from VideoTools.check_system import CheckSystem
+        from VideoEditor import cli
+        from VideoEditor.about_page import AboutPage
+        from VideoEditor.check_system import CheckSystem
 
         names = (
             "check_system_lines",
@@ -841,9 +841,9 @@ class TestAbout(unittest.TestCase):
         self.assertTrue(inspect.isclass(CheckSystem))
         self.assertEqual(
             Path(inspect.getfile(CheckSystem)).resolve(),
-            (ROOT / "src" / "VideoTools" / "check_system.py").resolve(),
+            (ROOT / "src" / "VideoEditor" / "check_system.py").resolve(),
         )
-        ship = (ROOT / "src" / "VideoTools" / "cli.py").read_text(encoding="utf-8")
+        ship = (ROOT / "src" / "VideoEditor" / "cli.py").read_text(encoding="utf-8")
         for name in names:
             self.assertTrue(inspect.isfunction(inspect.getattr_static(CheckSystem, name)), name)
             self.assertFalse(inspect.isfunction(getattr(cli, name, None)), name)
@@ -854,7 +854,7 @@ class TestAbout(unittest.TestCase):
         self.assertIn("self.check", about)
         self.assertIn("self_location", box)
         self.assertIn("self.check", box)
-        page = (ROOT / "src" / "VideoTools" / "about_page.py").read_text(encoding="utf-8")
+        page = (ROOT / "src" / "VideoEditor" / "about_page.py").read_text(encoding="utf-8")
         self.assertIn("CheckSystem", page)
         self.assertIn("def framework_about(", page)
         self.assertIn("def about_box_lines(", page)
@@ -863,7 +863,7 @@ class TestAbout(unittest.TestCase):
 
     def test_run_lines_name_pid_cache_persistence_and_tty(self):
         """TP-ABOUT-13: run lines after Location; the check does not create them."""
-        from VideoTools.check_system import CheckSystem
+        from VideoEditor.check_system import CheckSystem
 
         host = CheckSystem(app_name=Cli.APP_NAME, version=Cli.VERSION, console_name=Cli.CONSOLE_NAME)
         created = []
@@ -902,7 +902,7 @@ class TestAbout(unittest.TestCase):
         self.assertIn("    Cache folder (1st fallback): {}".format(first), text)
         self.assertIn("    Cache folder (2nd fallback): {}".format(second), text)
         self.assertIn("    Persistence storage: {}".format(store), text)
-        self.assertIn("cache-VideoTools-", preferred)
+        self.assertIn("cache-VideoEditor-", preferred)
         self.assertTrue(preferred.startswith("/dev/shm/cache/"))
         self.assertTrue(first.startswith("/tmp/cache/"))
         self.assertNotIn("\n    PID:", text.split("    Location:", 1)[0])
@@ -924,7 +924,7 @@ class TestAbout(unittest.TestCase):
 
     def test_cache_used_follows_shm_then_tmp_then_home(self):
         """TP-ABOUT-14: used follows /dev/shm, then /tmp, then the 2nd fallback."""
-        from VideoTools.check_system import CheckSystem
+        from VideoEditor.check_system import CheckSystem
 
         host = CheckSystem(app_name=Cli.APP_NAME, version=Cli.VERSION, console_name=Cli.CONSOLE_NAME)
         home = tempfile.mkdtemp(prefix="vs-about-home-")
@@ -954,7 +954,7 @@ class TestAbout(unittest.TestCase):
             preferred = host.cache_folder_preferred()
             self.assertTrue(
                 preferred.endswith(
-                    "cache-VideoTools-demo-{}".format(host.process_id())
+                    "cache-VideoEditor-demo-{}".format(host.process_id())
                 )
             )
 
@@ -980,13 +980,13 @@ class TestAbout(unittest.TestCase):
             self.assertEqual(host.cache_folder_used(), second)
             self.assertTrue(
                 second.endswith(
-                    "/.cache/cache-VideoTools-{}".format(host.process_id())
+                    "/.cache/cache-VideoEditor-{}".format(host.process_id())
                 )
             )
             self.assertNotIn("demo", os.path.basename(second))
             self.assertEqual(
                 host.persistence_storage(),
-                os.path.join(home, ".local", "VideoTools"),
+                os.path.join(home, ".local", "VideoEditor"),
             )
             self.assertFalse(os.path.exists(second))
 
@@ -995,9 +995,9 @@ class TestAbout(unittest.TestCase):
             getpass.getuser = lambda: ""
             bare = host.cache_folder_preferred()
             self.assertTrue(
-                bare.endswith("cache-VideoTools-{}".format(host.process_id()))
+                bare.endswith("cache-VideoEditor-{}".format(host.process_id()))
             )
-            self.assertNotIn("cache-VideoTools--", bare)
+            self.assertNotIn("cache-VideoEditor--", bare)
 
             os.environ["HOME"] = "   "
             getpass.getuser = real_getuser
@@ -1031,15 +1031,15 @@ class TestAbout(unittest.TestCase):
         """TP-ABOUT-08: a long about page scrolls; a one-line result still closes."""
         import curses
 
-        from VideoTools.menu_model import MenuModel
-        from VideoTools.menu_painter import MenuPainter
+        from VideoEditor.menu_model import MenuModel
+        from VideoEditor.menu_painter import MenuPainter
 
         home = tempfile.mkdtemp(prefix="vj-about-scroll-")
         self.addCleanup(shutil.rmtree, home, ignore_errors=True)
         saved_home = os.environ.get("HOME")
-        saved_lang = os.environ.get("VIDEOTOOLS_LANG")
+        saved_lang = os.environ.get("VIDEOEDITOR_LANG")
         os.environ["HOME"] = home
-        os.environ.pop("VIDEOTOOLS_LANG", None)
+        os.environ.pop("VIDEOEDITOR_LANG", None)
         try:
             painter = MenuPainter(home=home)
             model = MenuModel(painter=painter)
@@ -1073,9 +1073,9 @@ class TestAbout(unittest.TestCase):
             else:
                 os.environ["HOME"] = saved_home
             if saved_lang is None:
-                os.environ.pop("VIDEOTOOLS_LANG", None)
+                os.environ.pop("VIDEOEDITOR_LANG", None)
             else:
-                os.environ["VIDEOTOOLS_LANG"] = saved_lang
+                os.environ["VIDEOEDITOR_LANG"] = saved_lang
 
 
 

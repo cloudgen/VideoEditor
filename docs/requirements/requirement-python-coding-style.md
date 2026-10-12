@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-python-coding-style.md
-**Status**: Active (Version 1.1.1)
+**Status**: Active (Version 1.1.2)
 **Area**: python
 **Key**: `requirement-python-coding-style`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -28,7 +28,7 @@ Pipeline-specific application of these rules is owned by `requirement-video-ffmp
 
 | Surface | What you open | What for |
 |---------|---------------|----------|
-| `src/VideoTools/cli.py` | Running session today. `Cli` and `def main` in the end state | Entry |
+| `src/VideoEditor/cli.py` | Running session today. `Cli` and `def main` in the end state | Entry |
 | Class files named by `requirement-python-oop` | One class each, when an implement order lands them | The jobs that `cli.py` still holds |
 | Publish helper | `shutil.move` | Move the finished temp to the output name |
 
@@ -36,13 +36,13 @@ Pipeline-specific application of these rules is owned by `requirement-video-ffmp
 |---------|---------------|---------------|
 | Publish the finished file | Call `shutil.move`. Log that publish before the call, once the logger exists. | The join output name |
 | Add a behavior | Put it on the class in the map. Do not add a module-level function beside that class. | Edit that class file |
-| Import VideoJoin | The import succeeds even when you only need `__version__`. It does not construct the logger. | `python -c "import VideoTools"` |
+| Import VideoJoin | The import succeeds even when you only need `__version__`. It does not construct the logger. | `python -c "import VideoEditor"` |
 
 ## 2. Core Rules (Mandatory)
 
 ### 2.1 General style (this product)
 
-1. **MUST** keep the installable package under `src/VideoTools/` with the module entry (`__main__` / console script → `cli.main`).
+1. **MUST** keep the installable package under `src/VideoEditor/` with the module entry (`__main__` / console script → `cli.main`).
 2. **MUST** cite only live `docs/requirements/requirement-*.md` keys in product-source law comments.
 3. **SHOULD** use a clear General Purpose docstring on each public method.
 4. **MUST** fail closed with a user-visible message on expected errors (missing FFmpeg, fewer than two videos, failed join).
@@ -81,7 +81,7 @@ Log the temp write, the publish, and the discard of an unfinished temp before th
 | Item | Value |
 |------|--------|
 | **Package** | `VideoJoin` |
-| **Running modules** | `src/VideoTools/cli.py`, `__main__.py`, `__init__.py` |
+| **Running modules** | `src/VideoEditor/cli.py`, `__main__.py`, `__init__.py` |
 | **End-state modules** | Named by `requirement-python-oop`. Not on disk yet |
 | **Staging helpers** | `staging_dir_for`, `make_temp_path` (methods of `Join` in the end state) |
 | **Publish helper** | `shutil.move` |
@@ -157,7 +157,7 @@ On Termux, Git Bash, Windows cmd, or the same class, temps and the published fil
 |----------------|-------|--------|------|
 | **TP-FS-01** | `tests/test_fs_publish.py` | todo | Publish uses `shutil.move` |
 | **TP-FS-02** | `tests/test_fs_publish.py` | todo | Staging prefers the destination parent when it is writable |
-| **TP-PKG-01** | `tests/test_packaging.py` | todo | `import VideoTools` succeeds and does not construct ChronicleLogger |
+| **TP-PKG-01** | `tests/test_packaging.py` | todo | `import VideoEditor` succeeds and does not construct ChronicleLogger |
 | **TP-OOP-01** | `tests/test_oop.py` | todo | Peer: class map. Not landed |
 
 **Matrix:** `docs/reviews/requirement-test-matrix.md`
@@ -170,9 +170,10 @@ On Termux, Git Bash, Windows cmd, or the same class, temps and the published fil
 | 2026-08-09 | Active 1.0.0 | Coding style, `shutil.move`, and multi-mount file I/O for VideoJoin |
 | 2026-10-04 | Active 1.1.0 | Procedural `cli.py` is the running tree, not the allowed end state. The end state is `requirement-python-oop`. StateLogic stays unordered. Rules 7–15 are unchanged |
 | 2026-10-04 | Active 1.1.1 | Current version string is **1.0.5** |
+| 2026-10-12 | Active 1.1.2 | Distribution name is VideoEditor. Console script is `video-editor`. Current release string is **1.0.0**. |
 
 ---
 
-**Last Updated**: 2026-10-04
+**Last Updated**: 2026-10-12
 **Owner**: project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

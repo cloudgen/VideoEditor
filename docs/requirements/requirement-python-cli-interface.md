@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-python-cli-interface.md
-**Status**: Active (Version 1.1.4)
+**Status**: Active (Version 1.1.5)
 **Area**: python
 **Key**: `requirement-python-cli-interface`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -8,18 +8,18 @@
 
 Define the official command-line entry points, empty-argv behavior, and typed verbs for the VideoJoin Python package.
 
-The text-menu picture is `requirement-python-tui`. Join steps and formats are `requirement-domain-videotools`. The about page is `requirement-python-about`. The domain sentence stays on the domain file. The logger construct is `requirement-python-cli-logging`. Class homes are `requirement-python-oop`. Concat order is `requirement-video-ffmpeg-pipeline`.
+The text-menu picture is `requirement-python-tui`. Join steps and formats are `requirement-domain-videoeditor`. The about page is `requirement-python-about`. The domain sentence stays on the domain file. The logger construct is `requirement-python-cli-logging`. Class homes are `requirement-python-oop`. Concat order is `requirement-video-ffmpeg-pipeline`.
 
-`def main` writes `ChronicleLogger(...)` and then constructs `Cli`. The argument parser runs after that construct and after the debug block. The running `src/VideoTools/cli.py` still starts the prompt session. The allowed end state is this file. This pass does not change `src/`.
+`def main` writes `ChronicleLogger(...)` and then constructs `Cli`. The argument parser runs after that construct and after the debug block. The running `src/VideoEditor/cli.py` still starts the prompt session. The allowed end state is this file. This pass does not change `src/`.
 
 ### 1.1 Human-facing
 
-**In one sentence:** `video-tools` with no words opens the numbered menu on a terminal, and with no terminal it prints help and stops. `video-join` and `video-speed` call the same entry.
+**In one sentence:** `video-editor` with no words opens the numbered menu on a terminal, and with no terminal it prints help and stops. `video-join` and `video-speed` call the same entry.
 
 | Box | Meaning | Example |
 |-----|---------|---------|
 | You / this login | Person at the keyboard or in a script | `video-join` or `video-join join` |
-| The other role | The menu picture and the join facts | `requirement-python-tui`, `requirement-domain-videotools` |
+| The other role | The menu picture and the join facts | `requirement-python-tui`, `requirement-domain-videoeditor` |
 | Not this file | How the frame is drawn, and how FFmpeg concatenates | TUI and pipeline requirements |
 
 | Includes | Excludes |
@@ -47,9 +47,9 @@ The text-menu picture is `requirement-python-tui`. Join steps and formats are `r
 
 ### 2.1 Entry points
 
-1. **MUST** expose console script `video-tools` pointing at `VideoTools.cli:main`, and aliases `video-join` and `video-speed` pointing at the same entry (declared in packaging SSOT).
-2. **MUST** support module execution: `python -m VideoTools`.
-3. **MUST** keep `def main` in `src/VideoTools/cli.py` as the single runtime entry. `main` writes `ChronicleLogger(...)` before it constructs `Cli` (`requirement-python-cli-logging`, `requirement-python-oop`).
+1. **MUST** expose console script `video-editor` pointing at `VideoEditor.cli:main`, and aliases `video-join` and `video-speed` pointing at the same entry (declared in packaging SSOT).
+2. **MUST** support module execution: `python -m VideoEditor`.
+3. **MUST** keep `def main` in `src/VideoEditor/cli.py` as the single runtime entry. `main` writes `ChronicleLogger(...)` before it constructs `Cli` (`requirement-python-cli-logging`, `requirement-python-oop`).
 4. **MUST NOT** require root or sudo to run the CLI.
 
 ### 2.2 Empty argv
@@ -65,7 +65,7 @@ The text-menu picture is `requirement-python-tui`. Join steps and formats are `r
 10. **MUST NOT** invent file-operand flags for `join`. Direct `join` with no terminal exits non-zero and tells the operator to use a terminal. Edit **MAY** use `--file`, `--folder`, `--start`, `--end`, `--percent`, `--boomerang`, and `--repeat`. Those flags do not apply to join. `--boomerang` and `--repeat` together **MUST** fail closed before FFmpeg runs.
 11. On a terminal, `join` **MUST** start the join questions on the text screen (rules 16–23). `list-videos` **MUST** list eligible videos and **MUST NOT** join. `edit` without a complete `--file`, `--start`, and `--end` **MUST** ask folder, then file, on the text screen. `list-mp4` lists MP4 files and **MUST NOT** encode. `about` **MUST** open the about page.
 12. With no terminal, `list-videos` **MUST** print the eligible names and return 0. `about` **MUST** print the about page and return 0. Neither draws the text screen.
-13. `help`, `hello`, and `setup` **MUST NOT** draw the text screen. `help` returns 0. `hello` prints `Hello from VideoTools <version>.` using `__version__`, then the next step `video-tools help`, and returns 0. `setup` returns the code from `requirement-runtime-prerequisites`.
+13. `help`, `hello`, and `setup` **MUST NOT** draw the text screen. `help` returns 0. `hello` prints `Hello from VideoEditor <version>.` using `__version__`, then the next step `video-editor help`, and returns 0. `setup` returns the code from `requirement-runtime-prerequisites`.
 14. `version` **MUST** print `__version__` and **MUST NOT** call pip and **MUST NOT** draw the text screen.
 15. `version-check`, `self-update`, `self-install`, and `self-uninstall` **MUST NOT** open the text screen. The commands are:
 
@@ -84,8 +84,8 @@ Every typed verb is named again by its topic owner. Help text is not that second
 |------|----------------|
 | `help`, `hello`, `version` | This file for `help` and `hello`. `version` is also row 82 on `requirement-python-tui` |
 | `tui` | `requirement-python-gui` and `requirement-python-tui`. It opens the text menu |
-| `about` | `requirement-python-about` and row 83. The domain sentence stays on pillar D of `requirement-domain-videotools` |
-| `join`, `list-videos`, `edit`, `list-mp4` | `requirement-domain-videotools` |
+| `about` | `requirement-python-about` and row 83. The domain sentence stays on pillar D of `requirement-domain-videoeditor` |
+| `join`, `list-videos`, `edit`, `list-mp4` | `requirement-domain-videoeditor` |
 | `self-install`, `version-check`, `self-update`, `self-uninstall` | Rows 84–87 on `requirement-python-tui` |
 | `setup` | `requirement-runtime-prerequisites`. It installs the declared pip libraries. On Windows it also tries curses and ffmpeg |
 
@@ -105,8 +105,8 @@ video-join self-install
 video-join version-check
 video-join self-update
 video-join self-uninstall --force
-video-tools setup
-python -m VideoTools
+video-editor setup
+python -m VideoEditor
 ```
 
 ### 2.4 Join questions
@@ -147,15 +147,15 @@ There is no folder question. Esc on the text screen returns to the front board a
 
 | Item | Value |
 |------|--------|
-| **Console scripts** | `video-tools`, `video-join`, and `video-speed` = `VideoTools.cli:main` |
-| **Module entry** | `src/VideoTools/__main__.py` → `main()` |
-| **CLI module** | `src/VideoTools/cli.py` defines `Cli` and `def main` |
+| **Console scripts** | `video-editor`, `video-join`, and `video-speed` = `VideoEditor.cli:main` |
+| **Module entry** | `src/VideoEditor/__main__.py` → `main()` |
+| **CLI module** | `src/VideoEditor/cli.py` defines `Cli` and `def main` |
 | **Empty argv, terminal** | Front board. No join questions. No edit questions. No pip |
 | **Empty argv, no terminal** | Help text. Return 0 |
 | **Parser** | After ChronicleLogger and the debug block |
 | **Quiet / JSON** | A text screen or `--json` sets the logger quiet. `--verbose` does not undo that |
 | **Privilege** | user-level only |
-| **Product version** | `2.0.0` |
+| **Product version** | `1.0.0` |
 | **User docs** | Root `README.md` Usage must match this contract when the behavior ships. This pass does not edit that README |
 
 ### 2.9 Why This Requirement Exists (CIAO)
@@ -196,8 +196,8 @@ On Termux, Git Bash, Windows cmd, or the same class, the person runs `video-join
 
 | ID | Criterion |
 |----|-----------|
-| AC-1 | `video-tools`, `video-join`, and `video-speed` are declared in packaging and call `VideoTools.cli:main` |
-| AC-2 | `python -m VideoTools` reaches `main` |
+| AC-1 | `video-editor`, `video-join`, and `video-speed` are declared in packaging and call `VideoEditor.cli:main` |
+| AC-2 | `python -m VideoEditor` reaches `main` |
 | AC-3 | Empty argv on a terminal with `DISPLAY` set opens the window. With `DISPLAY` unset it opens the front board. It does not join and does not run pip |
 | AC-4 | Empty argv with no terminal prints help and returns 0 |
 | AC-5 | Direct `join` with no terminal exits non-zero |
@@ -212,7 +212,7 @@ On Termux, Git Bash, Windows cmd, or the same class, the person runs `video-join
 | `requirement-python-tui` | Menu picture and numbered rows. Verb `tui` |
 | `requirement-python-gui` | X11 window for a bare start when `DISPLAY` is set |
 | `requirement-python-cli-language` | `language` is not an argv verb. Menu row 4 |
-| `requirement-domain-videotools` | Join steps, edit steps, both lists, and the about domain sentence |
+| `requirement-domain-videoeditor` | Join steps, edit steps, both lists, and the about domain sentence |
 | `requirement-python-about` | The about page |
 | `requirement-python-cli-logging` | Construct before the parser |
 | `requirement-python-oop` | `Cli` and `def main` |
@@ -256,9 +256,10 @@ On Termux, Git Bash, Windows cmd, or the same class, the person runs `video-join
 | 2026-10-04 | Active 1.1.2 | Verb `about` is `requirement-python-about`. Rule 33 no longer claims a live ffmpeg probe. Product version **1.0.5** |
 | 2026-10-10 | Active 1.1.3 | Verb `setup` is typed. It does not open the text menu or the window. The second mention is `requirement-runtime-prerequisites`. `TP-SETUP-02` is have |
 | 2026-10-11 | Active 1.1.4 | Product version is **2.0.0**. Terminologies copies the ship-version term |
+| 2026-10-12 | Active 1.1.5 | Distribution name is VideoEditor. Console script is `video-editor`. Current release string is **1.0.0**. |
 
 ---
 
-**Last Updated**: 2026-10-11
+**Last Updated**: 2026-10-12
 **Owner**: project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

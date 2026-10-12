@@ -2,7 +2,7 @@
 # About page composer.
 # requirement-python-oop — class AboutPage.
 # requirement-python-about — identity lines, host check, and the star box.
-# requirement-domain-videotools — the domain sentence on the identity block.
+# requirement-domain-videoeditor — the domain sentence on the identity block.
 # =============================================================================
 from __future__ import print_function, unicode_literals
 
@@ -48,7 +48,7 @@ class AboutPage:
 
     def _is_source_checkout(self, path):
         """True when path is this package inside a source tree that has pyproject.toml."""
-        marker = "{}src{}VideoTools{}".format(os.sep, os.sep, os.sep)
+        marker = "{}src{}VideoEditor{}".format(os.sep, os.sep, os.sep)
         if marker not in path:
             return False
         cursor = os.path.dirname(path)
@@ -77,7 +77,7 @@ class AboutPage:
         script_names = (
             self.console_name,
             self.app_name,
-            "video-tools",
+            "video-editor",
             "video-join",
             "video-speed",
         )
@@ -272,7 +272,7 @@ class AboutPage:
                 [
                     "    Windows: this Python cannot import GTK 4 and GStreamer.",
                     "    The picture window needs both libraries in this Python. This page checks them and does not install them.",
-                    "    On Windows, run video-tools tui.",
+                    "    On Windows, run video-editor tui.",
                 ]
             )
         elif on_windows:

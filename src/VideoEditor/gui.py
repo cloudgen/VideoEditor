@@ -6,8 +6,10 @@
 # =============================================================================
 from __future__ import annotations
 
+import hashlib
 import os
 import sys
+import tempfile
 import threading
 import warnings
 from pathlib import Path
@@ -43,6 +45,18 @@ class Gui:
     # Join: source 1, source 2, generated. Edit generated is separate.
     JOIN_PLAYER_KEYS = ("join-1", "join-2", "join-out")
     EDIT_GENERATED_KEY = "edit-out"
+    # Main canvas. Header bar and the process bar keep theme colors.
+    MAIN_BACKGROUND = "#d3d3d3"
+    # Source and output cards, including the video area and the controls on the card.
+    PANEL_BACKGROUND = "#ffffff"
+    # Fixed thumbnail-track height. Inside the 48–64 px compact-timeline band.
+    THUMBNAIL_TRACK_HEIGHT = 56
+    # Picture request heights already used by the source player and the other players.
+    SOURCE_PICTURE_HEIGHT = 200
+    PLAYER_PICTURE_HEIGHT = 180
+    SAMPLE_INTERVAL_SHORT = 2.0
+    SAMPLE_INTERVAL_LONG = 5.0
+    SAMPLE_LONG_AFTER = 120.0
 
     def __init__(self, logger=None) -> None:
         self.logger = logger
@@ -74,6 +88,9 @@ class Gui:
         self._said = []
         self._log_state = None
         self.language = None
+        self._gdk = None
+        self._film = {}
+        self._film_threads = []
 
     @staticmethod
     def format_elapsed(seconds) -> str:
@@ -107,6 +124,159 @@ class Gui:
         if seconds > 59:
             return None
         return int(minute_text) * 60 + seconds + int(centi_text) / 100.0
+
+    @classmethod
+    def thumbnail_trail_height_proportion(cls, picture_height) -> float:
+        """Track height divided by the picture height on the same screen."""
+        try:
+            picture_height = float(picture_height)
+        except (TypeError, ValueError):
+            return 0.0
+        if picture_height <= 0:
+            return 0.0
+        return cls.THUMBNAIL_TRACK_HEIGHT / picture_height
+
+    @classmethod
+    def sample_interval(cls, duration: float) -> float:
+        """Seconds between sampled frames. Two seconds, or five on a long file."""
+        try:
+            duration = float(duration)
+        except (TypeError, ValueError):
+            duration = 0.0
+        if duration >= cls.SAMPLE_LONG_AFTER:
+            return cls.SAMPLE_INTERVAL_LONG
+        return cls.SAMPLE_INTERVAL_SHORT
+
+    @classmethod
+    def sample_times(cls, duration: float) -> list:
+        """Frame times from the start. The step stays in the 2-to-5-second band."""
+        try:
+            duration = float(duration)
+        except (TypeError, ValueError):
+            duration = 0.0
+        if duration < 0:
+            duration = 0.0
+        step = cls.sample_interval(duration)
+        if duration <= 0:
+            return [0.0]
+        times = []
+        stamp = 0.0
+        while stamp < duration:
+            times.append(stamp)
+            stamp += step
+        if not times:
+            return [0.0]
+        return times
+
+    @staticmethod
+    def hover_seconds(x, width, start, end) -> float:
+        """Time under the pointer. This does not seek."""
+        try:
+            span = float(width)
+        except (TypeError, ValueError):
+            span = 1.0
+        if span <= 0:
+            span = 1.0
+        try:
+            fraction = float(x) / span
+        except (TypeError, ValueError):
+            fraction = 0.0
+        if fraction < 0:
+            fraction = 0.0
+        if fraction > 1:
+            fraction = 1.0
+        return float(start) + fraction * (float(end) - float(start))
+
+    @staticmethod
+    def scale_bounds(scale):
+        """Lower and upper of a scale. GTK 4 keeps them on the adjustment."""
+        adjustment = getattr(scale, "get_adjustment", None)
+        if adjustment is not None:
+            adj = scale.get_adjustment()
+            return float(adj.get_lower()), float(adj.get_upper())
+        start, end = scale.get_range()
+        return float(start), float(end)
+
+    @classmethod
+    def filmstrip_cache_dir(cls) -> Path:
+        """System temporary directory. No home path is written here."""
+        root = os.environ.get("TMPDIR") or tempfile.gettempdir()
+        folder = Path(root) / "videoeditor-timeline-thumbs"
+        folder.mkdir(parents=True, exist_ok=True)
+        return folder
+
+    @classmethod
+    def filmstrip_cache_file(cls, path: str) -> Path:
+        """One strip per path, size, and modification time."""
+        st = os.stat(path)
+        raw = "{0}|{1}|{2}|{3}".format(
+            os.path.abspath(path),
+            int(getattr(st, "st_mtime_ns", int(st.st_mtime * 1000000000))),
+            int(st.st_size),
+            cls.THUMBNAIL_TRACK_HEIGHT,
+        )
+        digest = hashlib.sha256(raw.encode("utf-8")).hexdigest()
+        return cls.filmstrip_cache_dir() / "{0}.png".format(digest)
+
+    @classmethod
+    def file_duration_seconds(cls, path: str) -> float:
+        """Duration read from the file. Zero when the file cannot be opened."""
+        import cv2
+
+        cap = cv2.VideoCapture(path)
+        try:
+            fps = float(cap.get(cv2.CAP_PROP_FPS) or 0)
+            frames = float(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+        finally:
+            cap.release()
+        if fps <= 0 or frames <= 0:
+            return 0.0
+        return frames / fps
+
+    @classmethod
+    def build_filmstrip_png(cls, path: str) -> str:
+        """Write or reuse the cached strip. The caller is a background thread."""
+        dest = cls.filmstrip_cache_file(path)
+        if dest.is_file() and dest.stat().st_size > 0:
+            return str(dest)
+        import cv2
+
+        duration = cls.file_duration_seconds(path)
+        height = cls.THUMBNAIL_TRACK_HEIGHT
+        cap = cv2.VideoCapture(path)
+        frames = []
+        try:
+            for stamp in cls.sample_times(duration):
+                cap.set(cv2.CAP_PROP_POS_MSEC, float(stamp) * 1000.0)
+                ok, frame = cap.read()
+                if not ok or frame is None:
+                    continue
+                frame_h, frame_w = frame.shape[:2]
+                if frame_h <= 0 or frame_w <= 0:
+                    continue
+                new_w = max(2, int(round(frame_w * (height / float(frame_h)))))
+                if new_w % 2:
+                    new_w += 1
+                frames.append(
+                    cv2.resize(frame, (new_w, height), interpolation=cv2.INTER_AREA)
+                )
+        finally:
+            cap.release()
+        if not frames:
+            raise RuntimeError("filmstrip has no frames")
+        strip = frames[0] if len(frames) == 1 else cv2.hconcat(frames)
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        fd, tmp_name = tempfile.mkstemp(prefix="film-", suffix=".png", dir=str(dest.parent))
+        os.close(fd)
+        try:
+            if not cv2.imwrite(tmp_name, strip):
+                raise RuntimeError("filmstrip write failed")
+            os.replace(tmp_name, dest)
+        except Exception:
+            if os.path.isfile(tmp_name):
+                os.remove(tmp_name)
+            raise
+        return str(dest)
 
     def open(self, app) -> int:
         """General Purpose: Show the window. 0 on Exit. 1 when X11 refuses.
@@ -170,10 +340,15 @@ class Gui:
             self.logger.log_message(message, level=level, component="Gui")
 
     def _build(self) -> None:
+        if self._gdk is None:
+            from gi.repository import Gdk
+
+            self._gdk = Gdk
         gtk = self._gtk
         title = "{0} {1}".format(self.app.app_name, self.app.version)
         self._window = gtk.Window(title=title)
         self._window.set_default_size(1360, 900)
+        self._window.add_css_class("app-canvas")
         self._window.connect("close-request", self._on_close)
         header = gtk.HeaderBar()
         self._window.set_titlebar(header)
@@ -193,6 +368,8 @@ class Gui:
             self._menu_buttons.append(button)
         header.pack_start(menu)
         root = gtk.Box(orientation=gtk.Orientation.VERTICAL, spacing=8)
+        root.add_css_class("app-canvas")
+        self._root = root
         root.set_margin_top(8)
         root.set_margin_bottom(8)
         root.set_margin_start(12)
@@ -261,6 +438,39 @@ class Gui:
             button.connect("clicked", self._on_exit)
         return button
 
+    @classmethod
+    def _canvas_rule(cls) -> str:
+        """Light gray for the window and the content column."""
+        return (
+            ".app-canvas {{"
+            " background-color: {0};"
+            "}}"
+            ".app-panel, .app-panel video, .app-panel picture {{"
+            " background-color: {1};"
+            "}}".format(cls.MAIN_BACKGROUND, cls.PANEL_BACKGROUND)
+        )
+
+    @classmethod
+    def _filmstrip_rule(cls) -> str:
+        """Transparent trough so the thumbnail track shows. The slider is the handle."""
+        return (
+            "scale.timeline-preview {{"
+            " min-height: {0}px;"
+            "}}"
+            "scale.timeline-preview trough {{"
+            " min-height: {0}px;"
+            " background-color: transparent;"
+            " border: none;"
+            "}}"
+            "scale.timeline-preview slider {{"
+            " min-width: 4px;"
+            " min-height: {0}px;"
+            " margin: 0;"
+            " background-color: #202020;"
+            " border-radius: 1px;"
+            "}}".format(cls.THUMBNAIL_TRACK_HEIGHT)
+        )
+
     def _install_group_style(self) -> None:
         """Highlight for rows 1 and 2. The bar uses the same width as the group."""
         gtk = self._gtk
@@ -280,6 +490,8 @@ class Gui:
             "progressbar {"
             " min-height: 22px;"
             "}"
+            + self._canvas_rule()
+            + self._filmstrip_rule()
         )
         display = self._window.get_display()
         if display is None:
@@ -484,8 +696,10 @@ class Gui:
         """A titled frame. The title follows the window language."""
         gtk = self._gtk
         frame = gtk.Frame()
+        frame.add_css_class("app-panel")
         frame.set_label_widget(self._cap(key, xalign=0))
         inner = gtk.Box(orientation=gtk.Orientation.VERTICAL, spacing=6)
+        inner.add_css_class("app-panel")
         inner.set_margin_top(6)
         inner.set_margin_bottom(6)
         inner.set_margin_start(8)
@@ -600,6 +814,7 @@ class Gui:
         source.append(pick)
         video_body.append(source)
         self.video_holder = gtk.Box(orientation=gtk.Orientation.VERTICAL)
+        self.video_holder.add_css_class("app-panel")
         self.video_holder.set_hexpand(True)
         self.video_holder.set_vexpand(True)
         self.video_holder.set_size_request(480, 220)
@@ -616,7 +831,7 @@ class Gui:
         self.total = gtk.Label(label="00:00.00")
         self.total.set_width_chars(9)
         bar.append(self.elapsed)
-        bar.append(self.scale)
+        bar.append(self._elapsed_track(self.scale, "edit"))
         bar.append(self.total)
         video_body.append(bar)
         left.append(video_card)
@@ -821,15 +1036,167 @@ class Gui:
         page.append(scroll)
         return page
 
+    def _elapsed_track(self, scale, token: str):
+        """Thumbnail track with the scrubber handle over it."""
+        gtk = self._gtk
+        # A picture shows the cached strip. A draw callback needs gi cairo,
+        # which this host does not ship, and the window must not install it.
+        strip = gtk.Picture()
+        strip.set_size_request(-1, self.THUMBNAIL_TRACK_HEIGHT)
+        strip.set_hexpand(True)
+        strip.set_can_shrink(True)
+        strip.set_content_fit(gtk.ContentFit.FILL)
+        strip.add_css_class("app-panel")
+        overlay = gtk.Overlay()
+        overlay.set_child(strip)
+        scale.add_css_class("timeline-preview")
+        scale.set_size_request(-1, self.THUMBNAIL_TRACK_HEIGHT)
+        overlay.add_overlay(scale)
+        motion = gtk.EventControllerMotion()
+        motion.connect("motion", self._on_film_hover, scale, token)
+        motion.connect("leave", self._on_film_leave, scale)
+        scale.add_controller(motion)
+        click = gtk.GestureClick()
+        click.set_button(1)
+        click.connect("pressed", self._on_film_click, scale, token)
+        scale.add_controller(click)
+        self._film[token] = {
+            "area": strip,
+            "pixbuf": None,
+            "path": "",
+            "generation": 0,
+        }
+        return overlay
+
+    def _film_has_path(self, token: str) -> bool:
+        if token == "edit":
+            return bool(self._edit_path)
+        slot = self._slots.get(token) or {}
+        return bool(slot.get("path"))
+
+    def _on_film_hover(self, _controller, x, _y, scale, token) -> None:
+        """Show the timestamp. Do not seek."""
+        if not self._film_has_path(token):
+            scale.set_tooltip_text(None)
+            return
+        start, end = self.scale_bounds(scale)
+        seconds = self.hover_seconds(x, scale.get_width() or 1, start, end)
+        scale.set_tooltip_text(self.format_elapsed(seconds))
+
+    def _on_film_leave(self, _controller, scale) -> None:
+        scale.set_tooltip_text(None)
+
+    def _on_film_click(self, _gesture, _n_press, x, _y, scale, token) -> None:
+        if not scale.get_sensitive() or not self._film_has_path(token):
+            return
+        self.seek_at_x(scale, token, x, scale.get_width() or 1)
+
+    def seek_at_x(self, scale, token: str, x, width) -> float:
+        """Click-to-seek. The handle and the picture move to this time."""
+        start, end = self.scale_bounds(scale)
+        seconds = self.hover_seconds(x, width, start, end)
+        scale.set_value(seconds)
+        if token == "edit":
+            self._on_seek(scale, None, seconds)
+        else:
+            self._on_slot_seek(scale, None, seconds, token)
+        return seconds
+
+    def _request_filmstrip(self, token: str, path: str) -> None:
+        record = self._film.get(token)
+        if record is None:
+            return
+        record["generation"] = int(record.get("generation") or 0) + 1
+        generation = record["generation"]
+        record["path"] = path or ""
+        record["pixbuf"] = None
+        area = record.get("area")
+        if area is not None:
+            setter = getattr(area, "set_paintable", None)
+            if setter is not None:
+                try:
+                    setter(None)
+                except Exception:
+                    pass
+            try:
+                area.queue_draw()
+            except Exception:
+                pass
+        if not path:
+            return
+        self._start_daemon(
+            "filmstrip-{0}".format(token),
+            lambda token=token, path=path, generation=generation: self._filmstrip_worker(
+                token, path, generation
+            ),
+        )
+
+    def _filmstrip_worker(self, token: str, path: str, generation: int) -> None:
+        try:
+            png = self.build_filmstrip_png(path)
+        except Exception as exc:
+            self._log_status("filmstrip failed ({0})".format(exc), level="WARNING")
+            return
+        glib = self._glib
+        if glib is None:
+            return
+        glib.idle_add(self._apply_filmstrip, token, generation, png)
+
+    def _apply_filmstrip(self, token: str, generation: int, png: str) -> bool:
+        record = self._film.get(token)
+        if record is None or record.get("generation") != generation:
+            return False
+        area = record.get("area")
+        if area is None or not png:
+            return False
+        try:
+            gdk = self._gdk
+            if gdk is None:
+                from gi.repository import Gdk
+
+                self._gdk = gdk
+            texture = gdk.Texture.new_from_filename(png)
+        except Exception as exc:
+            self._log_status("filmstrip paint failed ({0})".format(exc), level="WARNING")
+            return False
+        record["pixbuf"] = texture
+        try:
+            area.set_paintable(texture)
+            area.queue_draw()
+        except Exception:
+            return False
+        return False
+
+    def wait_filmstrips(self, timeout: float = 20.0) -> None:
+        """Join background strip threads. Tests use this before the window closes."""
+        for thread in list(self._film_threads):
+            thread.join(timeout)
+        glib = self._glib
+        if glib is None:
+            return
+        context = glib.MainContext.default()
+        while context.pending():
+            context.iteration(False)
+
+    def _start_daemon(self, name: str, target) -> None:
+        """A thumbnail thread. It does not keep the window open."""
+        self._log_status("thread create name={0}".format(name))
+        thread = threading.Thread(target=target, name=name, daemon=True)
+        self._film_threads.append(thread)
+        self._log_status("thread start name={0}".format(name))
+        thread.start()
+
     def _mount_player(self, parent, key: str, heading: str = "") -> None:
         """Elapsed time bar plus Play and Stop. The picture is attached later."""
         gtk = self._gtk
         block = gtk.Box(orientation=gtk.Orientation.VERTICAL, spacing=4)
+        block.add_css_class("app-panel")
         block.set_hexpand(True)
         block.set_vexpand(True)
         if heading:
             block.append(self._cap(heading, xalign=0))
         holder = gtk.Box(orientation=gtk.Orientation.VERTICAL)
+        holder.add_css_class("app-panel")
         holder.set_vexpand(True)
         note = gtk.Label(label="")
         note.set_wrap(True)
@@ -847,7 +1214,7 @@ class Gui:
         total.set_width_chars(9)
         total.set_xalign(0)
         bar.append(elapsed)
-        bar.append(scale)
+        bar.append(self._elapsed_track(scale, key))
         bar.append(total)
         block.append(bar)
         transport = gtk.Box(orientation=gtk.Orientation.HORIZONTAL, spacing=6)
@@ -884,11 +1251,12 @@ class Gui:
         try:
             self._media = gtk.MediaFile.new()
             video = gtk.Video()
+            video.add_css_class("app-panel")
             video.set_media_stream(self._media)
             video.set_autoplay(False)
             video.set_hexpand(True)
             video.set_vexpand(True)
-            video.set_size_request(480, 200)
+            video.set_size_request(480, self.SOURCE_PICTURE_HEIGHT)
             self.video_holder.append(video)
             self._clear_note(self.video_note)
         except Exception as exc:
@@ -903,11 +1271,12 @@ class Gui:
         try:
             media = gtk.MediaFile.new()
             video = gtk.Video()
+            video.add_css_class("app-panel")
             video.set_media_stream(media)
             video.set_autoplay(False)
             video.set_hexpand(True)
             video.set_vexpand(True)
-            video.set_size_request(420, 180)
+            video.set_size_request(420, self.PLAYER_PICTURE_HEIGHT)
             slot["holder"].append(video)
             self._clear_note(slot["note"])
             slot["media"] = media
@@ -962,6 +1331,7 @@ class Gui:
         chosen = path if path and os.path.isfile(path) else ""
         slot["path"] = chosen
         slot["user_move"] = False
+        slot["duration"] = 0.0
         slot["elapsed"].set_text("00:00.00")
         slot["scale"].set_range(0, 1)
         slot["scale"].set_value(0)
@@ -969,11 +1339,13 @@ class Gui:
         media = slot["media"]
         if media is None:
             self._arm_slot(key)
+            self._request_filmstrip(key, chosen)
             return
         if not chosen:
             self._unload_media(media)
             self._clear_note(slot["note"])
             self._arm_slot(key)
+            self._request_filmstrip(key, "")
             return
         try:
             # Clear first so a second Run of the same path reloads the new bytes.
@@ -985,16 +1357,34 @@ class Gui:
             self._say(slot["note"], "win_playback", exc)
             self._unload_media(media)
             self._arm_slot(key)
+            self._request_filmstrip(key, "")
             return
         self._clear_note(slot["note"])
-        duration = 0
-        media_info = getattr(self.app, "media", None) if self.app is not None else None
-        if media_info is not None:
-            duration = media_info.get_duration_cv2(Path(chosen))
-        if duration > 0:
-            slot["total"].set_text(self.format_elapsed(duration))
-            slot["scale"].set_range(0, duration)
+        self._apply_probed_duration(slot, chosen)
         self._arm_slot(key)
+        self._request_filmstrip(key, chosen)
+
+    def _probe_seconds(self, path: str) -> float:
+        """Duration of this file. A later read replaces the previous one."""
+        media_info = getattr(self.app, "media", None) if self.app is not None else None
+        if media_info is None or not path:
+            return 0.0
+        try:
+            duration = float(media_info.get_duration_cv2(Path(path)))
+        except Exception:
+            return 0.0
+        if duration <= 0:
+            return 0.0
+        return duration
+
+    def _apply_probed_duration(self, slot, path: str) -> None:
+        """Output total follows the file just loaded, including a regenerated file."""
+        duration = self._probe_seconds(path)
+        slot["duration"] = duration
+        if duration <= 0:
+            return
+        slot["total"].set_text(self.format_elapsed(duration))
+        slot["scale"].set_range(0, duration)
 
     def _pause_slot(self, key: str) -> None:
         slot = self._slots.get(key)
@@ -1069,6 +1459,13 @@ class Gui:
             stamp = 0
         seconds = stamp / 1000000.0
         slot["elapsed"].set_text(self.format_elapsed(seconds))
+        probed = float(slot.get("duration") or 0)
+        if probed > 0:
+            shown = min(seconds, probed)
+            slot["scale"].set_range(0, probed)
+            slot["scale"].set_value(shown)
+            slot["total"].set_text(self.format_elapsed(probed))
+            return
         duration = media.get_duration()
         if duration and 0 < duration < 10**16:
             slot["scale"].set_range(0, duration / 1000000.0)
@@ -1139,6 +1536,7 @@ class Gui:
         self.elapsed.set_text("00:00.00")
         self.edit_start.set_text("00:00.00")
         self.edit_end.set_text(self.format_elapsed(duration) if duration > 0 else "00:00.00")
+        self._request_filmstrip("edit", path)
         self._load_slot(self.EDIT_GENERATED_KEY, "")
         self._sync_edit()
 
@@ -1570,7 +1968,7 @@ class Gui:
 
     def _confirm(self, message: str, on_yes) -> None:
         gtk = self._gtk
-        dialog = gtk.Window(title="VideoTools", transient_for=self._window, modal=True)
+        dialog = gtk.Window(title="VideoEditor", transient_for=self._window, modal=True)
         box = gtk.Box(orientation=gtk.Orientation.VERTICAL, spacing=8)
         box.set_margin_top(12)
         box.set_margin_bottom(12)

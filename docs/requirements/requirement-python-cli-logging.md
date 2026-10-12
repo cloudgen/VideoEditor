@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-python-cli-logging.md
-**Status**: Active (Version 1.0.4)
+**Status**: Active (Version 1.0.5)
 **Area**: python
 **Key**: `requirement-python-cli-logging`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -12,7 +12,7 @@ VideoJoin records system status through that one ChronicleLogger instance: proce
 
 This product creates no threads. This file does not name a thread-wait timeout. Control-C stop, an exit code for that stop, and the decision not to publish are not confirmed law in this file. Row 9 Exit returns 0 with no confirm question (`requirement-python-tui`).
 
-The running `src/VideoTools/cli.py` writes `ChronicleLogger(...)` in `def main`. The allowed end state is this file.
+The running `src/VideoEditor/cli.py` writes `ChronicleLogger(...)` in `def main`. The allowed end state is this file.
 
 ### 1.1 Human-facing
 
@@ -32,7 +32,7 @@ The running `src/VideoTools/cli.py` writes `ChronicleLogger(...)` in `def main`.
 
 | Surface | What you open | What for |
 |---------|---------------|----------|
-| `src/VideoTools/cli.py` | `def main` | Writes `ChronicleLogger(...)`, then passes that one instance |
+| `src/VideoEditor/cli.py` | `def main` | Writes `ChronicleLogger(...)`, then passes that one instance |
 | `video-join` | console script | Writes status while it runs |
 | Resolved `logDir()` | daily `.log` file | History after the process exits |
 
@@ -67,7 +67,7 @@ The running `src/VideoTools/cli.py` writes `ChronicleLogger(...)` in `def main`.
 10. `isDebug()` remembers the first answer. `DEBUG` or `debug` **MUST** already be `1`, `true`, or `show` (any letter case) **before** `ChronicleLogger(...)`.
 11. The startup identity lines **MUST** run only inside `if logger.isDebug():`, and `main` **MUST** run that block before the argument parser. The block is four `log_message` calls, each with `component="main"`: the resolved app name, the package version, and this file’s path; `Using` plus `ChronicleLogger.class_version()`; the `baseDir()` value; a line whose message is `debug mode`. **MUST NOT** type the library version by hand. When `isDebug()` is false, those lines **MUST NOT** be displayed.
 11a. **Console mirror.** When this run will open the text screen, and that fact is known before construct, `main` **MUST** pass `is_quiet=True` into `ChronicleLogger(...)`. The runs that open the text screen are: empty argv on a terminal; `join`, `list-videos`, `about`, `list-mp4`, or `edit` without a complete `--file` `--start` `--end`, on a terminal. `--json` is also quiet. `--verbose` does not turn the mirror back on for a screen or for `--json`. A small argv peek may decide `is_quiet` before the constructor. `ArgumentParser.parse_args` runs after the constructor and after the debug block. The library stores that flag before it resolves the name and the folders and before it creates the log directory. That constructor can print `Created directory:`. A call to `quiet(True)` after the constructor returns **MUST NOT** be the only quiet for those runs. A run that does not open the text screen and is not `--json` **MUST** leave `is_quiet` false, so the operator sees `debug mode` on the console. `--json` **MUST** pass `is_quiet=True`. The text screen **MUST** keep that mirror off the console. The same lines still go to the daily file. `logger.quiet(True)` remains the setter when a screen opens later and was not known at construct. `--json` keeps the mirror off.
-11b. **Version string.** The identity line and the `version` verb read the same package version: the single string `__version__` in `src/VideoTools/__init__.py`, which matches `pyproject.toml` (`requirement-python-packaging`). The current string is `2.0.0`. **MUST NOT** add `MAJOR` / `MINOR` / `PATCH` integers. **MUST NOT** keep a second version literal for display. A suite assertion may compare the displayed string with `__version__` and with `pyproject.toml`. `main` **MUST NOT** raise because those strings differ.
+11b. **Version string.** The identity line and the `version` verb read the same package version: the single string `__version__` in `src/VideoEditor/__init__.py`, which matches `pyproject.toml` (`requirement-python-packaging`). The current string is `1.0.0`. **MUST NOT** add `MAJOR` / `MINOR` / `PATCH` integers. **MUST NOT** keep a second version literal for display. A suite assertion may compare the displayed string with `__version__` and with `pyproject.toml`. `main` **MUST NOT** raise because those strings differ.
 11c. **Environment checks.** `CheckSystem.in_venv`, `in_pyenv`, and `in_conda` **MUST** call `inVenv()`, `inPyenv()`, and `inConda()` on the one logger. When the logger is absent, each method **MUST** return false. Those three results **MUST NOT** be printed on the about page and **MUST NOT** choose `python2 location`, `python3 location`, `conda location`, or `pyenv location`. The path reads stay on `requirement-python-about`. The proof is `TP-ABOUT-16`.
 
 ### 2.3 `log_message` level and component
@@ -138,7 +138,7 @@ The class-name components are `Cli`, `Tui`, `MenuPainter`, `MenuModel`, `MenuSes
 |-------|--------|
 | **Library** | ChronicleLogger |
 | **Floor** | Required `ChronicleLogger>=1.3.1`, owned by `requirement-python-packaging` and `requirement-runtime-prerequisites`. The live `pyproject.toml` declares that floor. |
-| **Construct site** | `def main` in `src/VideoTools/cli.py` writes `ChronicleLogger(...)`. |
+| **Construct site** | `def main` in `src/VideoEditor/cli.py` writes `ChronicleLogger(...)`. |
 | **logname** | `VideoJoin` (product name, not a path, not the console-script name) |
 | **Resolved name** | `video-join` from `logName()` |
 | **Call order** | Inside `def main`: peek argv for the text screen, write `ChronicleLogger(...)` with `logname` and `is_quiet` when that screen is already known, read `logName()`, `baseDir()`, and `logDir()`, run the `isDebug()` block including `debug mode`, then parse arguments, then `Cli(logger)`. |
@@ -307,9 +307,10 @@ On Termux, Git Bash, Windows cmd, or the same class, status files stay in the fo
 | 2026-10-04 | Active 1.0.2 | Rule 11c: environment checks read the one logger. Current version string is **1.0.5**. `TP-LOG-*` stay todo. `TP-ABOUT-16` is have. Primary owner is `requirement-python-about` |
 | 2026-10-10 | Active 1.0.3 | Before the ChronicleLogger import, `main` calls `HostSetup.ensure_geteuid()`. A missing `os.geteuid` returns `1`. The library stays unedited. `TP-SETUP-01` is have |
 | 2026-10-11 | Active 1.0.4 | Current version string is **2.0.0**. Terminologies copies the ship-version term |
+| 2026-10-12 | Active 1.0.5 | Distribution name is VideoEditor. Console script is `video-editor`. Current release string is **1.0.0**. |
 
 ---
 
-**Last Updated**: 2026-10-11
+**Last Updated**: 2026-10-12
 **Owner**: project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

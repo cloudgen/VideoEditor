@@ -4,9 +4,9 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from VideoTools.cli import Cli
-from VideoTools.edit_walk import EditWalk
-from VideoTools.encoder import Encoder
+from VideoEditor.cli import Cli
+from VideoEditor.edit_walk import EditWalk
+from VideoEditor.encoder import Encoder
 
 
 class _Sink:
@@ -72,9 +72,9 @@ class TestEditTail(unittest.TestCase):
         self.assertIn("Choose none, boomerang, or repeat", err.getvalue())
 
     def test_json_job_records_the_tail(self):
-        from VideoTools.run_output import RunOutput
+        from VideoEditor.run_output import RunOutput
 
-        out = RunOutput("VideoTools", "1.1.0")
+        out = RunOutput("VideoEditor", "1.1.0")
         out.json_mode = True
         out._remember_job("/tmp/clip.mp4", 0, 1, 100, "repeat", "/tmp/out.mp4")
         out._remember_job("/tmp/clip.mp4", 0, 1, 100, "boomerang", "/tmp/boom.mp4")

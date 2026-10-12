@@ -6,8 +6,8 @@ import os
 import unittest
 from contextlib import redirect_stdout
 
-from VideoTools.cli import Cli
-from VideoTools.host_setup import HostSetup
+from VideoEditor.cli import Cli
+from VideoEditor.host_setup import HostSetup
 
 
 class _OsModule:
@@ -34,7 +34,7 @@ class TestGeteuid(unittest.TestCase):
 
     def test_main_binds_geteuid_before_the_logger(self):
         path = os.path.join(
-            os.path.dirname(__file__), "..", "src", "VideoTools", "cli.py"
+            os.path.dirname(__file__), "..", "src", "VideoEditor", "cli.py"
         )
         with open(path, encoding="utf-8") as handle:
             text = handle.read()

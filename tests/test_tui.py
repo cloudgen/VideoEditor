@@ -10,8 +10,8 @@ import tempfile
 import textwrap
 import unittest
 
-from VideoTools.menu_painter import MenuPainter
-from VideoTools.tui import Tui
+from VideoEditor.menu_painter import MenuPainter
+from VideoEditor.tui import Tui
 
 
 class TestPathLabel(unittest.TestCase):
@@ -27,7 +27,7 @@ class TestPathLabel(unittest.TestCase):
         saved = {
             name: os.environ.get(name)
             for name in (
-                "LANG", "LANGUAGE", "LC_ALL", "LC_MESSAGES", "HOME", "VIDEOTOOLS_LANG",
+                "LANG", "LANGUAGE", "LC_ALL", "LC_MESSAGES", "HOME", "VIDEOEDITOR_LANG",
             )
         }
         os.environ["LANG"] = "zh_TW.UTF-8"
@@ -35,7 +35,7 @@ class TestPathLabel(unittest.TestCase):
         os.environ["LC_ALL"] = "zh_TW.UTF-8"
         os.environ["LC_MESSAGES"] = "zh_TW.UTF-8"
         os.environ["HOME"] = home
-        os.environ.pop("VIDEOTOOLS_LANG", None)
+        os.environ.pop("VIDEOEDITOR_LANG", None)
         os.chdir(folder)
         try:
             painter = MenuPainter(home=home)
@@ -90,9 +90,9 @@ class TestWideColumns(unittest.TestCase):
         """TP-TUI-10: the colon starts after the display width of a wide short."""
         import unicodedata
 
-        from VideoTools.cli import Cli
-        from VideoTools.menu_model import MenuModel
-        from VideoTools.menu_painter import MenuPainter
+        from VideoEditor.cli import Cli
+        from VideoEditor.menu_model import MenuModel
+        from VideoEditor.menu_painter import MenuPainter
 
         class ColumnScreen:
             """Records each addstr with its column."""
@@ -145,10 +145,10 @@ class TestWideColumns(unittest.TestCase):
         previous = os.getcwd()
         saved = {
             name: os.environ.get(name)
-            for name in ("HOME", "VIDEOTOOLS_LANG", "LANG", "LC_ALL")
+            for name in ("HOME", "VIDEOEDITOR_LANG", "LANG", "LC_ALL")
         }
         os.environ["HOME"] = home
-        os.environ.pop("VIDEOTOOLS_LANG", None)
+        os.environ.pop("VIDEOEDITOR_LANG", None)
         os.chdir(folder)
         clock = "14:05:09"
         try:
@@ -172,7 +172,7 @@ class TestWideColumns(unittest.TestCase):
                 ("パス", "パ"),
                 ("경로", "경"),
             ):
-                os.environ["VIDEOTOOLS_LANG"] = {
+                os.environ["VIDEOEDITOR_LANG"] = {
                     "路径": "zh-Hans",
                     "路徑": "zh-Hant",
                     "パス": "ja",
@@ -232,7 +232,7 @@ class TestWideColumns(unittest.TestCase):
                 "ja": ("言語", "システムログ", "自己管理", "終了"),
             }
             for code, words in shorts.items():
-                os.environ["VIDEOTOOLS_LANG"] = code
+                os.environ["VIDEOEDITOR_LANG"] = code
                 board_painter = MenuPainter(home=home)
                 board_painter.clock_text = lambda: clock
                 self.assertEqual(board_painter.language.code(), code)
@@ -267,7 +267,7 @@ class TestWideColumns(unittest.TestCase):
                     self.assertEqual(colon, [(y, colon_x, "{0}: ".format(verb_pad))], short)
                     self.assertNotEqual(colon_x, x + len(short), short)
 
-            os.environ.pop("VIDEOTOOLS_LANG", None)
+            os.environ.pop("VIDEOEDITOR_LANG", None)
             english_painter = MenuPainter(home=home)
             english_painter.clock_text = lambda: clock
             self.assertEqual(english_painter.language.code(), "en")
@@ -320,7 +320,7 @@ class TestMissingCurses(unittest.TestCase):
                     return None
 
             sys.meta_path.insert(0, _BlockCurses())
-            from VideoTools.cli import Cli, main
+            from VideoEditor.cli import Cli, main
 
             about_code = main(["about"])
             hello_code = main(["hello"])
@@ -354,17 +354,17 @@ class TestMissingCurses(unittest.TestCase):
         self.assertIn("VERSION_CODE 0", proc.stdout)
         self.assertIn("HELP_CODE 0", proc.stdout)
         self.assertIn("Window libraries:", proc.stdout)
-        self.assertIn("Hello from VideoTools", proc.stdout)
-        from VideoTools import __version__
+        self.assertIn("Hello from VideoEditor", proc.stdout)
+        from VideoEditor import __version__
 
-        self.assertEqual(__version__, "2.0.0")
-        self.assertIn("VideoTools {0}".format(__version__), proc.stdout)
+        self.assertEqual(__version__, "1.0.0")
+        self.assertIn("VideoEditor {0}".format(__version__), proc.stdout)
         self.assertIn("MENU_ACTION missing", proc.stdout)
         self.assertIn(
             "The text menu needs the curses module. This Python does not provide it.",
             proc.stderr,
         )
-        self.assertIn("Next: video-tools help", proc.stderr)
+        self.assertIn("Next: video-editor help", proc.stderr)
         self.assertEqual(proc.returncode, 0, combined)
 
 

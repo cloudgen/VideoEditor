@@ -1,13 +1,134 @@
 # Window routing and the elapsed-time clock. The text menu is not opened here.
 import os
+import tempfile
 import unittest
 from unittest.mock import patch
 
-from VideoTools.cli import Cli
-from VideoTools.gui import Gui
+from VideoEditor.cli import Cli
+from VideoEditor.gui import Gui
 
 
 class TestElapsedClock(unittest.TestCase):
+    def test_main_background_is_light_gray(self):
+        self.assertEqual(Gui.MAIN_BACKGROUND, "#d3d3d3")
+        rule = Gui._canvas_rule()
+        self.assertIn("background-color: #d3d3d3", rule)
+        self.assertEqual(Gui.PANEL_BACKGROUND, "#ffffff")
+        self.assertIn("background-color: #ffffff", rule)
+
+    def test_filmstrip_height_samples_and_cache(self):
+        self.assertEqual(Gui.THUMBNAIL_TRACK_HEIGHT, 56)
+        self.assertGreaterEqual(Gui.THUMBNAIL_TRACK_HEIGHT, 48)
+        self.assertLessEqual(Gui.THUMBNAIL_TRACK_HEIGHT, 64)
+        self.assertAlmostEqual(Gui.thumbnail_trail_height_proportion(200), 56 / 200)
+        self.assertAlmostEqual(Gui.thumbnail_trail_height_proportion(180), 56 / 180)
+        self.assertLess(Gui.thumbnail_trail_height_proportion(180), 0.5)
+        self.assertEqual(Gui.thumbnail_trail_height_proportion(0), 0.0)
+        self.assertEqual(Gui.sample_interval(10), 2.0)
+        self.assertEqual(Gui.sample_interval(119.9), 2.0)
+        self.assertEqual(Gui.sample_interval(120), 5.0)
+        self.assertEqual(Gui.sample_interval(3600), 5.0)
+        self.assertEqual(Gui.sample_times(10), [0.0, 2.0, 4.0, 6.0, 8.0])
+        self.assertEqual(Gui.sample_times(0), [0.0])
+        long_times = Gui.sample_times(130)
+        self.assertEqual(long_times[1] - long_times[0], 5.0)
+        self.assertLessEqual(long_times[1] - long_times[0], 5.0)
+        self.assertGreaterEqual(long_times[1] - long_times[0], 2.0)
+        self.assertEqual(Gui.format_elapsed(83.45), "01:23.45")
+        self.assertEqual(Gui.hover_seconds(0, 100, 0, 18), 0)
+        self.assertAlmostEqual(Gui.hover_seconds(50, 100, 0, 18), 9)
+        self.assertAlmostEqual(Gui.hover_seconds(500, 100, 0, 18), 18)
+        self.assertIn("min-height: 56px", Gui._filmstrip_rule())
+        sample = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)), "sample-videos", "video-1.mp4"
+        )
+        if not os.path.isfile(sample):
+            return
+        first = Gui.build_filmstrip_png(sample)
+        self.assertTrue(os.path.isfile(first))
+        self.assertTrue(os.path.abspath(first).startswith(os.path.abspath(tempfile.gettempdir())))
+        stamp = os.stat(first).st_mtime_ns
+        second = Gui.build_filmstrip_png(sample)
+        self.assertEqual(first, second)
+        self.assertEqual(os.stat(second).st_mtime_ns, stamp)
+
+    def test_hover_does_not_seek(self):
+        gui = Gui()
+        gui._edit_path = ""
+
+        class _Scale:
+            def __init__(self):
+                self.value = 3.0
+                self.tip = "unset"
+                self.rng = (0.0, 18.0)
+                self.width = 100
+
+            def get_range(self):
+                return self.rng
+
+            def get_width(self):
+                return self.width
+
+            def get_value(self):
+                return self.value
+
+            def set_value(self, value):
+                self.value = value
+
+            def set_tooltip_text(self, text):
+                self.tip = text
+
+            def get_sensitive(self):
+                return True
+
+        scale = _Scale()
+        gui._on_film_hover(None, 50, 0, scale, "edit")
+        self.assertEqual(scale.value, 3.0)
+        self.assertIsNone(scale.tip)
+        gui._edit_path = "reel.mp4"
+        gui._on_film_hover(None, 50, 0, scale, "edit")
+        self.assertEqual(scale.value, 3.0)
+        self.assertEqual(scale.tip, "00:09.00")
+
+    def test_click_seeks_only_when_a_file_is_loaded(self):
+        gui = Gui()
+        gui._edit_path = ""
+        seen = {}
+
+        class _Scale:
+            def __init__(self):
+                self.value = 3.0
+                self.rng = (0.0, 18.0)
+                self.sensitive = True
+
+            def get_range(self):
+                return self.rng
+
+            def get_width(self):
+                return 100
+
+            def get_value(self):
+                return self.value
+
+            def set_value(self, value):
+                self.value = value
+
+            def get_sensitive(self):
+                return self.sensitive
+
+        scale = _Scale()
+        gui._on_film_click(None, 1, 50, 0, scale, "edit")
+        self.assertEqual(scale.value, 3.0)
+        gui._edit_path = "reel.mp4"
+        gui._on_seek = lambda _scale, _scroll, value: seen.setdefault("value", value)
+        gui._on_film_click(None, 1, 50, 0, scale, "edit")
+        self.assertEqual(scale.value, 9.0)
+        self.assertEqual(seen["value"], 9.0)
+        scale.sensitive = False
+        scale.value = 1.0
+        gui._on_film_click(None, 1, 0, 0, scale, "edit")
+        self.assertEqual(scale.value, 1.0)
+
     def test_format_grows_minutes(self):
         self.assertEqual(Gui.format_elapsed(0), "00:00.00")
         self.assertEqual(Gui.format_elapsed(61.25), "01:01.25")
@@ -74,6 +195,10 @@ class TestElapsedClock(unittest.TestCase):
         self.assertEqual(elapsed.text, "00:01.50")
         self.assertEqual(total.text, "00:03.00")
         self.assertEqual(scale.value, 1.5)
+        gui._slots["join-1"]["duration"] = 8.0
+        gui._tick_slot("join-1")
+        self.assertEqual(total.text, "00:08.00")
+        self.assertEqual(scale.rng, (0, 8.0))
 
 
 class TestWindowRoute(unittest.TestCase):
@@ -127,6 +252,31 @@ class TestWindowRoute(unittest.TestCase):
 
 class TestPlayerWidgets(unittest.TestCase):
     """Build the window when X11 and GTK 4 are present. No main loop."""
+
+    def assert_white_panels(self, gui):
+        """Source and output cards, videos, and player controls use the white panel."""
+        frames = []
+        videos = []
+
+        def walk(widget):
+            if widget is None:
+                return
+            kind = widget.__class__.__name__
+            if kind == "Frame" and widget.has_css_class("app-panel"):
+                frames.append(widget)
+            if kind == "Video":
+                videos.append(widget)
+                self.assertTrue(widget.has_css_class("app-panel"))
+            child = widget.get_first_child() if hasattr(widget, "get_first_child") else None
+            while child is not None:
+                walk(child)
+                child = child.get_next_sibling() if hasattr(child, "get_next_sibling") else None
+
+        walk(gui._window.get_child())
+        self.assertGreaterEqual(len(frames), 9)
+        self.assertGreaterEqual(len(videos), 4)
+        for key in ("join-1", "join-2", "join-out", "edit-out"):
+            self.assertTrue(gui._slots[key]["holder"].has_css_class("app-panel"))
 
     def assert_sources_left_output_right(self, gui, gtk):
         """Edit and Join put sources on the start side and output on the end side."""
@@ -250,17 +400,19 @@ class TestPlayerWidgets(unittest.TestCase):
         gui._glib = glib
         gui._gio = gio
 
+        lengths = {"seconds": 1.5}
+
         class _Media:
             def get_duration_cv2(self, _path):
-                return 1.5
+                return lengths["seconds"]
 
         class _App:
-            app_name = "VideoTools"
+            app_name = "VideoEditor"
             version = "1.1.0"
             media = _Media()
 
         gui.app = _App()
-        from VideoTools.menu_language import MenuLanguage
+        from VideoEditor.menu_language import MenuLanguage
 
         gui.language = MenuLanguage(home="")
         gui._build()
@@ -296,6 +448,24 @@ class TestPlayerWidgets(unittest.TestCase):
         self.assertIn("Video 1", captions)
         self.assertIn("Video 2", captions)
         self.assertEqual(gui.elapsed.get_text(), "00:00.00")
+        self.assertTrue(gui._window.has_css_class("app-canvas"))
+        self.assertTrue(gui._root.has_css_class("app-canvas"))
+        self.assertTrue(gui.video_holder.has_css_class("app-panel"))
+        self.assert_white_panels(gui)
+        self.assertEqual(gui._film["edit"]["area"].get_size_request().height, 56)
+        self.assertEqual(gui._film["edit"]["area"].__class__.__name__, "Picture")
+        self.assertTrue(gui.scale.has_css_class("timeline-preview"))
+        self.assertEqual(gui.scale.get_parent().__class__.__name__, "Overlay")
+        for key in list(Gui.JOIN_PLAYER_KEYS) + [Gui.EDIT_GENERATED_KEY]:
+            self.assertEqual(gui._film[key]["area"].get_size_request().height, 56)
+            self.assertTrue(gui._slots[key]["scale"].has_css_class("timeline-preview"))
+        held = gui.scale.get_value()
+        gui._edit_path = "reel.mp4"
+        gui.scale.set_range(0, 18.04)
+        gui._on_film_hover(None, 10, 0, gui.scale, "edit")
+        self.assertEqual(gui.scale.get_value(), held)
+        self.assertIsNotNone(gui.scale.get_tooltip_text())
+        gui._edit_path = ""
         self.assertTrue(gui.path_label.get_text().startswith("Project Root:"))
         self.assertEqual(gui.process.get_text(), "Process 0%")
         self.assertEqual(gui.process.get_fraction(), 0)
@@ -366,6 +536,10 @@ class TestPlayerWidgets(unittest.TestCase):
             self.assertEqual(gui._slots["join-1"]["path"], sample)
             gui._edit_done(0, sample, sample)
             self.assertEqual(gui._slots["edit-out"]["path"], sample)
+            self.assertEqual(gui._slots["edit-out"]["total"].get_text(), "00:01.50")
+            lengths["seconds"] = 4.25
+            gui._edit_done(0, sample, sample)
+            self.assertEqual(gui._slots["edit-out"]["total"].get_text(), "00:04.25")
             self.assertEqual(gui.process.get_text(), "Process 100%")
             self.assertEqual(gui.process.get_fraction(), 1)
             self.assertTrue(gui._slots["edit-out"]["play"].get_sensitive())
@@ -377,9 +551,17 @@ class TestPlayerWidgets(unittest.TestCase):
             self.assertEqual(gui._slots["join-1"]["path"], sample)
             gui._join_done(True, ["SUCCESS"], sample)
             self.assertEqual(gui._slots["join-out"]["path"], sample)
+            self.assertEqual(gui._slots["join-out"]["total"].get_text(), "00:04.25")
             self.assertTrue(gui._slots["join-out"]["play"].get_sensitive())
             gui._reset_generated(Gui.EDIT_GENERATED_KEY)
             gui._edit_done(1, "", "")
+            gui.wait_filmstrips(20)
+            cached = Gui.filmstrip_cache_file(sample)
+            self.assertTrue(cached.is_file())
+            self.assertIsNotNone(gui._film["join-1"]["area"].get_paintable())
+            self.assertTrue(
+                os.path.abspath(str(cached)).startswith(os.path.abspath(tempfile.gettempdir()))
+            )
             self.assertEqual(gui._slots["edit-out"]["path"], "")
             self.assertEqual(gui.process.get_text(), "Process 0%")
             self.assertFalse(gui._slots["edit-out"]["play"].get_sensitive())
@@ -391,7 +573,7 @@ class TestPlayerWidgets(unittest.TestCase):
             self.skipTest("no DISPLAY")
         import tempfile
 
-        from VideoTools.menu_language import MenuLanguage
+        from VideoEditor.menu_language import MenuLanguage
 
         gui = Gui()
         try:
@@ -408,7 +590,7 @@ class TestPlayerWidgets(unittest.TestCase):
         gui._gio = gio
 
         class _App:
-            app_name = "VideoTools"
+            app_name = "VideoEditor"
             version = "1.1.0"
 
         gui.app = _App()

@@ -141,7 +141,7 @@ On Termux, Git Bash, Windows cmd, or the same class, failure sentences are for t
 | `requirement-python-tui` | Where the sentence sits on the screen |
 | `requirement-python-cli-logging` | Durable status after the construct |
 | `requirement-runtime-prerequisites` | Missing FFmpeg and the logger floor |
-| `requirement-domain-videotools` | Session outcomes |
+| `requirement-domain-videoeditor` | Session outcomes |
 | `docs/requirements/index.md` | Registry |
 
 ## Design-time verification

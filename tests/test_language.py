@@ -5,11 +5,11 @@ import stat
 import tempfile
 import unittest
 
-from VideoTools.cli import Cli
-from VideoTools.menu_language import MenuLanguage, _WINDOW, _WINDOW_KEYS
-from VideoTools.menu_model import MenuModel
-from VideoTools.menu_painter import MenuPainter
-from VideoTools.menu_session import MenuSession
+from VideoEditor.cli import Cli
+from VideoEditor.menu_language import MenuLanguage, _WINDOW, _WINDOW_KEYS
+from VideoEditor.menu_model import MenuModel
+from VideoEditor.menu_painter import MenuPainter
+from VideoEditor.menu_session import MenuSession
 
 
 def _commit(model, token):
@@ -26,10 +26,10 @@ class TestMenuLanguage(unittest.TestCase):
         self.home = tempfile.mkdtemp(prefix="vjlang_", dir="/tmp")
         self.saved = {
             name: os.environ.get(name)
-            for name in ("HOME", "VIDEOTOOLS_LANG", "LANG", "LC_ALL")
+            for name in ("HOME", "VIDEOEDITOR_LANG", "LANG", "LC_ALL")
         }
         os.environ["HOME"] = self.home
-        os.environ.pop("VIDEOTOOLS_LANG", None)
+        os.environ.pop("VIDEOEDITOR_LANG", None)
         os.environ["LANG"] = "zh_TW.UTF-8"
         os.environ["LC_ALL"] = "zh_TW.UTF-8"
         self.painter = MenuPainter(home=self.home)
@@ -114,7 +114,7 @@ class TestMenuLanguage(unittest.TestCase):
         self.assertNotIn("language", Cli.PRODUCT_VERBS)
 
     def test_tp_lang_01_invalid_leaf_and_env_override(self):
-        """TP-LANG-01: a bad first line stays English. VIDEOTOOLS_LANG wins and does not write."""
+        """TP-LANG-01: a bad first line stays English. VIDEOEDITOR_LANG wins and does not write."""
         leaf = self.painter.language.leaf_path()
         os.makedirs(os.path.dirname(leaf), mode=0o700)
         with open(leaf, "w", encoding="utf-8") as handle:
@@ -124,13 +124,13 @@ class TestMenuLanguage(unittest.TestCase):
         self.assertEqual(loaded.path_label(), "Path")
         with open(leaf, "r", encoding="utf-8") as handle:
             self.assertEqual(handle.read(), "nope\nzh-Hant\n")
-        os.environ["VIDEOTOOLS_LANG"] = "zh-Hant"
+        os.environ["VIDEOEDITOR_LANG"] = "zh-Hant"
         forced = MenuLanguage(home=self.home)
         self.assertEqual(forced.code(), "zh-Hant")
         self.assertEqual(forced.path_label(), MenuPainter.PATH_LABEL_ZH_HANT)
         with open(leaf, "r", encoding="utf-8") as handle:
             self.assertEqual(handle.read(), "nope\nzh-Hant\n")
-        os.environ.pop("VIDEOTOOLS_LANG", None)
+        os.environ.pop("VIDEOEDITOR_LANG", None)
         cr = MenuLanguage(home=self.home)
         with open(leaf, "w", encoding="utf-8") as handle:
             handle.write("es\r\n")

@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-video-ffmpeg-pipeline.md  
-**Status**: Active (Version 1.2.0)  
+**Status**: Active (Version 1.2.1)  
 **Area**: video  
 **Key**: `requirement-video-ffmpeg-pipeline`  
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -8,11 +8,11 @@
 
 This requirement is the **operational Single Source of Truth** for VideoJoin media processing: two-file concat via FFmpeg, preferred stream-copy path, re-encode fallback, concat list lifecycle, intermediate staging, publish via **`shutil.move`**, and invocation rules.
 
-Domain feature catalog and user workflow labels live in **`requirement-domain-videotools`**. The `join` verb and empty argv live in **`requirement-python-cli-interface`**. The screen that asks the questions lives in **`requirement-python-tui`**. File move and temp style live in **`requirement-python-coding-style`**. The temp, publish, and discard log lines live in **`requirement-python-cli-logging`**.
+Domain feature catalog and user workflow labels live in **`requirement-domain-videoeditor`**. The `join` verb and empty argv live in **`requirement-python-cli-interface`**. The screen that asks the questions lives in **`requirement-python-tui`**. File move and temp style live in **`requirement-python-coding-style`**. The temp, publish, and discard log lines live in **`requirement-python-cli-logging`**.
 
 ### 1.1 Human-facing
 
-**In one sentence:** VideoTools joins two videos by copying the streams when it can, and by re-encoding when that copy fails, and it cuts, speeds, or boomerangs one MP4, then moves the finished file into place.
+**In one sentence:** VideoEditor joins two videos by copying the streams when it can, and by re-encoding when that copy fails, and it cuts, speeds, or boomerangs one MP4, then moves the finished file into place.
 
 | Box | Meaning | Example |
 |-----|---------|---------|
@@ -105,7 +105,7 @@ On Termux, Git Bash, Windows cmd, or the same class, FFmpeg runs as the normal u
 
 | Item | Value |
 |------|--------|
-| **Ops modules** | `src/VideoTools/join.py` for concat. `src/VideoTools/encoder.py` for cut, speed, boomerang, and repeat |
+| **Ops modules** | `src/VideoEditor/join.py` for concat. `src/VideoEditor/encoder.py` for cut, speed, boomerang, and repeat |
 | **Helpers** | `staging_dir_for`, `make_temp_path`, `promote_file`, `create_file_list`, `join_videos`, `ensure_ffmpeg` |
 | **Primary command shape** | `ffmpeg -y -hide_banner -loglevel error -f concat -safe 0 -i <list> -c copy -map 0:v -map 0:a? <temp_out>` |
 | **Concat list** | unique temp via `make_temp_path(".txt", final_out)`; lines `file '<abs-posix>'\n` |
@@ -176,7 +176,7 @@ On Termux, Git Bash, Windows cmd, or the same class, FFmpeg runs as the normal u
 
 | Key | Relationship |
 |-----|--------------|
-| `requirement-domain-videotools` | Domain surface |
+| `requirement-domain-videoeditor` | Domain surface |
 | `requirement-python-cli-interface` | `join` verb |
 | `requirement-python-tui` | Questions on the text screen |
 | `requirement-python-cli-logging` | Log temp write, publish, and discard before the operation |
@@ -206,9 +206,10 @@ On Termux, Git Bash, Windows cmd, or the same class, FFmpeg runs as the normal u
 | 2026-08-09 | Active 1.0.0 | Initial FFmpeg join pipeline law for VideoJoin |
 | 2026-08-09 | Active 1.1.0 | Unique temps, shutil.move publish, fail-closed fallback |
 | 2026-10-04 | Active 1.2.0 | Questions live on the text screen. Temp, publish, and discard log lines are owned by the logging requirement |
+| 2026-10-12 | Active 1.2.1 | Distribution name is VideoEditor. Console script is `video-editor`. Current release string is **1.0.0**. |
 
 ---
 
-**Last Updated**: 2026-10-04  
+**Last Updated**: 2026-10-12
 **Owner**: project maintainers  
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-python-about.md
-**Status**: Active (Version 1.1.2)
+**Status**: Active (Version 1.1.3)
 **Area**: python
 **Key**: `requirement-python-about`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -8,7 +8,7 @@
 
 This file is the about page for VideoJoin. Menu action **about** returns one text page: the product identity lines, a host check, and a star-bordered box. This file names every line and the read that fills it.
 
-The screen that shows the page stays on `requirement-python-tui`. The domain sentence stays on `requirement-domain-videotools`. The version string stays the single `__version__` on `requirement-python-packaging`. `--version` stays a one-line human string on `requirement-python-cli-interface`. `--json` is owned by `requirement-python-cli-interface` and is not a second about page. This file does not open the menu, join a video, or write a JSON object.
+The screen that shows the page stays on `requirement-python-tui`. The domain sentence stays on `requirement-domain-videoeditor`. The version string stays the single `__version__` on `requirement-python-packaging`. `--version` stays a one-line human string on `requirement-python-cli-interface`. `--json` is owned by `requirement-python-cli-interface` and is not a second about page. This file does not open the menu, join a video, or write a JSON object.
 
 Pyenv and conda path reads for this page stay in this file. This product does not add `requirement-python-pyenv` or `requirement-python-conda`.
 
@@ -33,15 +33,15 @@ Pyenv and conda path reads for this page stay in this file. This product does no
 |---------|---------------|----------|
 | `video-join` | text menu on a terminal | Choose **8**, then **83**, or type `about` |
 | `video-join about` | the same page, no front-board pick | No folder prompt and no file prompt |
-| `src/VideoTools/about_page.py` | class `AboutPage` | The page text. It calls `CheckSystem` for the host check |
-| `src/VideoTools/check_system.py` | class `CheckSystem` | Host-check reads, including pyenv and conda paths |
+| `src/VideoEditor/about_page.py` | class `AboutPage` | The page text. It calls `CheckSystem` for the host check |
+| `src/VideoEditor/check_system.py` | class `CheckSystem` | Host-check reads, including pyenv and conda paths |
 | `tests/test_about.py` | suite | The lines and the reads |
 
 | You do… | What it means | What you type |
 |---------|---------------|---------------|
 | Open about | The menu stays in the result page. The page starts with the product name and the domain sentence, then the window-library lines, then the host check, then the star box. Up and Down scroll when the page is longer than the screen. Any other key returns to the menu. | `video-join`, then `8`, then `83` |
-| Read the window libraries | After the entry-points line, the page names GTK 4 and GStreamer. A version means this Python imported that library. `not available` means the import failed. On Windows, a miss names `video-tools tui` and the page does not install anything. | `video-tools about` |
-| Read the install sentence | A checkout under `src/VideoTools` with `pyproject.toml` above it says UNINSTALLED. A copy under your home directory says LOCAL INSTALLED. A copy under `/usr`, `/opt`, or `/bin` says GLOBAL INSTALLED. | Same page |
+| Read the window libraries | After the entry-points line, the page names GTK 4 and GStreamer. A version means this Python imported that library. `not available` means the import failed. On Windows, a miss names `video-editor tui` and the page does not install anything. | `video-editor about` |
+| Read the install sentence | A checkout under `src/VideoEditor` with `pyproject.toml` above it says UNINSTALLED. A copy under your home directory says LOCAL INSTALLED. A copy under `/usr`, `/opt`, or `/bin` says GLOBAL INSTALLED. | Same page |
 | Read the pyenv lines | When this login has pyenv and is not under conda, `python2 location` and `python3 location` are paths inside that root. `pyenv location` is `bin/pyenv`, not `libexec/pyenv`. | `video-join about` |
 | Read the conda lines | When this login has conda, `python2 location` and `python3 location` are paths inside the conda prefix. `conda location` is `bin/conda`, not `condabin/conda`. An active prefix does not borrow the base interpreter. | `video-join about` |
 | Read the run lines | After `Location`, the check names this process id, the cache folder in use and its three candidates, the persistence directory, and whether stdout is a terminal. | Same page |
@@ -49,7 +49,7 @@ Pyenv and conda path reads for this page stay in this file. This product does no
 ## 2. Core Rules (Mandatory)
 
 1. **One page.** Menu action **about** and the verb `video-join about` **MUST** show one result page whose body is this file. The verb **MUST NOT** ask for a folder or a file. The page **MUST** be three blocks in this order: identity, host check, star box. A blank line **MUST** separate the blocks. The window-library lines of rule 22 sit in the identity block, after the four identity lines and before that first blank. The page **MUST NOT** be `--version`. Without a terminal, that page **MUST** be the whole of standard output. `--json` does not turn this page into a JSON stream. The page **MUST NOT** gain a JSON stream.
-2. **Identity block.** The first four lines **MUST** be, in order: `{APP_NAME} {version}`, `Domain: Concatenate two local videos, and cut, speed, or boomerang an MP4`, `Runtime tools: FFmpeg (copy, re-encode, cut, speed); OpenCV (duration); GTK 4 and GStreamer (window)`, `Entry points: video-tools, video-join, video-speed, python -m VideoTools`. `{version}` **MUST** be the package version string `__version__`. The domain sentence **MUST** stay the sentence on `requirement-domain-videotools`. The runtime-tools line is static. It **MUST NOT** be a live `ffmpeg` probe. The page **MUST NOT** name `py-tui`. It **MUST NOT** print `python -m pip install` or an author email. `{APP_NAME}` is `VideoTools`.
+2. **Identity block.** The first four lines **MUST** be, in order: `{APP_NAME} {version}`, `Domain: Concatenate two local videos, and cut, speed, or boomerang an MP4`, `Runtime tools: FFmpeg (copy, re-encode, cut, speed); OpenCV (duration); GTK 4 and GStreamer (window)`, `Entry points: video-editor, video-join, video-speed, python -m VideoEditor`. `{version}` **MUST** be the package version string `__version__`. The domain sentence **MUST** stay the sentence on `requirement-domain-videoeditor`. The runtime-tools line is static. It **MUST NOT** be a live `ffmpeg` probe. The page **MUST NOT** name `py-tui`. It **MUST NOT** print `python -m pip install` or an author email. `{APP_NAME}` is `VideoEditor`.
 3. **Host-check header.** The check **MUST** start with `{local stamp} {APP_NAME}(v{version})  [CHECK SYSTEM]:` and the next line **MUST** be two spaces then `Now checking your operation system!`. The stamp **MUST** be local time `YYYY-MM-DD HH:MM:SS.ffffff` from `datetime.datetime.now()`. There are two spaces before `[CHECK SYSTEM]:`.
 4. **Host-check fields.** After the header, the page **MUST** print these labels in this order, each starting with four spaces, then the label, a colon, a space, and the value. A missing value **MUST** leave the line in place. The check **MUST NOT** spawn `python2`, `python3`, `conda`, `pyenv`, or `id`.
 
@@ -95,7 +95,7 @@ Pyenv and conda path reads for this page stay in this file. This product does no
 14. **No privilege and no network.** Building the page **MUST NOT** call `sudo`, wrap `apt` or `dnf`, create an account, open a socket, or recommend `sudo pip` or `sudo curl | sh`. Git Bash and Windows cmd **MUST NOT** invoke Termux `pkg`.
 15. **Conda paths.** Under conda means `conda_root()` is non-empty. A non-empty `CONDA_EXE` is the only candidate: its parent directory name **MUST** be `bin` or `condabin`, and `{root}/bin/conda` **MUST** exist (`lexists`, a symlink counts). Otherwise a non-empty `CONDA_PREFIX`: the prefix itself when it has `bin/conda`, otherwise `{root}` when the prefix is `{root}/envs/{name}` and that root has `bin/conda`. Otherwise the first of `~/miniconda3`, `~/anaconda3`, `~/miniforge3`, and `~/mambaforge` that has `bin/conda`. `conda location` **MUST** be `{root}/bin/conda`, not `condabin/conda`. The active prefix is `CONDA_PREFIX` when that path is the root or `{root}/envs/{name}`. Otherwise the prefix is the root. `python2` and `python3` are `{prefix}/bin/{name}` when that file exists. A missing interpreter stays empty. The active prefix **MUST NOT** borrow the base interpreter. Conda wins over pyenv for `python2`, `python3`, and `conda`.
 16. **Pyenv paths.** Under pyenv means `pyenv_root()` is non-empty and the name was not taken by rule 15. A non-empty `PYENV_ROOT` is the only candidate and **MUST** contain `bin/pyenv`. Otherwise `~/.pyenv` when that directory contains `bin/pyenv`. Otherwise not under pyenv. `pyenv location` **MUST** be `{root}/bin/pyenv`, not `libexec/pyenv`. Selected versions come from `PYENV_VERSION` when it is non-empty, split on `:`, otherwise the lines of `{root}/version`. Skip blank, `system`, `.`, `..`, and any token that contains `/` or `\`. `python2` and `python3` are `{root}/versions/{version}/bin/{name}` for the first selected version where that file exists. Otherwise `{root}/shims/{name}` when that shim exists. Otherwise empty.
-17. **Run lines.** The username segment is the `Current User` value. The pid segment is the `PID` value. `{APP_NAME}` is `VideoTools`.
+17. **Run lines.** The username segment is the `Current User` value. The pid segment is the `PID` value. `{APP_NAME}` is `VideoEditor`.
     - **Home.** Environment `HOME` when it is set and non-blank. Otherwise `os.path.expanduser("~")` when that result is an absolute path. Otherwise there is no home.
     - **Preferred leaf.** When the username is non-empty, `cache-{APP_NAME}-{username}-{pid}`. When it is empty, `cache-{APP_NAME}-{pid}`.
     - **Preferred path.** `/dev/shm/cache/` plus the preferred leaf.
@@ -106,23 +106,23 @@ Pyenv and conda path reads for this page stay in this file. This product does no
 18. **Environment booleans.** `in_venv`, `in_pyenv`, and `in_conda` **MUST** call `inVenv()`, `inPyenv()`, and `inConda()` on the one logger (`requirement-python-cli-logging`). When the logger is absent, each **MUST** return false. Those three results **MUST NOT** be printed on this page and **MUST NOT** choose a location line.
 19. Actor / role / subject / approver: **considered**. No dest machine. No approver. The table stays on `requirement-class-software-dev.md`.
 20. Dest fence conditions: **considered — none**. Do not invent one.
-21. The host-check methods named in `requirement-python-oop` **MUST** be methods of class `CheckSystem` in `src/VideoTools/check_system.py`. This file still owns the line text. Class `AboutPage` in `src/VideoTools/about_page.py` is the about composer. It **MUST** call `CheckSystem` for the check block and for `self_location`. `Cli` writes `CheckSystem(...)` and then `AboutPage(...)`. `AboutPage` **MUST NOT** construct `CheckSystem`.
-22. **Window libraries.** After the four identity lines and before the blank that starts the host check, the page **MUST** print `Window libraries:`, then `    GTK 4: {gtk}`, then `    GStreamer: {gst}`. `{gtk}` and `{gst}` are `{major}.{minor}.{micro}` when this interpreter imports `gi` and `Gtk` 4.0 or `Gst` 1.0. A failed import **MUST** print `not available` and **MUST NOT** raise. The read **MUST NOT** call `Gst.init`. On a pyenv interpreter the read **MAY** append `/usr/lib/python3/dist-packages` when that directory contains `gi`, the same way the window loads the toolkit. On Windows (`os.name == "nt"`, or `sys.platform` starting with `win`, or environment `OS` starting with `windows`), when either value is `not available`, the page **MUST** then print `    Windows: this Python cannot import GTK 4 and GStreamer.`, `    The picture window needs both libraries in this Python. This page checks them and does not install them.`, and `    On Windows, run video-tools tui.`. When both values are versions, it **MUST** print `    Windows: this Python can import GTK 4 and GStreamer.` and **MUST NOT** print those three missing-library lines. On any other host those Windows lines **MUST** stay off the page. The page **MUST NOT** print `pacman`, `msys2`, `mingw-w64`, or `UCRT64`. It **MUST NOT** run a package manager, an installer, or a shell. The runtime-tools line stays static.
+21. The host-check methods named in `requirement-python-oop` **MUST** be methods of class `CheckSystem` in `src/VideoEditor/check_system.py`. This file still owns the line text. Class `AboutPage` in `src/VideoEditor/about_page.py` is the about composer. It **MUST** call `CheckSystem` for the check block and for `self_location`. `Cli` writes `CheckSystem(...)` and then `AboutPage(...)`. `AboutPage` **MUST NOT** construct `CheckSystem`.
+22. **Window libraries.** After the four identity lines and before the blank that starts the host check, the page **MUST** print `Window libraries:`, then `    GTK 4: {gtk}`, then `    GStreamer: {gst}`. `{gtk}` and `{gst}` are `{major}.{minor}.{micro}` when this interpreter imports `gi` and `Gtk` 4.0 or `Gst` 1.0. A failed import **MUST** print `not available` and **MUST NOT** raise. The read **MUST NOT** call `Gst.init`. On a pyenv interpreter the read **MAY** append `/usr/lib/python3/dist-packages` when that directory contains `gi`, the same way the window loads the toolkit. On Windows (`os.name == "nt"`, or `sys.platform` starting with `win`, or environment `OS` starting with `windows`), when either value is `not available`, the page **MUST** then print `    Windows: this Python cannot import GTK 4 and GStreamer.`, `    The picture window needs both libraries in this Python. This page checks them and does not install them.`, and `    On Windows, run video-editor tui.`. When both values are versions, it **MUST** print `    Windows: this Python can import GTK 4 and GStreamer.` and **MUST NOT** print those three missing-library lines. On any other host those Windows lines **MUST** stay off the page. The page **MUST NOT** print `pacman`, `msys2`, `mingw-w64`, or `UCRT64`. It **MUST NOT** run a package manager, an installer, or a shell. The runtime-tools line stays static.
 
 ### 2.1 Sample shape
 
 Values in angle brackets are the live read. They are not a frozen login or home path.
 
 ```text
-VideoTools 2.0.0
+VideoEditor 1.0.0
 Domain: Concatenate two local videos, and cut, speed, or boomerang an MP4
 Runtime tools: FFmpeg (copy, re-encode, cut, speed); OpenCV (duration); GTK 4 and GStreamer (window)
-Entry points: video-tools, video-join, video-speed, python -m VideoTools
+Entry points: video-editor, video-join, video-speed, python -m VideoEditor
 Window libraries:
     GTK 4: 4.14.5
     GStreamer: 1.24.2
 
-2026-10-10 11:16:23.700590 VideoTools(v2.0.0)  [CHECK SYSTEM]:
+2026-10-10 11:16:23.700590 VideoEditor(v1.0.0)  [CHECK SYSTEM]:
   Now checking your operation system!
     Python: 3.12.3
     C Library: GCC 13.3.0
@@ -140,16 +140,16 @@ Window libraries:
     Binary Type: amd64-glibc
     Location: <program path>
     PID: <pid>
-    Cache folder used: /dev/shm/cache/cache-VideoTools-<login>-<pid>
-    Cache folder (preferred): /dev/shm/cache/cache-VideoTools-<login>-<pid>
-    Cache folder (1st fallback): /tmp/cache/cache-VideoTools-<login>-<pid>
-    Cache folder (2nd fallback): <home>/.cache/cache-VideoTools-<pid>
-    Persistence storage: <home>/.local/VideoTools
+    Cache folder used: /dev/shm/cache/cache-VideoEditor-<login>-<pid>
+    Cache folder (preferred): /dev/shm/cache/cache-VideoEditor-<login>-<pid>
+    Cache folder (1st fallback): /tmp/cache/cache-VideoEditor-<login>-<pid>
+    Cache folder (2nd fallback): <home>/.cache/cache-VideoEditor-<pid>
+    Persistence storage: <home>/.local/VideoEditor
     TTY / Interactive: <yes or no>
 
 ***************************************************
 *                                                 *
-* VideoTools (2.0.0) by Wilgat Wong on 2026-10-11  *
+* VideoEditor (1.0.0) by Wilgat Wong on 2026-10-12  *
 *                                                 *
 * You are using an UNINSTALLED version, location: *
 *     <program path>                              *
@@ -158,7 +158,7 @@ Window libraries:
 *     video-join join                             *
 *                                                 *
 * Please visit our homepage:                      *
-*     "https://github.com/cloudgen/VideoTools"    *
+*     "https://github.com/cloudgen/VideoEditor"    *
 *                                                 *
 *                                                 *
 *                                                 *
@@ -173,27 +173,27 @@ Invocation: `video-join` on a terminal, then `8`, then `83`. The same page is `v
 
 | Item | Value |
 |------|--------|
-| **Page builder** | Class `AboutPage` in `src/VideoTools/about_page.py` (`framework_about`) |
-| **Host check** | Class `CheckSystem` in `src/VideoTools/check_system.py` |
+| **Page builder** | Class `AboutPage` in `src/VideoEditor/about_page.py` (`framework_about`) |
+| **Host check** | Class `CheckSystem` in `src/VideoEditor/check_system.py` |
 | **Pyenv paths** | Rule 16. Not a separate requirement |
 | **Conda paths** | Rule 15. Not a separate requirement |
 | **Star box** | `AboutPage.about_box_lines` calls `CheckSystem` for `self_location` and the Python executable name |
 | **Menu hook** | Row 83 and `video-join about` use `AboutPage.framework_about` |
-| **APP_NAME** | `VideoTools` |
+| **APP_NAME** | `VideoEditor` |
 | **Console script** | `video-join` |
 | **Author** | `Wilgat Wong` |
-| **Homepage** | `https://github.com/cloudgen/VideoTools` |
-| **About date** | `2026-10-11` (`Cli.LAST_UPDATE`). This is the box date, not the host-check stamp |
+| **Homepage** | `https://github.com/cloudgen/VideoEditor` |
+| **About date** | `2026-10-12` (`Cli.LAST_UPDATE`). This is the box date, not the host-check stamp |
 | **Usage line** | `video-join join` (`Cli.BASIC_USAGE`) |
 | **Download URL** | empty (`Cli.DOWNLOAD_URL`) |
 | **Docker marker** | `/.dockerenv` only |
 | **PID** | `os.getpid()` |
 | **Cache folders** | Preferred `/dev/shm/cache/…`, 1st `/tmp/cache/…`, 2nd `{home}/.cache/…` with no username. Used follows rule 17. The page does not create them |
-| **Persistence storage** | `{home}/.local/VideoTools` |
+| **Persistence storage** | `{home}/.local/VideoEditor` |
 | **TTY / Interactive** | `yes` or `no` from `sys.stdout.isatty()` |
 | **JSON** | Not claimed. No `--json` stream |
 | **Privilege** | normal user privilege |
-| **Product version** | `2.0.0` |
+| **Product version** | `1.0.0` |
 
 ### 2.3 Why This Requirement Exists (Direct CIAO Alignment)
 
@@ -263,7 +263,7 @@ On Termux, Git Bash, Windows cmd, or the same class, **admin privilege** and **d
 
 There is no TP-ABOUT-15. `--json` is not a second about page.
 
-TP-ABOUT-01 asserts the identity line, every host-check label, the star-box title, `video-join join`, and that the live page has no `curl -fsSL`, no `py-tui`, no `ffmpeg is on PATH`, and no `python -m pip install`. TP-ABOUT-02 asserts the stamp `YYYY-MM-DD HH:MM:SS.ffffff`, the `[CHECK SYSTEM]:` header, and the field order. TP-ABOUT-03 asserts the star box is one rectangle and that a global path uses the GLOBAL sentence. TP-ABOUT-04 asserts an explicit download URL renders the install line, and that the product URL stays empty. TP-ABOUT-05 asserts the GCC token, the PyPy token, the arch map, `msc`, `clang`, `muslc`, and `amd64-glibc`. TP-ABOUT-06 asserts checkout = uninstalled, a home copy = local, and `/usr` = global. TP-ABOUT-07 asserts the docker marker file and a missing `which` result. TP-ABOUT-08 asserts a long about page scrolls to `Basic Usage:` and a one-line result still closes on Down. TP-ABOUT-09 and TP-ABOUT-10 assert the pyenv paths in rule 16. TP-ABOUT-11 and TP-ABOUT-12 assert the conda paths in rule 15. TP-ABOUT-13 asserts `PID`, the four cache lines, persistence, and `TTY / Interactive` on the page, and that building the check does not create those directories. TP-ABOUT-14 asserts used follows `/dev/shm`, then `/tmp`, then the 2nd fallback, and that the 2nd leaf has no username. TP-ABOUT-16 asserts `in_venv`, `in_pyenv`, and `in_conda` call the logger and do not select location lines. TP-ABOUT-17 asserts the window-library lines, a Windows miss that names `video-tools tui` and installs nothing, a Windows hit that names the import, and a non-Windows miss that omits the Windows lines. The live page has no `pacman`, no `msys2`, and no `mingw-w64`.
+TP-ABOUT-01 asserts the identity line, every host-check label, the star-box title, `video-join join`, and that the live page has no `curl -fsSL`, no `py-tui`, no `ffmpeg is on PATH`, and no `python -m pip install`. TP-ABOUT-02 asserts the stamp `YYYY-MM-DD HH:MM:SS.ffffff`, the `[CHECK SYSTEM]:` header, and the field order. TP-ABOUT-03 asserts the star box is one rectangle and that a global path uses the GLOBAL sentence. TP-ABOUT-04 asserts an explicit download URL renders the install line, and that the product URL stays empty. TP-ABOUT-05 asserts the GCC token, the PyPy token, the arch map, `msc`, `clang`, `muslc`, and `amd64-glibc`. TP-ABOUT-06 asserts checkout = uninstalled, a home copy = local, and `/usr` = global. TP-ABOUT-07 asserts the docker marker file and a missing `which` result. TP-ABOUT-08 asserts a long about page scrolls to `Basic Usage:` and a one-line result still closes on Down. TP-ABOUT-09 and TP-ABOUT-10 assert the pyenv paths in rule 16. TP-ABOUT-11 and TP-ABOUT-12 assert the conda paths in rule 15. TP-ABOUT-13 asserts `PID`, the four cache lines, persistence, and `TTY / Interactive` on the page, and that building the check does not create those directories. TP-ABOUT-14 asserts used follows `/dev/shm`, then `/tmp`, then the 2nd fallback, and that the 2nd leaf has no username. TP-ABOUT-16 asserts `in_venv`, `in_pyenv`, and `in_conda` call the logger and do not select location lines. TP-ABOUT-17 asserts the window-library lines, a Windows miss that names `video-editor tui` and installs nothing, a Windows hit that names the import, and a non-Windows miss that omits the Windows lines. The live page has no `pacman`, no `msys2`, and no `mingw-w64`.
 
 **Matrix:** `docs/reviews/requirement-test-matrix.md`
 **Map:** `docs/reviews/test-plan.md`.
@@ -273,7 +273,7 @@ TP-ABOUT-01 asserts the identity line, every host-check label, the star-box titl
 | Artifact | Role |
 |----------|------|
 | `docs/requirements/index.md` | Registry |
-| `docs/requirements/requirement-domain-videotools.md` | Domain sentence on the identity block |
+| `docs/requirements/requirement-domain-videoeditor.md` | Domain sentence on the identity block |
 | `docs/requirements/requirement-python-tui.md` | Result page; scroll; row 83 |
 | `docs/requirements/requirement-python-oop.md` | Class `CheckSystem` owns the host-check reads. Class `AboutPage` owns the composer |
 | `docs/requirements/requirement-python-cli-logging.md` | `in_venv`, `in_pyenv`, and `in_conda` read the one logger. They are not printed |
@@ -282,8 +282,8 @@ TP-ABOUT-01 asserts the identity line, every host-check label, the star-box titl
 | `docs/requirements/requirement-python-packaging.md` | The version string in the title and the stamp |
 | `docs/requirements/requirement-runtime-prerequisites.md` | FFmpeg is required for `join`. This page does not probe it |
 | `docs/requirements/requirement-class-software-dev.md` | Approver none; no dest fence |
-| `src/VideoTools/about_page.py` | Class `AboutPage`. `framework_about` |
-| `src/VideoTools/check_system.py` | Class `CheckSystem` |
+| `src/VideoEditor/about_page.py` | Class `AboutPage`. `framework_about` |
+| `src/VideoEditor/check_system.py` | Class `CheckSystem` |
 | `pyproject.toml` | Homepage URL and the version string |
 
 ## Terminologies
@@ -309,10 +309,11 @@ TP-ABOUT-01 asserts the identity line, every host-check label, the star-box titl
 | Date | Status | Note |
 |------|--------|------|
 | 2026-10-04 | Active 1.0.0 | About page: identity, host check, star box. Pyenv and conda reads stay here. No `--json`. Product version **1.0.5**. `./tests/run.sh` — 23 tests, OK. `TP-ABOUT-01` through `TP-ABOUT-14` and `TP-ABOUT-16` are have. There is no `TP-ABOUT-15` |
-| 2026-10-10 | Active 1.1.0 | Identity names GTK 4 and GStreamer and checks whether this Python can import them. On Windows a miss names `video-tools tui`. The page does not install packages and does not print a package-manager command. `TP-ABOUT-17` is have |
-| 2026-10-10 | Active 1.1.1 | Homepage is `https://github.com/cloudgen/VideoTools` |
+| 2026-10-10 | Active 1.1.0 | Identity names GTK 4 and GStreamer and checks whether this Python can import them. On Windows a miss names `video-editor tui`. The page does not install packages and does not print a package-manager command. `TP-ABOUT-17` is have |
+| 2026-10-10 | Active 1.1.1 | Homepage is `https://github.com/cloudgen/VideoEditor` |
 | 2026-10-11 | Active 1.1.2 | Sample identity, log line, and star box name package **2.0.0**. The box date is `2026-10-11`, the same string as `Cli.LAST_UPDATE`. The host-check stamp in the sample stays a clock example |
+| 2026-10-12 | Active 1.1.3 | Distribution name is VideoEditor. Console script is `video-editor`. Current release string is **1.0.0**. |
 
-**Last Updated**: 2026-10-11
+**Last Updated**: 2026-10-12
 **Owner**: project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

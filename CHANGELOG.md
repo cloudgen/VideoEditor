@@ -1,7 +1,20 @@
 # CHANGELOG
 
-All notable changes to **VideoTools** are documented here.
-Version SSOT: `pyproject.toml` `[project].version` and `src/VideoTools/__init__.py` `__version__`.
+All notable changes to **VideoEditor** are documented here.
+Version SSOT: `pyproject.toml` `[project].version` and `src/VideoEditor/__init__.py` `__version__`.
+
+## [1.0.0] - 2026-10-12
+
+### Added
+
+- Each elapsed bar on the X11 window is a timeline of thumbnail frames. Hover, click, and drag seek within that clip. The output player's total time updates when a regenerated file is loaded.
+
+### Changed
+
+- The distribution name is VideoEditor. The console script is `video-editor`. The module is `python -m VideoEditor`. Aliases `video-join` and `video-speed` stay. The language leaf is `~/.local/VideoEditor/language`. `VIDEOEDITOR_LANG` overrides that leaf for one process and does not write it.
+- Product version is **1.0.0**. `pyproject.toml`, `__version__`, the README Version badge, this section, and the current SECURITY row use that string.
+- Public home is `https://github.com/cloudgen/VideoEditor` (`git@github.com:cloudgen/VideoEditor.git`).
+- The four pictures in `screenshots/` are captures of this window. The title is VideoEditor 1.0.0. The header on those captures is Traditional Chinese. Run has not been pressed, so the process bar reads 處理 0%.
 
 ## [2.0.0] - 2026-10-11
 
@@ -22,23 +35,23 @@ Version SSOT: `pyproject.toml` `[project].version` and `src/VideoTools/__init__.
 
 ### Added
 
-- `video-tools setup` installs `ChronicleLogger>=1.3.1` and `opencv-python-headless>=5.0.0.93` for this Python. On Windows it also tries the curses module and FFmpeg. It does not install GTK 4 or GStreamer, and it does not use administrator privilege.
+- `video-editor setup` installs `ChronicleLogger>=1.3.1` and `opencv-python-headless>=5.0.0.93` for this Python. On Windows it also tries the curses module and FFmpeg. It does not install GTK 4 or GStreamer, and it does not use administrator privilege.
 - Before ChronicleLogger starts, a Python that has no `os.geteuid` receives a stand-in that returns `1`. `help`, `about`, `version`, and `hello` can start on that interpreter. The ChronicleLogger library itself is unchanged.
 - A Python that cannot import `curses` still loads the package. `about`, `version`, `help`, and `hello` still run. Opening the text menu says this Python does not provide the curses module and does not print a traceback.
-- `about` names GTK 4 and GStreamer and reports whether this Python can import them. On Windows, a missing library names `video-tools tui`. The page does not install packages and does not print a package-manager command.
+- `about` names GTK 4 and GStreamer and reports whether this Python can import them. On Windows, a missing library names `video-editor tui`. The page does not install packages and does not print a package-manager command.
 - Run clears and disables the generated player before the encode starts. When the run finishes and the output file is on disk, that player loads the file and its controls are enabled.
 - Window labels follow the menu language: buttons, Start, Stop, Percent, Tail, None, Boomerang, Repeat, Output, Generated, and the other controls on the window. The clock, the folder path, and the About page stay in their current form. The wait sentence stays `please wait for time consuming process`.
 - The window’s top menu shows join, edit, system-log, language, self-management, and Exit.
 - Menu rows 1 join and 2 edit sit on the video group. They share that group’s left edge and width. The row for the group on screen is highlighted, and the highlight meets the top of the group.
 - Edit tail is none, boomerang, or repeat. The window offers those three choices and starts on none. The text menu asks the same question. `--repeat` appends the forward clip so it plays twice. `--boomerang` still appends the reverse. The two flags together fail closed. A repeat output name ends in `_REPEAT`.
-- X11 window for a bare `video-tools` when `DISPLAY` is set. Edit and Join are two groups. Each group puts the source or sources on the left and the output on the right. Edit has an MP4 player, an `MM:SS.CC` time bar, and Start, Pause, Stop, jump, Mark start, and Mark end. Join stacks Video 1 above Video 2 and has two file buttons.
+- X11 window for a bare `video-editor` when `DISPLAY` is set. Edit and Join are two groups. Each group puts the source or sources on the left and the output on the right. Edit has an MP4 player, an `MM:SS.CC` time bar, and Start, Pause, Stop, jump, Mark start, and Mark end. Join stacks Video 1 above Video 2 and has two file buttons.
 - Join shows three players: both source files and the generated file. Edit shows a player for the generated file. Each of those players has an `MM:SS.CC` elapsed time bar and Play and Stop. Play and Stop do not start or stop an encode.
 - Verb `tui` opens the existing text menu, including when `DISPLAY` is set.
 - Product law records the Windows host contract. The text menu and the typed verbs are the Windows door. The picture window stays the X11 window. `setup`, `about`, and the logger bind stay on their existing owners.
 
 ### Changed
 
-- Public home is `https://github.com/cloudgen/VideoTools` (`git@github.com:cloudgen/VideoTools.git`). The user document pictures are the X11 window: edit, join, language, and self-management.
+- Public home is `https://github.com/cloudgen/VideoEditor` (`git@github.com:cloudgen/VideoEditor.git`). The user document pictures are the X11 window: edit, join, language, and self-management.
 
 ## [1.0.5] - 2026-10-04
 

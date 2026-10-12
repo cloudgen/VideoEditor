@@ -1,12 +1,12 @@
-**file**: docs/requirements/requirement-domain-videotools.md
-**Status**: Active (Version 1.0.1)
+**file**: docs/requirements/requirement-domain-videoeditor.md
+**Status**: Active (Version 1.0.2)
 **Area**: domain
-**Key**: `requirement-domain-videotools`
+**Key**: `requirement-domain-videoeditor`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
 
 ## 1. Purpose
 
-This requirement is the domain surface Single Source of Truth for VideoTools: the join steps inherited from the VideoJoin architecture, the edit steps added from VideoSpeed, and how help and about describe both.
+This requirement is the domain surface Single Source of Truth for VideoEditor: the join steps inherited from the VideoJoin architecture, the edit steps added from VideoSpeed, and how help and about describe both.
 
 Operational FFmpeg processing is owned by `requirement-video-ffmpeg-pipeline`. Typed verbs, empty argv, and `--json` routing are owned by `requirement-python-cli-interface`. The screen is owned by `requirement-python-tui`. Class homes are `requirement-python-oop`.
 
@@ -14,11 +14,11 @@ This file is the sole Active `requirement-domain-*`. It supersedes `requirement-
 
 ### 1.1 Human-facing
 
-**In one sentence:** VideoTools joins two videos in the current folder, and it can cut, speed, or boomerang one MP4.
+**In one sentence:** VideoEditor joins two videos in the current folder, and it can cut, speed, or boomerang one MP4.
 
 | Box | Meaning | Example |
 |-----|---------|---------|
-| You / this login | Person joining two local videos, or cutting one MP4 | `video-tools join` or `video-tools edit --file clip.mp4 --start 1 --end 5` |
+| You / this login | Person joining two local videos, or cutting one MP4 | `video-editor join` or `video-editor edit --file clip.mp4 --start 1 --end 5` |
 | The other role | The menu, FFmpeg, and the OpenCV duration probe | `requirement-python-tui`, `requirement-video-ffmpeg-pipeline` |
 | Not this file | The rounded menu frame, pip install, and the log folder | TUI, packaging, and logging requirements |
 
@@ -31,20 +31,20 @@ This file is the sole Active `requirement-domain-*`. It supersedes `requirement-
 
 | Surface | What you open | What for |
 |---------|---------------|----------|
-| `video-tools join` | Join questions on a terminal | First video, second video, output name |
-| `video-tools list-videos` | Name list | Eligible files in this folder. No concat |
-| `video-tools edit` | Folder, then file, then cut, percent, tail | One MP4 beside the source |
-| `video-tools list-mp4` | MP4 list | Recursive MP4 names. No encode |
-| `video-tools about` | About page | Name, version, both jobs, FFmpeg, OpenCV, how to start it |
-| `video-tools help` | Help page | The same capabilities, including what join does not do |
+| `video-editor join` | Join questions on a terminal | First video, second video, output name |
+| `video-editor list-videos` | Name list | Eligible files in this folder. No concat |
+| `video-editor edit` | Folder, then file, then cut, percent, tail | One MP4 beside the source |
+| `video-editor list-mp4` | MP4 list | Recursive MP4 names. No encode |
+| `video-editor about` | About page | Name, version, both jobs, FFmpeg, OpenCV, how to start it |
+| `video-editor help` | Help page | The same capabilities, including what join does not do |
 
 | You do… | What it means | What you type |
 |---------|---------------|---------------|
-| Join two videos | Pick the first index, then the second from the list that remains, then the output name. Empty name uses the two file stems. The scan is this folder only. | `video-tools join` |
-| See what can be joined | The program lists `.mp4`, `.mov`, `.mkv`, `.avi`, and `.m4v` in this folder and stops. | `video-tools list-videos` |
-| Cut and speed one file | Pick a folder, then one MP4, then start, end, length percent, and one tail. Flags can name the whole job. | `video-tools edit --file clip.mp4 --start 1 --end 5 --percent 50` |
-| See MP4 files | The program lists MP4 files under the folder and stops. | `video-tools list-mp4` |
-| Read about | You see VideoTools, the package version, both jobs, FFmpeg and OpenCV, and the ways to start the program. | `video-tools about` |
+| Join two videos | Pick the first index, then the second from the list that remains, then the output name. Empty name uses the two file stems. The scan is this folder only. | `video-editor join` |
+| See what can be joined | The program lists `.mp4`, `.mov`, `.mkv`, `.avi`, and `.m4v` in this folder and stops. | `video-editor list-videos` |
+| Cut and speed one file | Pick a folder, then one MP4, then start, end, length percent, and one tail. Flags can name the whole job. | `video-editor edit --file clip.mp4 --start 1 --end 5 --percent 50` |
+| See MP4 files | The program lists MP4 files under the folder and stops. | `video-editor list-mp4` |
+| Read about | You see VideoEditor, the package version, both jobs, FFmpeg and OpenCV, and the ways to start the program. | `video-editor about` |
 
 ## 2. Core Rules / Requirements (Mandatory)
 
@@ -63,7 +63,7 @@ Two workflows. Empty argv does not start either one. On a terminal the text scre
 | J-05 | Join | two source paths + output name | Concat via FFmpeg (copy first, re-encode fallback) | `requirement-video-ffmpeg-pipeline` |
 | J-06 | Report result | — | Success or failure message. Temps cleaned | error peer + pipeline |
 
-**Join routing:** `video-tools join` and front-board row **1** **MUST** reach J-01. Bare `video-tools` on a terminal opens the front board and **MUST NOT** start J-01. `video-tools list-videos` lists the J-01 names and **MUST NOT** continue to J-02. Join **MUST NOT** ask for a folder.
+**Join routing:** `video-editor join` and front-board row **1** **MUST** reach J-01. Bare `video-editor` on a terminal opens the front board and **MUST NOT** start J-01. `video-editor list-videos` lists the J-01 names and **MUST NOT** continue to J-02. Join **MUST NOT** ask for a folder.
 
 #### Edit (folder, then file)
 
@@ -84,22 +84,22 @@ Two workflows. Empty argv does not start either one. On a terminal the text scre
 
 **Output switch (not a domain step):** `--json`, owned by `requirement-python-cli-interface`. It does not add a cut, a percent, or a tail.
 
-**Console names:** `video-tools` is the primary script. `video-join` and `video-speed` call the same entry. Samples in this file use `video-tools`.
+**Console names:** `video-editor` is the primary script. `video-join` and `video-speed` call the same entry. Samples in this file use `video-editor`.
 
 **Non-goals (unless a later requirement adds them):** join more than two files, a recursive join scan, a folder prompt on the text-menu join, cut or speed or boomerang inside join, non-MP4 as an edit input, a multi-file edit queue, cloud upload, timeline multi-track editor, automatic color grade, a shell installer, a Control-C confirm question. The X11 window is `requirement-python-gui`. It is not a timeline editor. The `join` verb and the text menu still pick two files from the current folder.
 
 Complete invocation samples this pillar owns:
 
 ```text
-video-tools join
-video-tools list-videos
-video-tools edit --file clip.mp4 --start 1 --end 5 --percent 100
-video-tools edit --file clip.mp4 --start 1 --end 5 --percent 50 --boomerang
-video-tools edit --file clip.mp4 --start 1 --end 5 --percent 50 --repeat
-video-tools list-mp4
+video-editor join
+video-editor list-videos
+video-editor edit --file clip.mp4 --start 1 --end 5 --percent 100
+video-editor edit --file clip.mp4 --start 1 --end 5 --percent 50 --boomerang
+video-editor edit --file clip.mp4 --start 1 --end 5 --percent 50 --repeat
+video-editor list-mp4
 ```
 
-`video-tools join` on a terminal asks for the first index, the second index from the remaining list, and the output name. With no terminal, `join` exits non-zero and `list-videos` prints the names and returns 0 (`requirement-python-cli-interface`).
+`video-editor join` on a terminal asks for the first index, the second index from the remaining list, and the output name. With no terminal, `join` exits non-zero and `list-videos` prints the names and returns 0 (`requirement-python-cli-interface`).
 
 Those edit commands write `clip_cut1.0-5.0s_100pct.mp4`, `clip_cut1.0-5.0s_50pct_BOOMERANG.mp4`, and `clip_cut1.0-5.0s_50pct_REPEAT.mp4` beside the source.
 
@@ -135,7 +135,7 @@ Domain **MUST NOT** restate full FFmpeg command graphs. Pointers and the feature
 
 ### 2.3 Pillar C — Specialized project help items
 
-`video-tools help` and `python -m VideoTools --help` **MUST** list the capabilities and the non-goals in this file. Help is a typed verb. It is not a numbered menu row.
+`video-editor help` and `python -m VideoEditor --help` **MUST** list the capabilities and the non-goals in this file. Help is a typed verb. It is not a numbered menu row.
 
 The help page **MUST** include:
 
@@ -154,7 +154,7 @@ The help page **MUST** include:
 | Flags | `--file`, `--folder`, `--start`, `--end`, `--percent`, `--boomerang`, `--repeat` |
 | JSON | `--json` prints one object and does not open the text menu |
 | Prerequisite | FFmpeg on PATH for a join or an encode. OpenCV is the duration probe. The menu can open without FFmpeg |
-| Menu | On a terminal, `video-tools` with no words shows the front board. Row 1 is join. Row 2 is edit |
+| Menu | On a terminal, `video-editor` with no words shows the front board. Row 1 is join. Row 2 is edit |
 | Split | This product does not cut, speed, or boomerang inside join |
 | Aliases | `video-join` and `video-speed` call this same program |
 
@@ -162,37 +162,37 @@ Root `README.md` domain rows **MUST** match this catalog.
 
 ### 2.4 Pillar D — Specialized project about items
 
-The domain sentence on the about page is this pillar. The page, the host check, and the star box are `requirement-python-about`. `video-tools about` and text-menu row 83 show that page. Class `AboutPage` composes it (`requirement-python-oop`).
+The domain sentence on the about page is this pillar. The page, the host check, and the star box are `requirement-python-about`. `video-editor about` and text-menu row 83 show that page. Class `AboutPage` composes it (`requirement-python-oop`).
 
 | Field | Content |
 |-------|---------|
-| Product name | VideoTools |
-| Version | `__version__`, the same string as `pyproject.toml` (current `2.0.0`) |
+| Product name | VideoEditor |
+| Version | `__version__`, the same string as `pyproject.toml` (current `1.0.0`) |
 | Domain summary | Concatenate two local videos, and cut, speed, or boomerang an MP4 |
 | Runtime tools | FFmpeg (copy, re-encode, cut, speed); OpenCV (duration) |
-| Entry points | `video-tools`, `video-join`, `video-speed`, `python -m VideoTools` |
+| Entry points | `video-editor`, `video-join`, `video-speed`, `python -m VideoEditor` |
 
 The page **MUST** use that domain sentence. About is not a remote version check. It **MUST NOT** advertise a shell `curl|sh` installer. It **MUST NOT** claim pip installs FFmpeg. Pip install stays on rows 84–87.
 
 Complete invocation samples:
 
 ```text
-video-tools about
-video-tools help
+video-editor about
+video-editor help
 ```
 
 ### 2.5 Implementation Notes (this project)
 
 | Item | Value |
 |------|--------|
-| **Product / package name** | `VideoTools` |
-| **Primary console script** | `video-tools` |
-| **Alias console scripts** | `video-join`, `video-speed` (same `VideoTools.cli:main`) |
-| **Join class** | `Join` in `src/VideoTools/join.py` |
-| **Edit classes** | `EditWalk` in `src/VideoTools/edit_walk.py`, `Encoder` in `src/VideoTools/encoder.py`, `FileStage` in `src/VideoTools/file_stage.py`, `MediaInfo` in `src/VideoTools/media_info.py`, `RunOutput` in `src/VideoTools/run_output.py` |
-| **About composer** | `AboutPage` in `src/VideoTools/about_page.py` |
-| **Entry** | `src/VideoTools/cli.py` |
-| **VERSION** | `2.0.0` (`__init__.py` and `pyproject.toml`) |
+| **Product / package name** | `VideoEditor` |
+| **Primary console script** | `video-editor` |
+| **Alias console scripts** | `video-join`, `video-speed` (same `VideoEditor.cli:main`) |
+| **Join class** | `Join` in `src/VideoEditor/join.py` |
+| **Edit classes** | `EditWalk` in `src/VideoEditor/edit_walk.py`, `Encoder` in `src/VideoEditor/encoder.py`, `FileStage` in `src/VideoEditor/file_stage.py`, `MediaInfo` in `src/VideoEditor/media_info.py`, `RunOutput` in `src/VideoEditor/run_output.py` |
+| **About composer** | `AboutPage` in `src/VideoEditor/about_page.py` |
+| **Entry** | `src/VideoEditor/cli.py` |
+| **VERSION** | `1.0.0` (`__init__.py` and `pyproject.toml`) |
 | **Join input formats** | `.mp4`, `.mov`, `.mkv`, `.avi`, `.m4v` (suffix match, case-insensitive) |
 | **Join scan** | Current working directory only. Not recursive. No folder prompt |
 | **Join output default** | `{vid1.stem} + {vid2.stem}.mp4` |
@@ -269,10 +269,10 @@ On Termux, Git Bash, Windows cmd, or the same class, join, list-videos, edit, an
 
 | TP family / ID | Suite | Status | Note |
 |----------------|-------|--------|------|
-| **TP-VIDEOTOOLS-01** | `tests/test_domain_join.py` | todo | `join` on a terminal asks the two indexes and the output name, then concatenates |
-| **TP-VIDEOTOOLS-02** | `tests/test_domain_join.py` | todo | Empty join output name is `{stem1} + {stem2}.mp4` |
-| **TP-VIDEOTOOLS-03** | `tests/test_domain_join.py` | todo | Fewer than two videos fails closed and does not encode |
-| **TP-VIDEOTOOLS-04** | `tests/test_domain_edit.py` | todo | Complete `edit --file --start --end` writes the cut name and does not open the menu |
+| **TP-VIDEOEDITOR-01** | `tests/test_domain_join.py` | todo | `join` on a terminal asks the two indexes and the output name, then concatenates |
+| **TP-VIDEOEDITOR-02** | `tests/test_domain_join.py` | todo | Empty join output name is `{stem1} + {stem2}.mp4` |
+| **TP-VIDEOEDITOR-03** | `tests/test_domain_join.py` | todo | Fewer than two videos fails closed and does not encode |
+| **TP-VIDEOEDITOR-04** | `tests/test_domain_edit.py` | todo | Complete `edit --file --start --end` writes the cut name and does not open the menu |
 | **TP-TUI-10** | `tests/test_tui.py` | have | Front row 2 is `edit`. Wide columns include that row |
 | **TP-LANG-01** | `tests/test_language.py` | have | Front numbers include 2. Row 4 stays language. Row 3 stays system-log |
 
@@ -294,11 +294,12 @@ On Termux, Git Bash, Windows cmd, or the same class, join, list-videos, edit, an
 | Date | Status | Note |
 |------|--------|------|
 | 2026-08-09 | Superseded | Prior domain file on this tree was the VideoJoin two-file catalog |
-| 2026-10-10 | Active 1.0.0 | One domain SSOT for VideoTools. Join J-01..J-06 and edit E-01..E-08. Replaces Active `requirement-domain-videojoin` |
+| 2026-10-10 | Active 1.0.0 | One domain SSOT for VideoEditor. Join J-01..J-06 and edit E-01..E-08. Replaces Active `requirement-domain-videojoin` |
 | 2026-10-11 | Active 1.0.1 | Current version string is **2.0.0**. Terminologies copies the ship-version term |
+| 2026-10-12 | Active 1.0.2 | Distribution name is VideoEditor. Console script is `video-editor`. Current release string is **1.0.0**. |
 
 ---
 
-**Last Updated**: 2026-10-11
+**Last Updated**: 2026-10-12
 **Owner**: project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

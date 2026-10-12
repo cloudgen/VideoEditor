@@ -19,7 +19,7 @@ class SelfManage:
     self-uninstall. It does not call sudo and it does not use curl.
     """
 
-    DISTRIBUTION = "VideoTools"
+    DISTRIBUTION = "VideoEditor"
 
     def __init__(self, app_name: str, version: str, runner=None, logger=None) -> None:
         self.logger = logger

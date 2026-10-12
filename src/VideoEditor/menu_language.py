@@ -12,7 +12,7 @@ class MenuLanguage:
     """The thirteen menu languages, the saved code, and the words the menu prints.
 
     English is the default when the leaf is missing, empty, or not one of the
-    codes. LANG is not read. VIDEOTOOLS_LANG wins at startup and does not write
+    codes. LANG is not read. VIDEOEDITOR_LANG wins at startup and does not write
     the leaf. A menu pick writes the leaf and updates this process.
     """
 
@@ -33,7 +33,7 @@ class MenuLanguage:
     )
     BLOCK_FIRST = 40
     BLOCK_LAST = 59
-    APP_DIR = "VideoTools"
+    APP_DIR = "VideoEditor"
     LEAF_NAME = "language"
 
     def __init__(self, logger=None, home=None) -> None:
@@ -79,11 +79,11 @@ class MenuLanguage:
     def load(self) -> None:
         """Pick the code for this process. Does not write the leaf.
 
-        VIDEOTOOLS_LANG wins when it is one of the thirteen codes. Otherwise the
+        VIDEOEDITOR_LANG wins when it is one of the thirteen codes. Otherwise the
         first line of the leaf is used. A missing, empty, or other line is English.
         An other line is not rewritten.
         """
-        forced = os.environ.get("VIDEOTOOLS_LANG", "")
+        forced = os.environ.get("VIDEOEDITOR_LANG", "")
         if forced in self.codes():
             self._code = forced
             return

@@ -4,7 +4,8 @@
 
 | Version | Supported |
 |---------|-----------|
-| 2.0.0 (current) | Yes |
+| 1.0.0 (current) | Yes |
+| 2.0.0 | Best-effort; prefer upgrading to current |
 | 1.1.0 | Best-effort; prefer upgrading to current |
 | Older releases | Best-effort; prefer upgrading to current |
 
@@ -36,6 +37,6 @@ This section describes **design posture**. It is **not** a claim of third-party 
 
 ## Scope notes
 
-- VideoTools is a **local** interactive CLI. It does **not** implement online install channels or companion `.sha256` download integrity.
+- VideoEditor is a **local** interactive CLI. It does **not** implement online install channels or companion `.sha256` download integrity.
 - Prefer keeping untrusted media and scripts offline unless you trust their origin.
 - Related product docs: [`README.md`](./README.md), [`LICENSE.md`](./LICENSE.md).

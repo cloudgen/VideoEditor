@@ -1,12 +1,12 @@
 **file**: docs/requirements/requirement-python-readme.md
-**Status**: Active (Version 1.2.0)
+**Status**: Active (Version 1.2.1)
 **Area**: python
 **Key**: `requirement-python-readme`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
 
 ## 1. Purpose
 
-This file owns the product user document at the repository root: which sections it has, which pictures it embeds, and the rule that a sentence in that document matches the requirement that owns the behavior. Project nature is a program a person builds and runs from a terminal. The menu picture stays on `requirement-python-tui`. The thirteen languages stay on `requirement-python-cli-language`. The verbs stay on `requirement-python-cli-interface`. The join stays on `requirement-domain-videotools` and `requirement-video-ffmpeg-pipeline`. The prerequisite sentences stay on `requirement-runtime-prerequisites`. The package name and the console script stay on `requirement-python-packaging`. The version string is `__version__`. This file does not restate those bodies.
+This file owns the product user document at the repository root: which sections it has, which pictures it embeds, and the rule that a sentence in that document matches the requirement that owns the behavior. Project nature is a program a person builds and runs from a terminal. The menu picture stays on `requirement-python-tui`. The thirteen languages stay on `requirement-python-cli-language`. The verbs stay on `requirement-python-cli-interface`. The join stays on `requirement-domain-videoeditor` and `requirement-video-ffmpeg-pipeline`. The prerequisite sentences stay on `requirement-runtime-prerequisites`. The package name and the console script stay on `requirement-python-packaging`. The version string is `__version__`. This file does not restate those bodies.
 
 ### 1.1 Human-facing
 
@@ -32,8 +32,8 @@ This file owns the product user document at the repository root: which sections 
 
 | You do… | What it means | What you type |
 |---------|---------------|---------------|
-| Read the install | The public path is pip. The document does not ask for root. | `pip install VideoTools` |
-| Check the pictures | The window pictures are edit, join, the language list, and self-management. The path line names the current directory. A player clock reads `00:00.00`. | `video-tools` on a terminal with `DISPLAY` set |
+| Read the install | The public path is pip. The document does not ask for root. | `pip install VideoEditor` |
+| Check the pictures | The window pictures are edit, join, the language list, and self-management. The path line names the current directory. A player clock reads `00:00.00`. | `video-editor` on a terminal with `DISPLAY` set |
 | Check the version line | The badge matches the package string. | `video-join version` |
 
 ## 2. Core Rules / Requirements (Mandatory)
@@ -54,14 +54,14 @@ Each behavioral sentence **MUST** match its owner and **MUST NOT** restate that 
 
 | Claim in the document | Owner |
 |-----------------------|--------|
-| Two-file join, formats, output name, no folder prompt | `requirement-domain-videotools` |
+| Two-file join, formats, output name, no folder prompt | `requirement-domain-videoeditor` |
 | Stream copy, then re-encode, publish with `shutil.move` | `requirement-video-ffmpeg-pipeline` and `requirement-python-coding-style` |
 | Menu picture, path row, clock, row numbers | `requirement-python-tui` |
 | Thirteen languages and what stays English | `requirement-python-cli-language` |
 | Product verbs and pip lifecycle commands | `requirement-python-cli-interface` |
 | Empty argv on a terminal opens the menu. Empty argv with no terminal prints help and returns 0. Direct `join` with no terminal exits non-zero | `requirement-python-cli-interface` |
 | Package name, console script, pip install | `requirement-python-packaging` |
-| Package string on the badge | `__version__` in `src/VideoTools/__init__.py`, copied by `pyproject.toml` |
+| Package string on the badge | `__version__` in `src/VideoEditor/__init__.py`, copied by `pyproject.toml` |
 | `ChronicleLogger>=1.3.1` | `requirement-python-packaging` and `requirement-runtime-prerequisites` |
 | FFmpeg on `PATH`, no root auto-install | `requirement-runtime-prerequisites` |
 
@@ -92,20 +92,20 @@ The text-menu first row in the user document **MUST** name the current directory
 |-------|--------|
 | **Document** | `README.md` |
 | **Pictures** | `screenshots/` |
-| **Package** | `VideoTools` |
-| **Console scripts** | `video-tools`, plus aliases `video-join` and `video-speed` |
-| **Version** | `2.0.0` from `src/VideoTools/__init__.py` (`__version__`). `pyproject.toml` copies that string |
+| **Package** | `VideoEditor` |
+| **Console scripts** | `video-editor`, plus aliases `video-join` and `video-speed` |
+| **Version** | `1.0.0` from `src/VideoEditor/__init__.py` (`__version__`). `pyproject.toml` copies that string |
 | **Python** | `>=3.11`. The badge says 3.11+ |
 | **License file** | `LICENSE.md` (MIT). The file is present. The document link stays relative |
-| **Homes** | Product home `https://github.com/cloudgen/VideoTools`. SSH remote `git@github.com:cloudgen/VideoTools.git` |
+| **Homes** | Product home `https://github.com/cloudgen/VideoEditor`. SSH remote `git@github.com:cloudgen/VideoEditor.git` |
 | **Pictured edit** | One MP4 source. Cut `00:00.00` to `00:18.04`. Percent 100. Looping switch None is on. Output name ends `_cut0.0-18.0s_100pct.mp4`. Generated player empty. Process bar reads 處理 0% |
 | **Pictured join** | Two sources. Output name `video-1 + video-2.mp4`. Generated player empty |
 | **Every PNG** | `gui-edit.png`, `gui-join.png`, `gui-language.png`, `gui-self-management.png`. No other PNG in `screenshots/` |
-| **Image URL** | `https://raw.githubusercontent.com/cloudgen/VideoTools/main/screenshots/<basename>`. The package index can fetch that file only after it is on that public branch |
+| **Image URL** | `https://raw.githubusercontent.com/cloudgen/VideoEditor/main/screenshots/<basename>`. The package index can fetch that file only after it is on that public branch |
 
-**Title:** `VideoTools - Join two local videos, and cut, speed, or boomerang an MP4`.
+**Title:** `VideoEditor - Join two local videos, and cut, speed, or boomerang an MP4`.
 
-**Badges:** a Version badge whose token is the package string; License MIT; CIAO linked to `https://github.com/cloudgen/ciao`; stars for `cloudgen/VideoTools`; Python 3.11+; PyPI `VideoTools` linked to `https://pypi.org/project/VideoTools/`.
+**Badges:** a Version badge whose token is the package string; License MIT; CIAO linked to `https://github.com/cloudgen/ciao`; stars for `cloudgen/VideoEditor`; Python 3.11+; PyPI `VideoEditor` linked to `https://pypi.org/project/VideoEditor/`.
 
 **Opening:** concatenate two videos in the current directory, and cut, speed, or boomerang an MP4. Prefer stream copy for join. Re-encode when copy fails. Publish with `shutil.move`. On a terminal with `DISPLAY` set and no arguments, the X11 window opens. With no display, the text menu opens. Neither starts join or edit by itself, and neither calls pip.
 
@@ -115,15 +115,15 @@ The text-menu first row in the user document **MUST** name the current directory
 |---------|------------------------------|------------------------|
 | Features | Text menu: join **1**, edit **2**, system-log **3**, language **4**, self-management **8**, Exit **9**. Text-menu path and a local clock on the first row. Window path line is the current directory. Player clock `00:00.00`. Two files in the current directory. Stream copy, then re-encode. Edit is cut, speed, and optional boomerang or repeat. `shutil.move`. FFmpeg on `PATH`. Verbs `help`, `version`, `about`, `hello`, `tui`, `join`, `list-videos`, `edit`, `list-mp4`, `self-install`, `version-check`, `self-update`, `self-uninstall`, `setup` | Peers in §2.2. The clock sentences are §2.2 |
 | Advantages | The four parts and the comparison table below | This file for the contrast. Peers in §2.2 for the behavior |
-| Quick Installation | FFmpeg on `PATH`. `ChronicleLogger>=1.3.1` and `opencv-python-headless>=5.0.0.93`. `pip install VideoTools`. Checkout uses a venv and `pip install -e .`. The fenced text menu includes row 2 edit | `requirement-runtime-prerequisites`, `requirement-python-packaging`, `requirement-python-tui` |
-| Usage | Menu versus typed verbs. Join asks for two indexes and an output name. No folder prompt on join. Edit asks folder then file, or takes `--file`, `--start`, and `--end`. Esc returns. No terminal: empty argv prints help and returns 0. Direct `join` with no terminal exits non-zero. `self-uninstall` needs `--force`. No sudo | `requirement-python-cli-interface`, `requirement-domain-videotools`, `requirement-python-tui` |
-| Screenshots | Lead: each heading is the file name, and the paragraph is what that picture shows. Package **2.0.0**. The four window captures and the catalog below. The header follows the saved language | This file |
-| Examples | `cd` to a folder of clips, then `video-tools`, then `video-tools version`, then `video-tools join`. An edit example names `--file`, `--start`, and `--end` | `requirement-domain-videotools` |
-| Platform Compatibility | Linux primary. macOS and Windows when Python and FFmpeg are present. `video-tools setup` installs the declared pip libraries. On Windows it also tries curses and FFmpeg. The picture window still needs `DISPLAY` and the host GTK 4 and GStreamer packages. The text menu needs a terminal and the curses module. A Python that cannot import curses still runs `about`, `version`, `help`, and `hello` | `requirement-runtime-prerequisites`, `requirement-python-tui` |
+| Quick Installation | FFmpeg on `PATH`. `ChronicleLogger>=1.3.1` and `opencv-python-headless>=5.0.0.93`. `pip install VideoEditor`. Checkout uses a venv and `pip install -e .`. The fenced text menu includes row 2 edit | `requirement-runtime-prerequisites`, `requirement-python-packaging`, `requirement-python-tui` |
+| Usage | Menu versus typed verbs. Join asks for two indexes and an output name. No folder prompt on join. Edit asks folder then file, or takes `--file`, `--start`, and `--end`. Esc returns. No terminal: empty argv prints help and returns 0. Direct `join` with no terminal exits non-zero. `self-uninstall` needs `--force`. No sudo | `requirement-python-cli-interface`, `requirement-domain-videoeditor`, `requirement-python-tui` |
+| Screenshots | Lead: each heading is the file name, and the paragraph is what that picture shows. Package **1.0.0**. The four window captures and the catalog below. The header follows the saved language | This file |
+| Examples | `cd` to a folder of clips, then `video-editor`, then `video-editor version`, then `video-editor join`. An edit example names `--file`, `--start`, and `--end` | `requirement-domain-videoeditor` |
+| Platform Compatibility | Linux primary. macOS and Windows when Python and FFmpeg are present. `video-editor setup` installs the declared pip libraries. On Windows it also tries curses and FFmpeg. The picture window still needs `DISPLAY` and the host GTK 4 and GStreamer packages. The text menu needs a terminal and the curses module. A Python that cannot import curses still runs `about`, `version`, `help`, and `hello` | `requirement-runtime-prerequisites`, `requirement-python-tui` |
 | Related Projects | The eight lines below, in that order, each with one sentence | This file |
 | Contributing | Keep product law in sync. Do not strip `shutil.move`. Version strings stay together | `requirement-python-coding-style`, `requirement-python-packaging` |
 | License | MIT, link `LICENSE.md`, and that file exists | `requirement-python-packaging` |
-| Last Update | The latest line names package **2.0.0** and the X11 window. The **1.1.0** line stays as history | This file for the line. `__version__` for the string |
+| Last Update | The latest line names package **1.0.0** and the X11 window. The **1.1.0** line stays as history | This file for the line. `__version__` for the string |
 
 **Related projects, in this order.** The URLs stay in this order. VideoJoin and VideoSpeed are the two products this package combines. Each line is one sentence. Do not add an install recipe.
 
@@ -145,9 +145,9 @@ The text-menu first row in the user document **MUST** name the current directory
 3. **USB-safe staging.** Intermediate files are written beside the output when that folder can be written, including on a removable drive. The finished file is published with `shutil.move`. When that folder cannot be written, the stage uses the system temporary directory. The section **MUST NOT** say the stage never uses that directory.
 4. **Lifecycle and diagnostics.** `version-check`, `self-update`, `self-install`, and `self-uninstall` are menu rows **84**–**87** and typed verbs. `self-uninstall` on the command line needs `--force`. They call pip and do not use root. **system-log** (**3**) views a log, clears a log, and shows the log folder. **about** (**83**) stays in English.
 
-**Comparison table.** Columns: Feature, Raw FFmpeg CLI, Typical Python wrappers (moviepy), VideoTools.
+**Comparison table.** Columns: Feature, Raw FFmpeg CLI, Typical Python wrappers (moviepy), VideoEditor.
 
-| Feature | Raw FFmpeg CLI | Typical Python wrappers (moviepy) | VideoTools |
+| Feature | Raw FFmpeg CLI | Typical Python wrappers (moviepy) | VideoEditor |
 |---------|----------------|-----------------------------------|-----------|
 | Learning curve | A concat or filter graph the person writes | A Python script | Text menu, or two file numbers and an output name, or edit flags |
 | Non-interactive | Native command line | A custom script | Typed verbs. No terminal and no verb: help, return 0. Direct `join` with no terminal: non-zero. `--json` for an edit job or for help |
@@ -160,8 +160,8 @@ The text-menu first row in the user document **MUST** name the current directory
 
 | Order | File | Paragraph | Alt |
 |------:|------|-----------|-----|
-| 1 | `gui-edit.png` | Edit is the group on screen. The window title is VideoTools 2.0.0. The edit tab is highlighted and shares the group's left edge. A framed line under the header shows 專案根目錄 (Project Root) and the current directory. 輸入影片 (Input Video) holds one MP4, 選擇檔案 (Select file), and a player at `00:00.00` of `00:18.04`. 剪輯控制 (Edit Controls) has 開始 (Start), 暫停 (Pause), 停止 (Stop), a jump field showing `00:00.00`, and 前往 (Go To). 起點 (Start) is `00:00.00` with 標記起點 (Mark start). 終點 (End) is `00:18.04` with 標記終點 (Mark end). 百分比 (Percent) is 100. 循環選項 (Looping Options) has 無 (None) on, and 迴旋 (Boomerang) and 重複 (Repeat) off. The output name is `video-1_cut0.0-18.0s_100pct.mp4`. 執行 (Run) has not been pressed. 輸出與結果 (Output & Result) shows that name. 已產生 (Generated) is empty. 結果影片 (Resulting Video) is black, shows `00:00.00` of `00:00.00`, and its 播放 (Play) and 停止 (Stop) are disabled. The bottom bar reads 處理 0% (Process 0%). | Edit group, Traditional Chinese labels, generated player empty |
-| 2 | `gui-join.png` | Join is the group on screen. The join tab is highlighted and shares the group's left edge. The same header, project-root line, and 處理 0% bar are on screen. 影片 1 (Video 1) and 影片 2 (Video 2) are loaded. The first player shows `00:00.00` of `00:18.04`. The second shows `00:00.00` of `00:12.04`. Each source has 播放 (Play) and 停止 (Stop). 輸出名稱 (Output name) is `video-1 + video-2.mp4`. The write line names the current directory and that file. 執行 (Run) has not been pressed. 已產生 (Generated) is empty. 結果影片 (Resulting Video) is black, shows `00:00.00` of `00:00.00`, and its Play and Stop are disabled. | Join group, two source players, generated player empty |
+| 1 | `gui-edit.png` | Edit is the group on screen. The window title is VideoEditor 1.0.0. The edit tab is highlighted and shares the group's left edge. A framed line under the header shows 專案根目錄 (Project Root) and the current directory. 輸入影片 (Input Video) holds one MP4, 選擇檔案 (Select file), and a player at `00:00.00` of `00:18.04`. A thumbnail strip sits under that picture. 剪輯控制 (Edit Controls) has 開始 (Start), 暫停 (Pause), 停止 (Stop), a jump field showing `00:00.00`, and 前往 (Go To). 起點 (Start) is `00:00.00` with 標記起點 (Mark start). 終點 (End) is `00:18.04` with 標記終點 (Mark end). 百分比 (Percent) is 100. 循環選項 (Looping Options) has 無 (None) on, and 迴旋 (Boomerang) and 重複 (Repeat) off. The output name is `video-1_cut0.0-18.0s_100pct.mp4`. 執行 (Run) has not been pressed. 輸出與結果 (Output & Result) shows that name. 已產生 (Generated) is empty. 結果影片 (Resulting Video) is empty, shows `00:00.00` of `00:00.00`, and its 播放 (Play) and 停止 (Stop) are disabled. The bottom bar reads 處理 0% (Process 0%). | Edit group, Traditional Chinese labels, generated player empty |
+| 2 | `gui-join.png` | Join is the group on screen. The join tab is highlighted and shares the group's left edge. The same header, project-root line, and 處理 0% bar are on screen. 影片 1 (Video 1) and 影片 2 (Video 2) are loaded. The first player shows `00:00.00` of `00:18.04`. The second shows `00:00.00` of `00:12.04`. A thumbnail strip sits under each source picture. Each source has 播放 (Play) and 停止 (Stop). 輸出名稱 (Output name) is `video-1 + video-2.mp4`. The write line names the current directory and that file. 執行 (Run) has not been pressed. 已產生 (Generated) is empty. 結果影片 (Resulting Video) is empty, shows `00:00.00` of `00:00.00`, and its Play and Stop are disabled. | Join group, two source players, generated player empty |
 | 3 | `gui-language.png` | The language page lists the thirteen menu languages. The header stays in the saved language. join and edit stay above the list and neither is highlighted. The rows are 41 English, 42 简体中文, 43 繁體中文, 44 Español, 45 العربية, 46 Français, 47 Português, 48 Русский, 49 Deutsch, 50 日本語, 51 한국어, 52 Nederlands, and 53 Ελληνικά. The project-root line names the current directory. The bottom bar reads 處理 0% (Process 0%). Choosing a row saves that language for the next window and for the text menu. | Language list, 41 English through 53 Greek |
 | 4 | `gui-self-management.png` | Self-management shows the numbered actions and no extra page under them. The buttons are 82 version, 83 about, 84 version-check, 85 self-update, 86 self-uninstall, and 87 self-install. The header stays in the saved language. join and edit stay above the buttons and neither is highlighted. The project-root line names the current directory. The bottom bar reads 處理 0% (Process 0%). 83 about opens the English about page. The pip rows call pip and do not use root. `self-uninstall` on the command line needs `--force`. | Self-management, rows 82 through 87 |
 
@@ -172,7 +172,7 @@ The text-menu first row in the user document **MUST** name the current directory
 - **CIAO Principle 2 – Intentional** (https://github.com/cloudgen/ciao): The sections and every PNG in `screenshots/` are a named catalog. A later edit cannot drop a window capture, leave a PNG unlinked, or swap in a drawing for a control.
 - **CIAO Principle 5 – SSOT** (https://github.com/cloudgen/ciao): This file owns the document. Behavior stays on the peer that already owns it.
 - **CIAO Principle 16 – Interactive** (https://github.com/cloudgen/ciao): The pictures show the X11 window a person actually drives: edit, join, the language list, and self-management.
-- **CIAO Principle 21 – Dual policies** (https://github.com/cloudgen/ciao): The portable rule is “the document matches its owner.” The VideoTools headings and file names live in §2.5.
+- **CIAO Principle 21 – Dual policies** (https://github.com/cloudgen/ciao): The portable rule is “the document matches its owner.” The VideoEditor headings and file names live in §2.5.
 - **CIAO Principle 4 – Over-protect** (https://github.com/cloudgen/ciao): Do not publish a setup script that is not on disk, or a success line the program did not print.
 
 ## Under command line for normal user only
@@ -229,7 +229,7 @@ The documented install is for this login. **This requirement:** the user documen
 |-----|----------------|
 | `docs/requirements/index.md` | Registry |
 | `requirement-python-project-structure` | Root `README.md` exists. Sections and pictures are this file |
-| `requirement-domain-videotools` | Domain rows inside the user document |
+| `requirement-domain-videoeditor` | Domain rows inside the user document |
 | `requirement-video-ffmpeg-pipeline` | Stream copy, then re-encode. This file does not restate that procedure |
 | `requirement-runtime-prerequisites` | FFmpeg on `PATH`. No root auto-install |
 | `requirement-python-packaging` | Package name, console script, pip install, `ChronicleLogger>=1.3.1` |
@@ -267,12 +267,13 @@ The documented install is for this login. **This requirement:** the user documen
 |------|--------|------|
 | 2026-10-04 | Active 1.0.0 | User-document sections, Advantages, eight related projects, and twenty-two pictures. Image destinations are absolute `https`. `TP-DOC-01` have. `TP-DOC-03` todo |
 | 2026-10-04 | Active 1.0.1 | About and self-management pictures match the new page. Other menu pictures still show **1.0.4**. Package string is **1.0.5** |
-| 2026-10-10 | Active 1.0.2 | The verb list names `setup`. Platform Compatibility names `video-tools setup`. The picture window still needs `DISPLAY` |
-| 2026-10-10 | Active 1.1.0 | Public home is `cloudgen/VideoTools`. `screenshots/` is the four X11 window captures. The text-menu clock stays `HH:MM:SS`. The player clock is `00:00.00` |
+| 2026-10-10 | Active 1.0.2 | The verb list names `setup`. Platform Compatibility names `video-editor setup`. The picture window still needs `DISPLAY` |
+| 2026-10-10 | Active 1.1.0 | Public home is `cloudgen/VideoEditor`. `screenshots/` is the four X11 window captures. The text-menu clock stays `HH:MM:SS`. The player clock is `00:00.00` |
 | 2026-10-11 | Active 1.2.0 | Package string is **2.0.0**. The catalog matches the recaptured window: project root, cards, looping switches, and Process 0% before Run. `TP-DOC-03` stays todo. Terminologies copies the picture-window term and the ship-version term |
+| 2026-10-12 | Active 1.2.1 | Distribution name is VideoEditor. Console script is `video-editor`. Current release string is **1.0.0**. |
 
 ---
 
-**Last Updated**: 2026-10-11
+**Last Updated**: 2026-10-12
 **Owner**: project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

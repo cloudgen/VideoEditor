@@ -265,7 +265,7 @@ class EditWalk:
         The front board stays up. Each question is typed in the bottom box.
         Esc returns to that board. A direct verb may already know the folder
         or the file, and may pre-fill percent or the tail.
-        requirement-domain-videotools, requirement-python-tui,
+        requirement-domain-videoeditor, requirement-python-tui,
         requirement-python-tui.
         Last updated: 2026-10-01
         """

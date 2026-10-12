@@ -1,5 +1,5 @@
 **file**: docs/requirements/requirement-python-windows.md
-**Status**: Active (Version 1.0.1)
+**Status**: Active (Version 1.0.2)
 **Area**: python
 **Key**: `requirement-python-windows`
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
@@ -10,12 +10,12 @@ This file is the Windows host contract for a Python program that also runs on Li
 
 ### 1.1 Human-facing
 
-**In one sentence:** On Windows you run `video-tools` from Command Prompt or Git Bash as yourself; the text menu and the typed verbs are the supported door, and the picture window stays the existing X11 window.
+**In one sentence:** On Windows you run `video-editor` from Command Prompt or Git Bash as yourself; the text menu and the typed verbs are the supported door, and the picture window stays the existing X11 window.
 
 | Box | Meaning | Example |
 |-----|---------|---------|
-| You / this login | The person at Windows Command Prompt, PowerShell, or Git Bash | `video-tools help` |
-| The other role | The interpreter on that host | `python -m VideoTools` |
+| You / this login | The person at Windows Command Prompt, PowerShell, or Git Bash | `video-editor help` |
+| The other role | The interpreter on that host | `python -m VideoEditor` |
 | Not this file | The encode steps, the menu picture, and the about-page wording | Peer requirements in section 6 |
 
 | Includes | Excludes |
@@ -27,18 +27,18 @@ This file is the Windows host contract for a Python program that also runs on Li
 
 | Surface | What you open | What for |
 |---------|---------------|----------|
-| `video-tools` | Console script on a terminal | Text menu when `DISPLAY` is unset |
-| `video-tools tui` | Same script | Text menu, including when a display is set |
-| `video-tools setup` | Same script | Prepare this Python. Steps stay on `requirement-runtime-prerequisites` |
-| `video-tools about` | Same script | Window-library check. Sentences stay on `requirement-python-about` |
-| `src/VideoTools/gui.py` | Picture window | Opens only when `DISPLAY` is set and the host libraries import |
+| `video-editor` | Console script on a terminal | Text menu when `DISPLAY` is unset |
+| `video-editor tui` | Same script | Text menu, including when a display is set |
+| `video-editor setup` | Same script | Prepare this Python. Steps stay on `requirement-runtime-prerequisites` |
+| `video-editor about` | Same script | Window-library check. Sentences stay on `requirement-python-about` |
+| `src/VideoEditor/gui.py` | Picture window | Opens only when `DISPLAY` is set and the host libraries import |
 
 | You do… | What it means | What you type |
 |---------|---------------|---------------|
-| Start on Windows with no X11 display | You get the text menu on a terminal, or help when there is no terminal. The picture-window file is still in the package. | `video-tools` |
-| Ask what this Python can import | The about page names GTK 4 and GStreamer and does not install them. A miss on Windows tells you to open the text menu. | `video-tools about` |
-| Prepare libraries | `setup` installs the declared pip libraries as you. On Windows it may also try the curses module and FFmpeg. It does not install the window libraries. | `video-tools setup` |
-| Open the picture window | The same X11 window used on Linux. It needs `DISPLAY` and the host GTK 4 and GStreamer packages. | `video-tools` on a terminal where `DISPLAY` is set |
+| Start on Windows with no X11 display | You get the text menu on a terminal, or help when there is no terminal. The picture-window file is still in the package. | `video-editor` |
+| Ask what this Python can import | The about page names GTK 4 and GStreamer and does not install them. A miss on Windows tells you to open the text menu. | `video-editor about` |
+| Prepare libraries | `setup` installs the declared pip libraries as you. On Windows it may also try the curses module and FFmpeg. It does not install the window libraries. | `video-editor setup` |
+| Open the picture window | The same X11 window used on Linux. It needs `DISPLAY` and the host GTK 4 and GStreamer packages. | `video-editor` on a terminal where `DISPLAY` is set |
 
 ## 2. Core Rules (Mandatory)
 
@@ -66,10 +66,10 @@ This file is the Windows host contract for a Python program that also runs on Li
 
 | Fact | Value |
 |------|--------|
-| Product | VideoTools. Console script `video-tools`. Module `python -m VideoTools`. Product version **2.0.0**. This requirement does not bump that version |
-| Home | `https://github.com/cloudgen/VideoTools` |
-| Detect | `HostSetup.windows_host` in `src/VideoTools/host_setup.py` and `AboutPage._windows_host` in `src/VideoTools/about_page.py` use rule 1 |
-| Picture window | Class `Gui` in `src/VideoTools/gui.py`. `Cli.opens_window` in `src/VideoTools/cli.py` requires a non-empty `DISPLAY`, a terminal, and no verb. `Gui.open` sets `GDK_BACKEND` to `x11` |
+| Product | VideoEditor. Console script `video-editor`. Module `python -m VideoEditor`. Product version **1.0.0**. This requirement does not bump that version |
+| Home | `https://github.com/cloudgen/VideoEditor` |
+| Detect | `HostSetup.windows_host` in `src/VideoEditor/host_setup.py` and `AboutPage._windows_host` in `src/VideoEditor/about_page.py` use rule 1 |
+| Picture window | Class `Gui` in `src/VideoEditor/gui.py`. `Cli.opens_window` in `src/VideoEditor/cli.py` requires a non-empty `DISPLAY`, a terminal, and no verb. `Gui.open` sets `GDK_BACKEND` to `x11` |
 | Text menu | `requirement-python-tui`. Verb `tui` opens it even when `DISPLAY` is set |
 | About | `requirement-python-about`. Windows miss text and the “does not install” line stay there. Proof `TP-ABOUT-17` |
 | Logger bind | `HostSetup.ensure_geteuid` runs in `def main` before `from ChronicleLogger import ChronicleLogger`. Proof `TP-SETUP-01`. Owner `requirement-python-cli-logging` |
@@ -86,18 +86,18 @@ This file is the Windows host contract for a Python program that also runs on Li
 - **CIAO Principle 2 – Intentional**: One host contract records the decisions that were already fixed in peer law, so a later edit does not treat an empty `DISPLAY` as a removed window.
 - **CIAO Principle 5 – SSOT**: Command text stays on the peer that already owns it.
 - **CIAO Principle 9 – Privilege layers**: Git Bash and Windows cmd stay at normal user privilege.
-- **CIAO Principle 21 – Dual policies**: Core rules stay free of this product’s paths. Implementation Notes name VideoTools.
+- **CIAO Principle 21 – Dual policies**: Core rules stay free of this product’s paths. Implementation Notes name VideoEditor.
 
 ## Under command line for normal user only
 
-On Termux, Git Bash, Windows cmd, or the same class, VideoTools runs as the person who started it. **This requirement:** Windows cmd and Git Bash are that class. Do not use administrator privilege, `sudo`, `apt`, `dnf`, or a dedicated system account. Do not pipe a downloaded script into a shell. Administrator privilege and dedicated system user privilege are unused on those shells. Git Bash and Windows cmd do not call Termux `pkg`. `video-tools setup` uses `python -m pip` as this user. The about page does not install packages.
+On Termux, Git Bash, Windows cmd, or the same class, VideoEditor runs as the person who started it. **This requirement:** Windows cmd and Git Bash are that class. Do not use administrator privilege, `sudo`, `apt`, `dnf`, or a dedicated system account. Do not pipe a downloaded script into a shell. Administrator privilege and dedicated system user privilege are unused on those shells. Git Bash and Windows cmd do not call Termux `pkg`. `video-editor setup` uses `python -m pip` as this user. The about page does not install packages.
 
 ## 3. Design Principles (CIAO / CIAO-Lite)
 
 - **Caution:** Detect the host from the interpreter. Catch a missing `curses` import. Bind a missing `geteuid` before the logger import.
 - **Intentional:** The X11 window file stays. The Windows door is the text menu and the typed verbs until `DISPLAY` and the host libraries are present.
 - **Anti-fragile:** A refused FFmpeg install is a printed command and error. The process still finishes the rest of the report.
-- **Over-protect:** Do not delete `src/VideoTools/gui.py`, do not retarget it to a native Windows toolkit, and do not add `windows-curses` to `pyproject.toml`.
+- **Over-protect:** Do not delete `src/VideoEditor/gui.py`, do not retarget it to a native Windows toolkit, and do not add `windows-curses` to `pyproject.toml`.
 - **Principle 5:** One owner for each procedure. This file points.
 - **Principle 10:** The person at the keyboard is the only account this program uses on Windows.
 
@@ -105,7 +105,7 @@ On Termux, Git Bash, Windows cmd, or the same class, VideoTools runs as the pers
 
 **Future AI assistants or maintainers MUST NOT:**
 
-1. Delete `src/VideoTools/gui.py` or describe an empty `DISPLAY` as a removed picture window.
+1. Delete `src/VideoEditor/gui.py` or describe an empty `DISPLAY` as a removed picture window.
 2. Replace the X11 window with a native Windows window unless the user explicitly orders that redesign.
 3. Open the picture window from `WAYLAND_DISPLAY` alone, or when `DISPLAY` is empty.
 4. Print `pacman`, `msys2`, `mingw-w64`, or `UCRT64` as the Windows next step for a missing window library.
@@ -126,7 +126,7 @@ On Termux, Git Bash, Windows cmd, or the same class, VideoTools runs as the pers
 | ID | Criterion |
 |----|-----------|
 | AC-1 | Windows detect matches rule 1 in `HostSetup.windows_host` and `AboutPage._windows_host` |
-| AC-2 | Empty `DISPLAY` does not remove `src/VideoTools/gui.py`. The picture window still requires `DISPLAY` |
+| AC-2 | Empty `DISPLAY` does not remove `src/VideoEditor/gui.py`. The picture window still requires `DISPLAY` |
 | AC-3 | `pyproject.toml` has no `windows-curses` entry |
 | AC-4 | Peer proofs `TP-SETUP-01`, `TP-SETUP-02`, `TP-ABOUT-17`, and `TP-TUI-11` stay on their owners |
 | AC-5 | This file does not restate the winget argument list or the about-page sentence list |
@@ -208,9 +208,10 @@ On Termux, Git Bash, Windows cmd, or the same class, VideoTools runs as the pers
 |------|--------|------|
 | 2026-10-11 | Active 1.0.0 | Windows host contract. Points at the existing owners for `setup`, about, the X11 window, the logger bind, and the pip manifest. `TP-WIN-01` is todo. Product version stays **1.1.0** |
 | 2026-10-11 | Active 1.0.1 | The live product-version cell is **2.0.0**. This file does not cause that bump. Rule 13 still forbids bumping **1.1.0** only because this requirement was added |
+| 2026-10-12 | Active 1.0.2 | Distribution name is VideoEditor. Console script is `video-editor`. Current release string is **1.0.0**. |
 
 ---
 
-**Last Updated**: 2026-10-11
+**Last Updated**: 2026-10-12
 **Owner**: project maintainers
 **Alignment**: Registry `docs/requirements/index.md`; **CIAO** (https://github.com/cloudgen/ciao); CIAO-Lite (https://github.com/cloudgen/ciao-lite).

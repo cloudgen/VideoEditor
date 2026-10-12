@@ -1,5 +1,5 @@
 # =============================================================================
-# Text menu session for VideoTools.
+# Text menu session for VideoEditor.
 # requirement-python-tui — menu region and the bottom input box.
 # requirement-python-about — the about result page is framework_about.
 # requirement-python-oop — this module defines class Tui and MenuScreenError.
@@ -38,7 +38,7 @@ class Tui:
     The rows are join, system-log, language, self-management, and Exit.
     """
 
-    def __init__(self, app=None, app_name="VideoTools", version=None, logger=None):
+    def __init__(self, app=None, app_name="VideoEditor", version=None, logger=None):
         self.logger = logger
         if logger is not None:
             logger.log_message("instantiated", component="Tui")
@@ -88,9 +88,9 @@ class Tui:
     def help_on_screen(self):
         """
         General Purpose: Help text when help is typed on the open menu.
-        The typed video-tools help verb does not call this and does not draw the screen.
+        The typed video-editor help verb does not call this and does not draw the screen.
         """
-        dist = "VideoTools"
+        dist = "VideoEditor"
         if self.app is not None:
             dist = self.app.self_manage.DISTRIBUTION
         return (
@@ -285,12 +285,12 @@ class Tui:
         if too_small:
             self.app.report_error(
                 "The text screen is too small for the menu and the input box.",
-                "{0} help".format(self.app.CONSOLE_NAME if hasattr(self.app, "CONSOLE_NAME") else "video-tools"),
+                "{0} help".format(self.app.CONSOLE_NAME if hasattr(self.app, "CONSOLE_NAME") else "video-editor"),
             )
         else:
             self.app.report_error(
                 "The text menu could not open on this terminal.",
-                "{0} help".format(self.app.CONSOLE_NAME if hasattr(self.app, "CONSOLE_NAME") else "video-tools"),
+                "{0} help".format(self.app.CONSOLE_NAME if hasattr(self.app, "CONSOLE_NAME") else "video-editor"),
             )
         return "missing"
 
@@ -300,7 +300,7 @@ class Tui:
             return "missing"
         self.app.report_error(
             "The text menu needs the curses module. This Python does not provide it.",
-            "{0} help".format(self.app.CONSOLE_NAME if hasattr(self.app, "CONSOLE_NAME") else "video-tools"),
+            "{0} help".format(self.app.CONSOLE_NAME if hasattr(self.app, "CONSOLE_NAME") else "video-editor"),
         )
         return "missing"
 
@@ -309,7 +309,7 @@ class Tui:
             if self.app is not None:
                 self.app.report_error(
                     "No terminal for the text menu. Use a terminal.",
-                    "{0} help".format(getattr(self.app, "CONSOLE_NAME", "video-tools")),
+                    "{0} help".format(getattr(self.app, "CONSOLE_NAME", "video-editor")),
                 )
             return False
         return True
@@ -332,7 +332,7 @@ class Tui:
             if kind == "help":
                 return self.help_on_screen()
             if kind == "hello":
-                return self.hello_text() + "\nNext: video-tools help"
+                return self.hello_text() + "\nNext: video-editor help"
             if kind in ("version-check", "self-update", "self-install", "self-uninstall"):
                 _code, text = self.app.self_manage.run_pip(kind)
                 return text

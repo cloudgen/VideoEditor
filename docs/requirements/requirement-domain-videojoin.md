@@ -2,7 +2,7 @@
 **Status**: Superseded (Version 1.1.2)
 **Area**: domain
 **Key**: `requirement-domain-videojoin`
-**Superseded by**: `requirement-domain-videotools` (sole Active domain SSOT as of 2026-10-10). Do not apply this file.
+**Superseded by**: `requirement-domain-videoeditor` (sole Active domain SSOT as of 2026-10-10). Do not apply this file.
 **Philosophy**: CIAO **v2.10.2** / CIAO-Lite (Caution • Intentional • Anti-fragile • Over-engineered / Over-protect)
 
 ## 1. Purpose
